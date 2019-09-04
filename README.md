@@ -1,4 +1,4 @@
-# Setup
+# Setup (see GitHub project wiki page)
 - Copied files over
 - `npm install ...`
 - `npm install --save-dev jest`
@@ -12,4 +12,6 @@
     - Create `babel.config.js`
     - https://itnext.io/step-by-step-building-and-publishing-an-npm-typescript-package-44fe7164964c
         - `jestconfig.json`
+        
+        
     
