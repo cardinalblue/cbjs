@@ -1,0 +1,62 @@
+import {DependencyList, MutableRefObject, useEffect, useState} from "react";
+import {Queue} from "./util";
+import {BehaviorSubject, Observable} from "rxjs";
+
+
+// ----------------------------------------------------------------
+// Custom React Hooks to help with RxJS
+
+export function useObservable<T>(observable: Observable<T>,
+                                 defaultValue: T,
+                                 inputs: DependencyList = [observable])
+  : T {
+  const [t, setT] = useState(defaultValue)
+
+  useEffect(() => {
+    const subs = observable.subscribe((t: T) => {
+      setT(t)
+    })
+    return () => subs.unsubscribe()
+  }, inputs)
+
+  return t
+}
+
+export function useBehaviorSubject<T>(subject: BehaviorSubject<T>): T {
+  const [t, setT] = useState(subject.value)
+
+  useEffect(() => {
+    const subs = subject.subscribe((t: T) => {
+      setT(t)
+    })
+    return () => subs.unsubscribe()
+  }, [subject])
+
+  return t
+}
+
+export function useObserving<T>(observable: Observable<T>,
+                                callback: (value: T) => void,
+                                inputs: DependencyList = [observable])
+  : void {
+  useEffect(() => {
+    const subs = observable.subscribe(callback)
+    return () => subs.unsubscribe()
+  }, [observable])
+}
+
+// -----------------------------------------------------------------------
+// Focuses the given element whenever a `true` gets sent on the given Queue.
+// Blurs if `false` is sent.
+
+export function useFocusing(ref: MutableRefObject<HTMLElement | null>, doFocus: Queue<boolean>) {
+  useEffect(() => {
+    return doFocus.subscribe(focus =>
+      ref.current &&
+      (focus ?
+          ref.current.focus() :
+          ref.current.blur()
+      )
+    )
+  })
+}

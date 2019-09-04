@@ -1,0 +1,45 @@
+{
+  "name": "cbjs",
+  "version": "0.7.0",
+  "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --config jest.config.json",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cardinalblue/cbjs.git"
+  },
+  "keywords": [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "RxJS"
+  ],
+  "author": "Jaime Cham",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cardinalblue/cbjs/issues"
+  },
+  "homepage": "https://github.com/cardinalblue/cbjs#readme",
+  "dependencies": {
+    "@types/lodash": "^4.14.138",
+    "@types/react": "^16.9.2",
+    "firebase": "^6.5.0",
+    "lodash": "^4.17.15",
+    "react": "^16.9.0",
+    "rxjs": "^6.5.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/preset-typescript": "^7.3.3",
+    "@types/jest": "^24.0.18",
+    "babel-jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.6.2"
+  },
+  "files": ["dist/**/*"]
+}

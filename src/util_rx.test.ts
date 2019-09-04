@@ -1,0 +1,251 @@
+import {arrayMap, cachedMapper, cachedMapperArray, lastOrEmpty, scan2, sortingMap} from "./util_rx"
+import {BehaviorSubject, Observable, of} from "rxjs"
+import {testScheduler} from "./setup_test"
+import {share} from "rxjs/operators"
+
+it('lastOrEmpty works', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(cold('--a---').pipe(lastOrEmpty())) .toBe('------')
+    ex(cold('--a---|').pipe(lastOrEmpty())).toBe('------(a|')
+    ex(cold('------|').pipe(lastOrEmpty())).toBe('------|')
+  })
+})
+
+it('cachedMapper works', () => {
+
+  class Output {
+    s: string
+    constructor(s: string) { this.s = "out" + s; }
+  }
+  const m = cachedMapper(
+    (s: string) => { return "k" + s },
+    (s: string) => {
+      return new Output(s)
+    }
+  )
+
+  const o1 = m("1")
+  const o2 = m("1")
+  expect(o1).toEqual(o2)
+  expect(o1 === o2).toEqual(true)
+
+  const o3 = m("2")
+  expect(o3.s).toEqual("out2")
+
+})
+
+it('cachedMapperArray works', () => {
+
+  type INPUT = string
+  class Output {
+    s: string
+    constructor(s: string) { this.s = "out" + s; }
+  }
+  const mapper = cachedMapperArray((s: INPUT) => { return "k" + s },
+    (s: INPUT) => { return new Output(s) })
+
+  const o1 = mapper(["1"])
+  expect(o1.length).toEqual(1)
+  expect(o1[0].s).toEqual("out1")
+
+  const o2 = mapper(["1"])
+  expect(o1).toEqual(o2)
+  expect(o1[0] === o2[0]).toEqual(true)
+
+  const o3 = mapper(["1", "2"])
+  expect(o1[0]).toEqual(o3[0])
+  expect(o1[0] === o3[0]).toEqual(true)
+  expect(o3[0].s).toEqual("out1")
+  expect(o3[1].s).toEqual("out2")
+
+})
+
+it('arrayMap works simple level', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const sm = arrayMap((x: number) => of(x))
+
+    ex(cold<number[]>('--|').pipe(sm))
+      .toBe('--|')
+    ex(cold('-a-|', { a: [1,3,2] }).pipe(sm))
+      .toBe('-a-|', { a: [1,3,2] })
+    ex(cold('-a---b--|', { a: [1,3,2], b: [6,5,4] }).pipe(sm))
+      .toBe('-a---b--|', { a: [1,3,2], b: [6,5,4] })
+    ex(cold('-a-c-b--|', { a: [1,3,2], c: [], b: [6,5,4] }).pipe(sm))
+      .toBe('-a-c-b--|', { a: [1,3,2], c: [], b: [6,5,4] })
+  })
+})
+
+class X {
+  i: Observable<number>
+  constructor(i: number | Observable<number>) {
+    this.i = (typeof i === 'number') ?
+      new BehaviorSubject(i) : i
+  }
+}
+it('arrayMap works changing values', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const sm = arrayMap((x: X) => x.i)
+
+    const x1 = new X(10)
+    const x2 = new X(20)
+    const x3 = new X(30)
+
+    // Typescript bindings for `cold` are wrong, so have to patch
+    function _cold<T>(marbles: string, values: T[]): Observable<T> {
+      return cold(marbles, <{ [key: string]: T }>(values as any))
+    }
+
+    // ---- Simple
+    ex(cold<X[]>('--|').pipe(sm))
+      .toBe('--|')
+    ex(cold('-----a---|', { a: [x2,x1,x3] }).pipe(sm))
+      .toBe('-----a---|', { a: [20,10,30] })
+
+    // ---- Changing values
+    const x4 = new X(_cold('0----1---2------|', [5, 25, 15]))
+    ex(_cold('--0--------------|', [ [x2,x1,x3,x4] ]).pipe(sm))
+      .toBe('--0----1---2-----|', [ [20,10,30,5], [20,10,30,25], [20,10,30,15] ])
+    ex(_cold('--0-------1------|', [ [x2,x1,x3,x4], [x3,x1] ]).pipe(sm))
+      .toBe('--0----1--2------|', [ [20,10,30,5], [20,10,30,25], [30,10] ])
+
+    // ---- With a delay in the sub value
+    const x5 = new X(_cold('---0----1---2------|', [5, 25, 15]))
+    ex(_cold('--0--------------|', [ [x2,x1,x3,x5] ]).pipe(sm))
+      .toBe('-----0----1---2--|', [ [20,10,30,5], [20,10,30,25], [20,10,30,15] ])
+    ex(_cold('--0---------1-------|', [ [x2,x1,x3,x5], [x3,x1] ]).pipe(sm))
+      .toBe('-----0----1-2-------|', [ [20,10,30,5], [20,10,30,25], [30,10] ])
+
+  })
+})
+
+// --------------------------------------------------------------
+
+it('sortingMap works simple level', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const sm = sortingMap((x: number) => of(x))
+
+    ex(cold<number[]>('--|').pipe(sm))
+      .toBe('--|')
+    ex(cold('-a-|', { a: [1,3,2] }).pipe(sm))
+      .toBe('-a-|', { a: [1,2,3] })
+    ex(cold('-a---b--|', { a: [1,3,2], b: [6,5,4] }).pipe(sm))
+      .toBe('-a---b--|', { a: [1,2,3], b: [4,5,6] })
+    ex(cold('-a-c-b--|', { a: [1,3,2], c: [], b: [6,5,4] }).pipe(sm))
+      .toBe('-a-c-b--|', { a: [1,2,3], c: [], b: [4,5,6] })
+  })
+})
+
+it('sortingMap works changing sort values', () => {
+
+  class X {
+    i: Observable<number>
+    constructor(i: number | Observable<number>) {
+      this.i = (typeof i === 'number') ?
+        new BehaviorSubject(i) : i
+    }
+  }
+
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const sm = sortingMap((x: X) => x.i)
+
+    const x1 = new X(10)
+    const x2 = new X(20)
+    const x3 = new X(30)
+
+    // Typescript bindings for `cold` are wrong, so have to patch
+    function _cold<T>(marbles: string, values: T[]): Observable<T> {
+      return cold(marbles, <{ [key: string]: T }>(values as any))
+    }
+
+    // ---- Simple
+    ex(cold<X[]>('--|').pipe(sm))
+      .toBe('--|')
+    ex(cold('-----a---|', { a: [x2,x1,x3] }).pipe(sm))
+      .toBe('-----a---|', { a: [x1,x2,x3] })
+
+    // ---- Changing sorting
+    const x4 = new X(_cold('0----1---2------|', [5, 25, 15]))
+    ex(_cold('--0--------------|', [ [x2,x1,x3,x4] ]).pipe(sm))
+      .toBe('--0----1---2-----|', [ [x4,x1,x2,x3], [x1,x2,x4,x3], [x1,x4,x2,x3] ])
+    ex(_cold('--0-------1------|', [ [x2,x1,x3,x4],                [x3,x1] ]).pipe(sm))
+      .toBe('--0----1--2------|', [ [x4,x1,x2,x3], [x1,x2,x4,x3], [x1,x3] ])
+
+    // With a delay in the sorting value
+    const x5 = new X(_cold('---0----1---2------|', [5, 25, 15]))
+    ex(_cold('--0--------------|', [ [x2,x1,x3,x5] ]).pipe(sm))
+      .toBe('-----0----1---2--|', [ [x5,x1,x2,x3], [x1,x2,x5,x3], [x1,x5,x2,x3] ])
+    ex(_cold('--0---------1-------|', [ [x2,x1,x3,x5],                [x3,x1] ]).pipe(sm))
+      .toBe('-----0----1-2-------|', [ [x5,x1,x2,x3], [x1,x2,x5,x3], [x1,x3] ])
+
+  })
+})
+
+it('scan2 works', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    // Typescript bindings for `cold` are wrong, so have to patch
+    function _cold<T>(marbles: string, values: T[]): Observable<T> {
+      return cold(marbles, <{ [key: string]: T }>(values as any))
+    }
+
+    const values = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+    ex(_cold('--1---2----1---2--', values).pipe(
+      scan2("foo", (acc: number|"foo", i: number) =>
+        acc === "foo" ? 2 + i : acc + i
+        )
+    )).toBe('--3---5----6---8--', values)
+
+    ex(_cold('--1---2----1---2----1--', values).pipe(
+      scan2("foo", (acc: number|"foo", i: number) =>
+        acc === "foo" ? 2 + i : acc + i
+      )
+    )).toBe('--3---5----6---8----9--', values)
+
+  })
+})
+
+it('how share works', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    // Typescript bindings for `cold` are wrong, so have to patch
+    function _cold<T>(marbles: string, values: T[]): Observable<T> {
+      return cold(marbles, <{ [key: string]: T }>(values as any))
+    }
+
+    const values = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+
+    const hot = _cold('--1---2----1---2--', values).pipe(share())
+    ex(hot).toBe('--1---2----1---2--', values)
+    ex(hot).toBe('--1---2----1---2--', values)
+
+    const obs = new Observable<number>(subscriber => {
+      subscriber.next(10)
+      subscriber.next(20)
+      subscriber.next(30)
+      subscriber.next(40)
+    })
+    const shared = obs.pipe(share())
+    ex(shared).toBe('(0123)', [10,20,30,40])
+    ex(shared).toBe('', [10,20,30,40])
+
+  })
+})
