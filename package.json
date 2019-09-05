@@ -23,7 +23,7 @@
     "url": "https://github.com/cardinalblue/cbjs/issues"
   },
   "homepage": "https://github.com/cardinalblue/cbjs#readme",
-  "dependencies": {
+  "peerDependencies": {
     "lodash": ">=4.14",
     "@types/lodash": ">=4.14",
     "react": ">=16.9",
@@ -31,6 +31,7 @@
     "firebase": ">=6.5",
     "rxjs": ">=6.5"
   },
+  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.5.5",
     "@babel/preset-env": "^7.5.5",
