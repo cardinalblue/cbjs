@@ -26,6 +26,9 @@ var Contexter = /** @class */ (function () {
         Contexter.curContexts.pop();
         return r;
     };
+    Contexter.prototype.has = function (contextType) {
+        return lodash_1.default.findIndex(this.contexts, function (c) { return c instanceof contextType; }) >= 0;
+    };
     Contexter.prototype.get = function (contextType) {
         var found = lodash_1.default.findLast(this.contexts, function (c) { return c instanceof contextType; });
         return found || null;
