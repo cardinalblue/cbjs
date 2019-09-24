@@ -116,6 +116,11 @@ function wiht(input, f) {
     return f(input);
 }
 exports.wiht = wiht;
+function also(input, f) {
+    f(input);
+    return input;
+}
+exports.also = also;
 // ----------------------------------------------------------------------------
 // String
 function trim2(s) {
