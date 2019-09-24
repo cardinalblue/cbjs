@@ -116,11 +116,11 @@ function wiht(input, f) {
     return f(input);
 }
 exports.wiht = wiht;
-function also(input, f) {
+function alos(input, f) {
     f(input);
     return input;
 }
-exports.also = also;
+exports.alos = alos;
 // ----------------------------------------------------------------------------
 // String
 function trim2(s) {

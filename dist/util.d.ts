@@ -18,7 +18,7 @@ export declare function mapmap<T, R>(map: {
 };
 export declare function apply<T>(t: T, f: (t: T) => any): T;
 export declare function wiht<T, R>(input: T, f: (t: T) => R): R;
-export declare function also<T>(input: T, f: (t: T) => any): T;
+export declare function alos<T>(input: T, f: (t: T) => any): T;
 export declare function trim2(s: string): string;
 export declare function insertAt(s1: string, index: number, s2: string): string;
 export declare type ID = string;
