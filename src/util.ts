@@ -91,6 +91,10 @@ export function apply<T>(t: T, f: (t: T) => any) {
 export function wiht<T,R>(input: T, f: (t: T) => R): R {
   return f(input)
 }
+export function also<T>(input: T, f: (t: T) => any): T {
+  f(input)
+  return input
+}
 
 // ----------------------------------------------------------------------------
 // String
