@@ -78,6 +78,10 @@ function subkeys(target) {
 exports.subkeys = subkeys;
 // ----------------------------------------------------------------------------
 // Enumerable/Array
+function compact(source) {
+    return _.filter(source, function (x) { return x !== null && x !== undefined; });
+}
+exports.compact = compact;
 function withoutFirst(a, t) {
     var x = _.findIndex(a, function (i) { return _.isEqual(i, t); });
     if (x < 0)

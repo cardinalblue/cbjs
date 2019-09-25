@@ -7,6 +7,7 @@ export interface Elementable<T> {
     elements: Array<T>;
 }
 export declare function subkeys<T>(target: T, ...keys: Array<keyof T>): {};
+export declare function compact<T>(source: Array<T | null | undefined>): Array<T>;
 export declare function withoutFirst<T>(a: Array<T>, t: T): T[];
 export declare function arrayRemove<T>(array: T[], f: (t: T) => boolean): T[];
 export declare function isEmpty<T>(array: T[]): boolean;

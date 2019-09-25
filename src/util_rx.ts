@@ -15,8 +15,8 @@ import {
 } from "rxjs"
 import {
   catchError,
-  concatMap,
-  filter,
+  concatMap, delay,
+  filter, first,
   flatMap,
   ignoreElements,
   last,
@@ -27,6 +27,7 @@ import {
   takeUntil
 } from "rxjs/operators"
 import * as _ from "lodash"
+import {LOG, withoutFirst} from "./util";
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)
@@ -52,6 +53,29 @@ export function filterTruthy<T>()
 {
   return (s: Observable<T|null|undefined>) =>
     s.pipe(filter((x: T|null|undefined) => x !== null && x !== undefined)) as Observable<T>
+}
+
+// Delays passing on the Observable until the predicate Observable issues a single
+// true or false.
+//
+export function filterObservable<T>(predicate: (input: Observable<T>) => Observable<boolean>)
+  : (source: Observable<Observable<T>>) => Observable<Observable<T>>
+{
+  return (source: Observable<Observable<T>>) =>
+    zip(
+      source,
+      source.pipe(
+        flatMap(s =>
+          predicate(s).pipe(
+            first(_ => true, false)
+            // WARNING: `first` is different in RxJS that in RxJava!
+          ))
+      ),
+    )
+      .pipe(
+        filter(([orig, bool]: [Observable<T>, boolean]) => bool),
+        map   (([orig, bool]: [Observable<T>, boolean]) => orig)
+      )
 }
 
 export function detour<T, R>(
@@ -128,6 +152,66 @@ export function finding<T>(f: (t: T) => boolean)
   : OperatorFunction<T[], T>
 {
   return filtering((a: T[]) => a.find(f))
+}
+
+// ----------------------------------------------------------------
+// Given input
+//
+//   ------1-------------2--------------------3------------------>
+//
+// will output
+//
+//   ------1=================|2======|--------3========|--------->
+//
+// where the length of each is calculated by the given function.
+//
+export function enqueue<T>(
+  durationF: (t: T) => Millisec,
+  scheduler: SchedulerLike = asyncScheduler
+): MonoTypeOperatorFunction<T>
+{
+  return (source: Observable<T>) => {
+    return source.pipe(
+      concatMap((x) =>
+        of(x).pipe(
+          extend(durationF(x))
+        )
+      )
+    )
+  }
+}
+
+// ----------------------------------------------------------------
+// Accumulates the incoming values to be "active" for a fixed time.
+// Outputs the current values as they become active or inactive.
+//
+//   ------1-------------2-----3------|
+//
+// will output
+//
+//   ------[1]=======[]--[2]===[2,3]=[3]=====|
+//
+//
+export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncScheduler)
+  : (source: Observable<T>) => Observable<Array<T>>
+{
+  return (source: Observable<T>) => {
+    const add$: Observable<[boolean, T]> = source.pipe(
+      map(t => [true, t]))
+    const del$: Observable<[boolean, T]> = source.pipe(
+      delay(t, scheduler),
+      map(t => [false, t]),
+    )
+    return merge<[boolean, T]>(add$, del$).pipe(
+      scan(
+        (acc: Array<T>, [op, t]: [boolean, T]) =>
+          LOG(">>>> prolong ====",
+            op ? [...acc, t] : withoutFirst(acc, t)
+            , acc, op, t),
+        []
+      ),
+    )
+  }
 }
 
 export function doOnSubscribe<T>(onSubscribe: () => void): (source: Observable<T>) =>  Observable<T> {

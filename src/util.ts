@@ -46,6 +46,14 @@ export function subkeys<T>(target: T, ...keys: Array<keyof T>) {
 // ----------------------------------------------------------------------------
 // Enumerable/Array
 
+export function compact<T>(source: Array<T|null|undefined>): Array<T>
+{
+  return _.filter(source,
+    (x: T|null|undefined) => x !== null && x !== undefined
+  ) as Array<T>
+}
+
+
 export function withoutFirst<T>(a: Array<T>, t: T) {
   const x = _.findIndex(a, i => _.isEqual(i, t))
   if (x < 0) return a

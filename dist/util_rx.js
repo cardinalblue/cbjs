@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 var _ = __importStar(require("lodash"));
+var util_1 = require("./util");
 exports.IDENTITY = function (t) { return t; };
 exports.PASSTHRU = function (t) { return rxjs_1.of(t); };
 // --------------------------------------------------------------------
@@ -37,6 +38,26 @@ function filterTruthy() {
     };
 }
 exports.filterTruthy = filterTruthy;
+// Delays passing on the Observable until the predicate Observable issues a single
+// true or false.
+//
+function filterObservable(predicate) {
+    return function (source) {
+        return rxjs_1.zip(source, source.pipe(operators_1.flatMap(function (s) {
+            return predicate(s).pipe(operators_1.first(function (_) { return true; }, false)
+            // WARNING: `first` is different in RxJS that in RxJava!
+            );
+        })))
+            .pipe(operators_1.filter(function (_a) {
+            var orig = _a[0], bool = _a[1];
+            return bool;
+        }), operators_1.map(function (_a) {
+            var orig = _a[0], bool = _a[1];
+            return orig;
+        }));
+    };
+}
+exports.filterObservable = filterObservable;
 function detour(selector, observableTrue, observableFalse) {
     if (observableTrue === void 0) { observableTrue = exports.PASSTHRU; }
     if (observableFalse === void 0) { observableFalse = exports.PASSTHRU; }
@@ -92,6 +113,49 @@ function finding(f) {
     return filtering(function (a) { return a.find(f); });
 }
 exports.finding = finding;
+// ----------------------------------------------------------------
+// Given input
+//
+//   ------1-------------2--------------------3------------------>
+//
+// will output
+//
+//   ------1=================|2======|--------3========|--------->
+//
+// where the length of each is calculated by the given function.
+//
+function enqueue(durationF, scheduler) {
+    if (scheduler === void 0) { scheduler = rxjs_1.asyncScheduler; }
+    return function (source) {
+        return source.pipe(operators_1.concatMap(function (x) {
+            return rxjs_1.of(x).pipe(extend(durationF(x)));
+        }));
+    };
+}
+exports.enqueue = enqueue;
+// ----------------------------------------------------------------
+// Accumulates the incoming values to be "active" for a fixed time.
+// Outputs the current values as they become active or inactive.
+//
+//   ------1-------------2-----3------|
+//
+// will output
+//
+//   ------[1]=======[]--[2]===[2,3]=[3]=====|
+//
+//
+function prolong(t, scheduler) {
+    if (scheduler === void 0) { scheduler = rxjs_1.asyncScheduler; }
+    return function (source) {
+        var add$ = source.pipe(operators_1.map(function (t) { return [true, t]; }));
+        var del$ = source.pipe(operators_1.delay(t, scheduler), operators_1.map(function (t) { return [false, t]; }));
+        return rxjs_1.merge(add$, del$).pipe(operators_1.scan(function (acc, _a) {
+            var op = _a[0], t = _a[1];
+            return util_1.LOG(">>>> prolong ====", op ? __spreadArrays(acc, [t]) : util_1.withoutFirst(acc, t), acc, op, t);
+        }, []));
+    };
+}
+exports.prolong = prolong;
 function doOnSubscribe(onSubscribe) {
     return function inner(source) {
         return rxjs_1.defer(function () {
