@@ -7,6 +7,7 @@ export interface Elementable<T> {
     elements: Array<T>;
 }
 export declare function subkeys<T>(target: T, ...keys: Array<keyof T>): {};
+export declare function withoutFirst<T>(a: Array<T>, t: T): T[];
 export declare function arrayRemove<T>(array: T[], f: (t: T) => boolean): T[];
 export declare function isEmpty<T>(array: T[]): boolean;
 export declare function last<T>(a: T[]): T | null;
@@ -24,6 +25,7 @@ export declare function insertAt(s1: string, index: number, s2: string): string;
 export declare type ID = string;
 export declare function generateId(): ID;
 export declare function rand(i: number): number;
+export declare function ifNumber(x: any, or: number): number;
 export declare function isFocused(dom: HTMLElement): boolean;
 declare type QueueSubscriber<T> = (t: T) => void;
 export declare class Queue<T> {

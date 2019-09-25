@@ -17,8 +17,16 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var operators_1 = require("rxjs/operators");
+var _ = __importStar(require("lodash"));
 exports.BLANK = "";
 // ----------------------------------------------------------------------------
 // Debugging
@@ -70,6 +78,15 @@ function subkeys(target) {
 exports.subkeys = subkeys;
 // ----------------------------------------------------------------------------
 // Enumerable/Array
+function withoutFirst(a, t) {
+    var x = _.findIndex(a, function (i) { return _.isEqual(i, t); });
+    if (x < 0)
+        return a;
+    var r = __spreadArrays(a);
+    r.splice(x, 1);
+    return r;
+}
+exports.withoutFirst = withoutFirst;
 function arrayRemove(array, f) {
     var index = array.findIndex(f);
     if (index >= 0) {
@@ -141,6 +158,13 @@ function rand(i) {
     return Math.floor(Math.random() * i);
 }
 exports.rand = rand;
+function ifNumber(x, or) {
+    if (_.isNumber(x))
+        return x;
+    else
+        return or;
+}
+exports.ifNumber = ifNumber;
 // ----------------------------------------------------------------------------
 // DOM/React related
 function isFocused(dom) {

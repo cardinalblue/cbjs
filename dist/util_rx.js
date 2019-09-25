@@ -6,9 +6,17 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
             r[k] = a[j];
     return r;
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
+var _ = __importStar(require("lodash"));
 exports.IDENTITY = function (t) { return t; };
 exports.PASSTHRU = function (t) { return rxjs_1.of(t); };
 // --------------------------------------------------------------------
@@ -23,6 +31,12 @@ function filterFirst() {
     return operators_1.filter(function (value, index) { return index === 0; });
 }
 exports.filterFirst = filterFirst;
+function filterTruthy() {
+    return function (s) {
+        return s.pipe(operators_1.filter(function (x) { return x !== null && x !== undefined; }));
+    };
+}
+exports.filterTruthy = filterTruthy;
 function detour(selector, observableTrue, observableFalse) {
     if (observableTrue === void 0) { observableTrue = exports.PASSTHRU; }
     if (observableFalse === void 0) { observableFalse = exports.PASSTHRU; }
@@ -37,6 +51,27 @@ function interject(f) {
     });
 }
 exports.interject = interject;
+//----------------------------------------------------------------
+// Delays the completion by t
+//
+//   ------1-------------2-----3----|
+//
+// will output
+//
+//   ------1-------------2-----3----==========|
+//
+//
+function extend(t, scheduler) {
+    if (scheduler === void 0) { scheduler = rxjs_1.asyncScheduler; }
+    if (t <= 0)
+        return function (x) { return x; };
+    return function (source) {
+        return rxjs_1.concat(source, rxjs_1.defer(function () {
+            return rxjs_1.timer(t).pipe(operators_1.ignoreElements());
+        }));
+    };
+}
+exports.extend = extend;
 // Redefine the RxJS `scan` so that we can have a separate initial SEED type.
 // Note also the argument order is reversed.
 //
@@ -126,6 +161,39 @@ function arrayMap(mapper) {
     };
 }
 exports.arrayMap = arrayMap;
+function arraySubjectAdd(subject, t) {
+    console.log(">>>> arraySubjectAdd", t);
+    subject.next(_.concat(subject.value, t));
+}
+exports.arraySubjectAdd = arraySubjectAdd;
+function arraySubjectRemove(subject, t) {
+    console.log(">>>> arraySubjectRemove", t);
+    subject.next(_.without(subject.value, t));
+}
+exports.arraySubjectRemove = arraySubjectRemove;
+function added() {
+    return function (source) { return source.pipe(operators_1.pairwise(), operators_1.map(function (_a) {
+        var t0 = _a[0], t1 = _a[1];
+        return _.difference(t1, t0);
+    })); };
+}
+exports.added = added;
+function removed() {
+    return function (source) { return source.pipe(operators_1.pairwise(), operators_1.map(function (_a) {
+        var t0 = _a[0], t1 = _a[1];
+        return _.difference(t0, t1);
+    })); };
+}
+exports.removed = removed;
+function undiff(added$, removed$, seed) {
+    if (seed === void 0) { seed = []; }
+    var merged$ = rxjs_1.merge(added$.pipe(operators_1.map(function (t) { return [true, t]; })), removed$.pipe(operators_1.map(function (t) { return [false, t]; })));
+    return merged$.pipe(operators_1.scan(function (acc, _a) {
+        var op = _a[0], t = _a[1];
+        return op ? __spreadArrays(acc, t) : _.without.apply(_, __spreadArrays([acc], t));
+    }, seed));
+}
+exports.undiff = undiff;
 function zipEmptiable() {
     var observables = [];
     for (var _i = 0; _i < arguments.length; _i++) {
@@ -170,6 +238,30 @@ function sortingMap(comparatorF) {
     };
 }
 exports.sortingMap = sortingMap;
+// ----------------------------------------------------------------------------
+// mergingMap:
+//
+// Works like `mergeMap` but takes a function which can be used to produce extra
+// output Observables, all of which will get merged together into one output.
+// The inner function must produce at least one Observable.
+//
+function mergingMap(inner) {
+    return operators_1.mergeMap(function (t) {
+        var outputs = [];
+        outputs.push(inner(t, function (output$) { return outputs.push(output$); }));
+        return rxjs_1.merge.apply(void 0, outputs);
+    });
+}
+exports.mergingMap = mergingMap;
+function pairFirst() {
+    return function (source) {
+        return rxjs_1.combineLatest([
+            source.pipe(operators_1.take(1)),
+            source.pipe(operators_1.skip(1))
+        ]).pipe();
+    };
+}
+exports.pairFirst = pairFirst;
 // ----------------------------------------------------------------------------
 // Promise utility
 function promiseToObservable(f) {

@@ -1,6 +1,7 @@
 import {tap} from "rxjs/operators"
 import {Observable} from "rxjs"
 import {ReactComponentElement, ReactDOM, RefObject} from "react"
+import * as _ from "lodash"
 
 export const BLANK = ""
 
@@ -44,6 +45,14 @@ export function subkeys<T>(target: T, ...keys: Array<keyof T>) {
 
 // ----------------------------------------------------------------------------
 // Enumerable/Array
+
+export function withoutFirst<T>(a: Array<T>, t: T) {
+  const x = _.findIndex(a, i => _.isEqual(i, t))
+  if (x < 0) return a
+  const r = [...a]
+  r.splice(x, 1)
+  return r
+}
 
 export function arrayRemove<T>(array: T[], f: (t: T) => boolean) {
   const index = array.findIndex(f)
@@ -120,6 +129,11 @@ export function generateId(): ID {
 
 export function rand(i: number) {
   return Math.floor(Math.random() * i)
+}
+
+export function ifNumber(x: any, or: number) {
+  if (_.isNumber(x)) return x
+  else return or
 }
 
 // ----------------------------------------------------------------------------

@@ -1,4 +1,18 @@
-import {combineLatest, concat, defer, EMPTY, from, Observable, of, OperatorFunction, Subscriber, zip} from "rxjs"
+import {
+  asyncScheduler, BehaviorSubject,
+  combineLatest,
+  concat,
+  defer,
+  EMPTY,
+  from,
+  merge, MonoTypeOperatorFunction,
+  Observable,
+  of,
+  OperatorFunction,
+  SchedulerLike,
+  Subscriber, timer,
+  zip
+} from "rxjs"
 import {
   catchError,
   concatMap,
@@ -6,15 +20,19 @@ import {
   flatMap,
   ignoreElements,
   last,
-  map,
+  map, mergeMap, pairwise,
   scan,
-  share,
-  switchMap,
+  share, skip,
+  switchMap, take,
   takeUntil
 } from "rxjs/operators"
+import * as _ from "lodash"
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)
+
+export type Millisec = number
+
 
 // --------------------------------------------------------------------
 // Operators
@@ -28,6 +46,12 @@ export function lastOrEmpty<T>() {
 }
 export function filterFirst<T>() {
   return filter<T>((value: T, index: number) => index === 0)
+}
+
+export function filterTruthy<T>()
+{
+  return (s: Observable<T|null|undefined>) =>
+    s.pipe(filter((x: T|null|undefined) => x !== null && x !== undefined)) as Observable<T>
 }
 
 export function detour<T, R>(
@@ -50,6 +74,30 @@ export function interject<T>(f: (t: T) => Observable<any>)
     )
   )
 
+}
+
+//----------------------------------------------------------------
+// Delays the completion by t
+//
+//   ------1-------------2-----3----|
+//
+// will output
+//
+//   ------1-------------2-----3----==========|
+//
+//
+export function extend<T>(t: Millisec, scheduler: SchedulerLike = asyncScheduler)
+  : MonoTypeOperatorFunction<T>
+{
+  if (t <= 0) return (x) => x
+  return (source: Observable<T>) => {
+    return concat(
+      source,
+      defer(() =>
+        timer(t).pipe(ignoreElements())
+      )
+    )
+  }
 }
 
 // Redefine the RxJS `scan` so that we can have a separate initial SEED type.
@@ -163,6 +211,56 @@ export function arrayMap<X,C>(mapper: (m: X) => Observable<C>)
   }
 }
 
+export function arraySubjectAdd<T>(subject: BehaviorSubject<Array<T>>, t: T) {
+  console.log(">>>> arraySubjectAdd", t)
+  subject.next(
+    _.concat(subject.value, t))
+}
+
+export function arraySubjectRemove<T>(subject: BehaviorSubject<Array<T>>, t: T) {
+  console.log(">>>> arraySubjectRemove", t)
+  subject.next(
+    _.without(subject.value, t))
+}
+
+export function added<T>()
+  : (source: Observable<Array<T>>) => Observable<Array<T>>
+{
+  return source => source.pipe(
+    pairwise(),
+    map(([t0, t1]) => _.difference(t1, t0))
+  )
+}
+
+export function removed<T>()
+  : (source: Observable<Array<T>>) => Observable<Array<T>>
+{
+  return source => source.pipe(
+    pairwise(),
+    map(([t0, t1]) => _.difference(t0, t1))
+  )
+}
+
+export function undiff<T>(
+  added$: Observable<Array<T>>,
+  removed$: Observable<Array<T>>,
+  seed: Array<T> = [])
+  : Observable<Array<T>>
+{
+  const merged$ = merge(
+    added$.pipe  (map(t => [true,  t])) as Observable<[boolean, Array<T>]>,
+    removed$.pipe(map(t => [false, t])) as Observable<[boolean, Array<T>]>,
+  )
+  return merged$.pipe(
+    scan<[boolean, Array<T>], Array<T>>(
+      (acc: Array<T>, [op, t]: [boolean, Array<T>]) =>
+        op ? [...acc, ...t] : _.without(acc, ...t)
+      ,
+      seed
+    )
+  )
+}
+
 export function zipEmptiable<T>(...observables: Array<Observable<T>>) {
   if (observables.length === 0) { return of([]) }
   return zip(...observables)
@@ -214,6 +312,36 @@ export function sortingMap<X, C extends (Comparable<C>|number)>(
     }))
   }
 }
+
+// ----------------------------------------------------------------------------
+// mergingMap:
+//
+// Works like `mergeMap` but takes a function which can be used to produce extra
+// output Observables, all of which will get merged together into one output.
+// The inner function must produce at least one Observable.
+//
+export function mergingMap<T, R>(inner: (t: T, merging: (output$: Observable<R>) => void) => Observable<R>)
+  : OperatorFunction<T, R>
+{
+  return mergeMap((t: T) => {
+    const outputs: Observable<R>[] = []
+    outputs.push(
+      inner(t, (output$: Observable<R>) => outputs.push(output$))
+    )
+    return merge(...outputs)
+  })
+}
+
+export function pairFirst<T>() {
+  return (source: Observable<T>) =>
+    combineLatest([
+      source.pipe(take(1)),
+      source.pipe(skip(1)
+      )
+    ]).pipe()
+}
+
+
 
 // ----------------------------------------------------------------------------
 // Promise utility
