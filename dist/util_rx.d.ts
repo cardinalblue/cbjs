@@ -8,6 +8,7 @@ export declare function interject<T>(f: (t: T) => Observable<any>): OperatorFunc
 export declare function scan2<T, R, SEED>(seed: SEED, f: (acc: R | SEED, t: T, index: number) => R): OperatorFunction<T, R>;
 export declare function filtering<T, R>(f: (t: T) => R | undefined | null): OperatorFunction<T, R>;
 export declare function finding<T>(f: (t: T) => boolean): OperatorFunction<T[], T>;
+export declare function doOnSubscribe<T>(onSubscribe: () => void): (source: Observable<T>) => Observable<T>;
 export declare function cachedMapper<TFrom, K, TTo>(keyF: (t: TFrom) => K, mapF: (t: TFrom) => TTo): ((t: TFrom) => TTo);
 export declare function cachedMapperArray<TFrom, K, TTo>(keyF: (t: TFrom) => K, createF: (t: TFrom) => TTo): ((from: Array<TFrom>) => Array<TTo>);
 export declare function arrayMap<X, C>(mapper: (m: X) => Observable<C>): (source: Observable<X[]>) => Observable<C[]>;

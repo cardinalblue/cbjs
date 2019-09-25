@@ -1,4 +1,4 @@
-import {combineLatest, concat, EMPTY, from, Observable, of, OperatorFunction, Subscriber, zip} from "rxjs"
+import {combineLatest, concat, defer, EMPTY, from, Observable, of, OperatorFunction, Subscriber, zip} from "rxjs"
 import {
   catchError,
   concatMap,
@@ -82,7 +82,14 @@ export function finding<T>(f: (t: T) => boolean)
   return filtering((a: T[]) => a.find(f))
 }
 
-
+export function doOnSubscribe<T>(onSubscribe: () => void): (source: Observable<T>) =>  Observable<T> {
+  return function inner(source: Observable<T>): Observable<T> {
+    return defer(() => {
+      onSubscribe();
+      return source;
+    });
+  };
+}
 // ---------------------------------------------------------------------------
 
 export function cachedMapper<TFrom, K, TTo>(

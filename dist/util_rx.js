@@ -57,6 +57,15 @@ function finding(f) {
     return filtering(function (a) { return a.find(f); });
 }
 exports.finding = finding;
+function doOnSubscribe(onSubscribe) {
+    return function inner(source) {
+        return rxjs_1.defer(function () {
+            onSubscribe();
+            return source;
+        });
+    };
+}
+exports.doOnSubscribe = doOnSubscribe;
 // ---------------------------------------------------------------------------
 function cachedMapper(keyF, mapF) {
     var cache = new Map();
