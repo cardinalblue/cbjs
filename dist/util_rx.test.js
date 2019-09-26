@@ -197,13 +197,13 @@ it('how share works', function () {
         ex(shared).toBe('', [10, 20, 30, 40]);
     });
 });
-it(('takeUntilFinished works'), function () {
+it(('takeDuring works'), function () {
     var scheduler = setup_test_1.testScheduler();
     scheduler.run(function (helpers) {
         var cold = helpers.cold, ex = helpers.expectObservable;
         var a$ = cold("----a--b-----c----d-----e----f-");
         var c$ = cold("-----------m----n---|");
-        ex(a$.pipe(util_rx_1.takeUntilFinished(c$)))
+        ex(a$.pipe(util_rx_1.takeDuring(c$)))
             .toBe("----a--b-----c----d-|");
     });
 });

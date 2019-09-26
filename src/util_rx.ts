@@ -49,8 +49,9 @@ export function filterFirst<T>() {
   return filter<T>((value: T, index: number) => index === 0)
 }
 
-export function takeUntilFinished<T,C>(control$: Observable<C>) {
-  return takeUntil(control$.pipe(last(_ => false, true)))
+export function takeDuring<T,C>(control$: Observable<C>): MonoTypeOperatorFunction<T> {
+  const stop$ = control$.pipe(last(_ => false, true))
+  return takeUntil(stop$)
 }
 
 export function filterTruthy<T>()
