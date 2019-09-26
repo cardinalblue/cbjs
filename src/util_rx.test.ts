@@ -6,7 +6,7 @@ import {
   lastOrEmpty,
   pairFirst, prolong, removed,
   scan2,
-  sortingMap, undiff
+  sortingMap, takeUntilFinished, undiff
 } from "./util_rx"
 import {BehaviorSubject, concat, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
@@ -261,6 +261,18 @@ it('how share works', () => {
   })
 })
 
+it(('takeUntilFinished works'), () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const a$ = cold("----a--b-----c----d-----e----f-")
+    const c$ = cold("-----------m----n---|")
+    ex(a$.pipe(takeUntilFinished(c$)))
+              .toBe("----a--b-----c----d-|")
+
+  })
+})
 it(('filterObservable works'), () => {
   const scheduler = testScheduler()
   scheduler.run(helpers => {

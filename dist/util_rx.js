@@ -32,6 +32,10 @@ function filterFirst() {
     return operators_1.filter(function (value, index) { return index === 0; });
 }
 exports.filterFirst = filterFirst;
+function takeUntilFinished(control$) {
+    return operators_1.takeUntil(control$.pipe(operators_1.last(function (_) { return false; }, true)));
+}
+exports.takeUntilFinished = takeUntilFinished;
 function filterTruthy() {
     return function (s) {
         return s.pipe(operators_1.filter(function (x) { return x !== null && x !== undefined; }));

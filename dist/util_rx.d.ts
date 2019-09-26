@@ -4,6 +4,7 @@ export declare const PASSTHRU: (t: any) => Observable<any>;
 export declare type Millisec = number;
 export declare function lastOrEmpty<T>(): (source: Observable<T>) => Observable<T>;
 export declare function filterFirst<T>(): MonoTypeOperatorFunction<T>;
+export declare function takeUntilFinished<T, C>(control$: Observable<C>): MonoTypeOperatorFunction<unknown>;
 export declare function filterTruthy<T>(): (s: Observable<T | null | undefined>) => Observable<T>;
 export declare function filterObservable<T>(predicate: (input: Observable<T>) => Observable<boolean>): (source: Observable<Observable<T>>) => Observable<Observable<T>>;
 export declare function detour<T, R>(selector: (t: T) => boolean, observableTrue?: ((t: T) => Observable<R>), observableFalse?: ((t: T) => Observable<R>)): OperatorFunction<T, R>;

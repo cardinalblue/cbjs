@@ -49,6 +49,10 @@ export function filterFirst<T>() {
   return filter<T>((value: T, index: number) => index === 0)
 }
 
+export function takeUntilFinished<T,C>(control$: Observable<C>) {
+  return takeUntil(control$.pipe(last(_ => false, true)))
+}
+
 export function filterTruthy<T>()
 {
   return (s: Observable<T|null|undefined>) =>
