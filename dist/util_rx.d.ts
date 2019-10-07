@@ -1,4 +1,4 @@
-import { BehaviorSubject, MonoTypeOperatorFunction, Observable, OperatorFunction, SchedulerLike } from "rxjs";
+import { MonoTypeOperatorFunction, Observable, OperatorFunction, SchedulerLike } from "rxjs";
 export declare const IDENTITY: (t: any) => any;
 export declare const PASSTHRU: (t: any) => Observable<any>;
 export declare type Millisec = number;
@@ -17,19 +17,10 @@ export declare function enqueue<T>(durationF: (t: T) => Millisec, scheduler?: Sc
 export declare function prolong<T>(t: Millisec, scheduler?: SchedulerLike): (source: Observable<T>) => Observable<Array<T>>;
 export declare function doOnSubscribe<T>(onSubscribe: () => void): (source: Observable<T>) => Observable<T>;
 export declare function cachedMapper<TFrom, K, TTo>(keyF: (t: TFrom) => K, mapF: (t: TFrom) => TTo): ((t: TFrom) => TTo);
-export declare function cachedMapperArray<TFrom, K, TTo>(keyF: (t: TFrom) => K, createF: (t: TFrom) => TTo): ((from: Array<TFrom>) => Array<TTo>);
-export declare function arrayMap<X, C>(mapper: (m: X) => Observable<C>): (source: Observable<X[]>) => Observable<C[]>;
-export declare function arraySubjectAdd<T>(subject: BehaviorSubject<Array<T>>, t: T): void;
-export declare function arraySubjectRemove<T>(subject: BehaviorSubject<Array<T>>, t: T): void;
-export declare function added<T>(): (source: Observable<Array<T>>) => Observable<Array<T>>;
-export declare function removed<T>(): (source: Observable<Array<T>>) => Observable<Array<T>>;
-export declare function undiff<T>(added$: Observable<Array<T>>, removed$: Observable<Array<T>>, seed?: Array<T>): Observable<Array<T>>;
 export declare function zipEmptiable<T>(...observables: Array<Observable<T>>): Observable<T[]>;
 export interface Comparable<X> {
     compare(other: X): number;
 }
-export declare function sortingMap<X, C extends (Comparable<C> | number)>(comparatorF: (x: X) => Observable<C>): (source: Observable<X[]>) => Observable<X[]>;
-export declare function mergingMap<T, R>(inner: (t: T, merging: (output$: Observable<R>) => void) => Observable<R>): OperatorFunction<T, R>;
 export declare function pairFirst<T>(): (source: Observable<T>) => Observable<[T, T]>;
 export declare function promiseToObservable<T>(f: () => Promise<T>): Observable<T>;
 export declare function finding$<T>(a$: Observable<T[]>, f: (t: T) => boolean): Observable<T>;
