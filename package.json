@@ -3,7 +3,7 @@
   "version": "0.7.0",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "src/index.ts",
-  "files": ["dist/**/*"],
+  "files": ["src", "dist/**/*"],
   "scripts": {
     "test": "jest --config jest.config.json",
     "build": "tsc",
