@@ -1,6 +1,7 @@
 import {BehaviorSubject, concat, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
-import {arrayMap, cachedMapperArray, removed, sortingMap, undiff} from "./util_array_rx";
+import {arrayFilterMap, arrayMap, cachedMapperArray, removed, sortingMap, undiff} from "./util_array_rx";
+import {map} from "rxjs/operators"
 
 class Output1 {
   s: string
@@ -298,5 +299,51 @@ it('undiff works', () => {
         ['z', 'b', 'e', 'f', 'g'],
         ['z', 'b', 'e', 'g'],
       ])
+  })
+})
+
+it('arrayFilterMap works changing values', () => {
+
+  class X {
+    i: Observable<number>
+    constructor(i: number | Observable<number>) {
+      this.i = (typeof i === 'number') ?
+          new BehaviorSubject(i) : i
+    }
+  }
+
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const fm = arrayFilterMap((x: X) =>
+        x.i.pipe(
+          map(i => i % 2 === 0)
+        )
+    )
+
+    const x1 = new X(10)
+    const x2 = new X(20)
+    const x3 = new X(30)
+
+    // Typescript bindings for `cold` are wrong, so have to patch
+    function _cold<T>(marbles: string, values: T[]): Observable<T> {
+      return cold(marbles, <{ [key: string]: T }>(values as any))
+    }
+
+    // ---- Simple
+    console.log(">>>> test 1")
+    ex(_cold<X[]>('--|', []).pipe(fm))
+      .toBe(      '--|')
+    console.log(">>>> test 2")
+    ex(cold('-----a---|', { a: [x2,x1,x3] }).pipe(fm))
+      .toBe('-----a---|', { a: [x2,x1,x3] })
+
+    // ---- Changing values
+    const x4 = new X(_cold('0----1---2------|', [5, 40, 15]))
+    ex(cold('--a--------------|', { a: [x2,x1,x4,x3] }).pipe(fm))
+      .toBe('--a----b---c-----|', { a: [x2,x1,x3], b: [x2,x1,x4,x3], c: [x2,x1,x3]})
+    ex(cold('--a-------b------|', { a: [x4,x2,x1,x3], b: [x3,x1] }).pipe(fm))
+      .toBe('--a----b--c------|', { a: [x2,x1,x3], b: [x4,x2,x1,x3], c: [x3,x1] })
   })
 })

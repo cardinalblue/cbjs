@@ -17,6 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 var _ = __importStar(require("lodash"));
+var util_1 = require("./util");
 function cachedMapperArray(keyF, createF) {
     var cachePrev = new Map();
     return function (tFrom) {
@@ -39,26 +40,6 @@ function cachedMapperArray(keyF, createF) {
     };
 }
 exports.cachedMapperArray = cachedMapperArray;
-//
-function arrayMap(mapper) {
-    return function (source) {
-        var source$ = source.pipe(operators_1.share()); // Turn into Hot so we can use it in takeUntil
-        var sourceFinished$ = source$.pipe(operators_1.last(null, true));
-        return source$.pipe(operators_1.switchMap(function (xs) {
-            // Convert each Array of elements into an Array of streams.
-            var obs$ = xs.map(mapper);
-            // Because combineLatest([]) returns a "nothing" Observable
-            // we have to handle it especially.
-            if (obs$.length === 0) {
-                return rxjs_1.of([]);
-            }
-            else {
-                return rxjs_1.combineLatest(obs$).pipe(operators_1.takeUntil(sourceFinished$));
-            }
-        }));
-    };
-}
-exports.arrayMap = arrayMap;
 function arraySubjectAdd(subject, t) {
     console.log(">>>> arraySubjectAdd", t);
     subject.next(_.concat(subject.value, t));
@@ -134,3 +115,39 @@ function mergingMap(inner) {
     });
 }
 exports.mergingMap = mergingMap;
+function arrayMap(mapper) {
+    return function (source) {
+        var source$ = source.pipe(operators_1.share()); // Turn into Hot so we can use it in takeUntil
+        var sourceFinished$ = source$.pipe(operators_1.last(null, true));
+        return source$.pipe(operators_1.switchMap(function (xs) {
+            // Convert each Array of elements into an Array of streams.
+            var obs$ = xs.map(mapper);
+            // Because combineLatest([]) returns a "nothing" Observable
+            // we have to handle it especially.
+            if (obs$.length === 0) {
+                return rxjs_1.of([]);
+            }
+            else {
+                return rxjs_1.combineLatest(obs$).pipe(operators_1.takeUntil(sourceFinished$));
+            }
+        }));
+    };
+}
+exports.arrayMap = arrayMap;
+function arrayFilterMap(mapper) {
+    return function (source) {
+        return source.pipe(util_1.taplog(">>>> 1"), arrayMap(function (item) { return mapper(item).pipe(operators_1.map(function (b) { return [b, item]; })); }), util_1.taplog(">>>> 2"), operators_1.map(function (tuples) {
+            console.log(">>>> tuples", tuples);
+            return tuples
+                .filter(function (_a) {
+                var b = _a[0], _ = _a[1];
+                return b;
+            })
+                .map(function (_a) {
+                var _ = _a[0], item = _a[1];
+                return item;
+            });
+        }));
+    };
+}
+exports.arrayFilterMap = arrayFilterMap;

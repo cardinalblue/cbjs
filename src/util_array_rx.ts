@@ -2,6 +2,7 @@ import {BehaviorSubject, combineLatest, merge, Observable, of, OperatorFunction}
 import {last, map, mergeMap, pairwise, scan, share, switchMap, takeUntil} from "rxjs/operators";
 import * as _ from "lodash";
 import {Comparable} from "./util_rx";
+import {taplog} from "./util"
 
 export function cachedMapperArray<TFrom, K, TTo>(
   keyF: (t: TFrom) => K,
@@ -26,30 +27,6 @@ export function cachedMapperArray<TFrom, K, TTo>(
     // Update the cache
     cachePrev = cacheCur
     return output
-  }
-}
-
-//
-export function arrayMap<X, C>(mapper: (m: X) => Observable<C>)
-  : (source: Observable<X[]>) => Observable<C[]> {
-  return (source: Observable<X[]>) => {
-    const source$ = source.pipe(share());  // Turn into Hot so we can use it in takeUntil
-    const sourceFinished$ = source$.pipe(last(null, true))
-    return source$.pipe(switchMap((xs: X[]) => {
-
-      // Convert each Array of elements into an Array of streams.
-      const obs$ = xs.map(mapper)
-
-      // Because combineLatest([]) returns a "nothing" Observable
-      // we have to handle it especially.
-      if (obs$.length === 0) {
-        return of([])
-      } else {
-        return combineLatest(obs$).pipe(
-          takeUntil(sourceFinished$)
-        )
-      }
-    }))
   }
 }
 
@@ -151,4 +128,47 @@ export function mergingMap<T, R>(inner: (t: T, merging: (output$: Observable<R>)
     )
     return merge(...outputs)
   })
+}
+
+export function arrayMap<X, C>(mapper: (m: X) => Observable<C>)
+    : (source: Observable<X[]>) => Observable<C[]> {
+  return (source: Observable<X[]>) => {
+    const source$ = source.pipe(share());  // Turn into Hot so we can use it in takeUntil
+    const sourceFinished$ = source$.pipe(last(null, true))
+    return source$.pipe(switchMap((xs: X[]) => {
+
+      // Convert each Array of elements into an Array of streams.
+      const obs$ = xs.map(mapper)
+
+      // Because combineLatest([]) returns a "nothing" Observable
+      // we have to handle it especially.
+      if (obs$.length === 0) {
+        return of([])
+      } else {
+        return combineLatest(obs$).pipe(
+            takeUntil(sourceFinished$)
+        )
+      }
+    }))
+  }
+}
+
+export function arrayFilterMap<X>(mapper: (m: X) => Observable<Boolean>)
+    : (source: Observable<X[]>) => Observable<X[]> {
+  return (source: Observable<X[]>) => {
+    return source.pipe(
+        taplog(">>>> 1"),
+        arrayMap(item => mapper(item).pipe(
+            map(b => [b, item] as [boolean, X]),
+        )),
+        taplog(">>>> 2"),
+        map(tuples => {
+          console.log(">>>> tuples", tuples)
+          return tuples
+              .filter(([b, _]) => b)
+              .map(([_, item]) => item)
+        })
+    )
+
+  }
 }

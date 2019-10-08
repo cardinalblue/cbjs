@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var rxjs_1 = require("rxjs");
 var setup_test_1 = require("./setup_test");
 var util_array_rx_1 = require("./util_array_rx");
+var operators_1 = require("rxjs/operators");
 var Output1 = /** @class */ (function () {
     function Output1(s) {
         this.s = "out" + s;
@@ -261,5 +262,41 @@ it('undiff works', function () {
             ['z', 'b', 'e', 'f', 'g'],
             ['z', 'b', 'e', 'g'],
         ]);
+    });
+});
+it('arrayFilterMap works changing values', function () {
+    var X = /** @class */ (function () {
+        function X(i) {
+            this.i = (typeof i === 'number') ?
+                new rxjs_1.BehaviorSubject(i) : i;
+        }
+        return X;
+    }());
+    var scheduler = setup_test_1.testScheduler();
+    scheduler.run(function (helpers) {
+        var cold = helpers.cold, ex = helpers.expectObservable;
+        var fm = util_array_rx_1.arrayFilterMap(function (x) {
+            return x.i.pipe(operators_1.map(function (i) { return i % 2 === 0; }));
+        });
+        var x1 = new X(10);
+        var x2 = new X(20);
+        var x3 = new X(30);
+        // Typescript bindings for `cold` are wrong, so have to patch
+        function _cold(marbles, values) {
+            return cold(marbles, values);
+        }
+        // ---- Simple
+        console.log(">>>> test 1");
+        ex(_cold('--|', []).pipe(fm))
+            .toBe('--|');
+        console.log(">>>> test 2");
+        ex(cold('-----a---|', { a: [x2, x1, x3] }).pipe(fm))
+            .toBe('-----a---|', { a: [x2, x1, x3] });
+        // ---- Changing values
+        var x4 = new X(_cold('0----1---2------|', [5, 40, 15]));
+        ex(cold('--a--------------|', { a: [x2, x1, x4, x3] }).pipe(fm))
+            .toBe('--a----b---c-----|', { a: [x2, x1, x3], b: [x2, x1, x4, x3], c: [x2, x1, x3] });
+        ex(cold('--a-------b------|', { a: [x4, x2, x1, x3], b: [x3, x1] }).pipe(fm))
+            .toBe('--a----b--c------|', { a: [x2, x1, x3], b: [x4, x2, x1, x3], c: [x3, x1] });
     });
 });
