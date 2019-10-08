@@ -344,10 +344,8 @@ it('arrayFilterMap works changing values', () => {
     }
 
     // ---- Simple
-    console.log(">>>> test 1")
     ex(_cold<X[]>('--|', []).pipe(fm))
       .toBe(      '--|')
-    console.log(">>>> test 2")
     ex(cold('-----a---|', { a: [x2,x1,x3] }).pipe(fm))
       .toBe('-----a---|', { a: [x2,x1,x3] })
 

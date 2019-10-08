@@ -158,7 +158,6 @@ it('cachedMapper works', () => {
   const m = cachedMapper(
     (s: string) => { return "k" + s },
     (s: string) => {
-      console.log(">>>> new Output")
       return new Output(s)
     }
   )

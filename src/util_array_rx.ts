@@ -164,13 +164,10 @@ export function arrayFilterMap<X>(mapper: (m: X) => Observable<Boolean>)
     : (source: Observable<X[]>) => Observable<X[]> {
   return (source: Observable<X[]>) => {
     return source.pipe(
-        taplog(">>>> 1"),
         arrayMap(item => mapper(item).pipe(
             map(b => [b, item] as [boolean, X]),
         )),
-        taplog(">>>> 2"),
         map(tuples => {
-          console.log(">>>> tuples", tuples)
           return tuples
               .filter(([b, _]) => b)
               .map(([_, item]) => item)

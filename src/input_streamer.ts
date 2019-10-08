@@ -35,11 +35,9 @@ export class InputStreamer {
   onSpecialKey(input: InputStreamerInput, key: string): boolean {
     const i = extractInput(input)
     if (key === 'Enter') {
-      console.log(">>>> InputStreamer ENTER")
       this.onInput((i || "") + '\0')
       return true
     } else if (key === 'Tab') {
-      console.log(">>>> InputStreamer TAB")
       this.onInput((i || "") + '\t')
       return true
     }
