@@ -1,6 +1,6 @@
 import { BehaviorSubject, Observable, OperatorFunction } from "rxjs";
 import { Comparable } from "./util_rx";
-export declare function cachedMapperArray<TFrom, K, TTo>(keyF: (t: TFrom) => K, createF: (t: TFrom) => TTo): ((from: Array<TFrom>) => Array<TTo>);
+export declare function cachedMapperArray<TFrom, K, TTo>(keyF: (t: TFrom) => K, createF: (t: TFrom) => TTo, disposeF?: (t: TTo) => void): ((from: Array<TFrom>) => Array<TTo>);
 export declare function arraySubjectAdd<T>(subject: BehaviorSubject<Array<T>>, t: T): void;
 export declare function arraySubjectRemove<T>(subject: BehaviorSubject<Array<T>>, t: T): void;
 export declare function added<T>(): (source: Observable<Array<T>>) => Observable<Array<T>>;

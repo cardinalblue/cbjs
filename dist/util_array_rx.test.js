@@ -6,23 +6,32 @@ var util_array_rx_1 = require("./util_array_rx");
 var operators_1 = require("rxjs/operators");
 var Output1 = /** @class */ (function () {
     function Output1(s) {
+        this.disposed = false;
         this.s = "out" + s;
     }
     return Output1;
 }());
 it('cachedMapperArray works', function () {
-    var mapper = util_array_rx_1.cachedMapperArray(function (s) { return "k" + s; }, function (s) { return new Output1(s); });
+    var mapper = util_array_rx_1.cachedMapperArray(function (s) { return "k" + s; }, function (s) { return new Output1(s); }, function (o) { o.disposed = true; });
     var o1 = mapper(["1"]);
     expect(o1.length).toEqual(1);
     expect(o1[0].s).toEqual("out1");
+    expect(o1[0].disposed).toBeFalsy();
     var o2 = mapper(["1"]);
     expect(o1).toEqual(o2);
     expect(o1[0] === o2[0]).toEqual(true);
+    expect(o2[0].disposed).toBeFalsy();
     var o3 = mapper(["1", "2"]);
     expect(o1[0]).toEqual(o3[0]);
     expect(o1[0] === o3[0]).toEqual(true);
     expect(o3[0].s).toEqual("out1");
     expect(o3[1].s).toEqual("out2");
+    expect(o3[0].disposed).toBeFalsy();
+    expect(o3[1].disposed).toBeFalsy();
+    var o4 = mapper(["2"]);
+    expect(o3[1]).toEqual(o4[0]);
+    expect(o3[0].disposed).toBeTruthy();
+    expect(o3[1].disposed).toBeFalsy();
 });
 it('arrayMap works simple level', function () {
     var scheduler = setup_test_1.testScheduler();

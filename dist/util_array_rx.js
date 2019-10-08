@@ -18,7 +18,8 @@ var rxjs_1 = require("rxjs");
 var operators_1 = require("rxjs/operators");
 var _ = __importStar(require("lodash"));
 var util_1 = require("./util");
-function cachedMapperArray(keyF, createF) {
+function cachedMapperArray(keyF, createF, disposeF) {
+    if (disposeF === void 0) { disposeF = function (_) { }; }
     var cachePrev = new Map();
     return function (tFrom) {
         var cacheCur = new Map();
@@ -34,6 +35,9 @@ function cachedMapperArray(keyF, createF) {
             cacheCur.set(key, tTo);
             return tTo;
         });
+        // Clean up the difference
+        var difference = _.difference(Array.from(cachePrev.values()), Array.from(cacheCur.values()));
+        difference.forEach(function (i) { return disposeF(i); });
         // Update the cache
         cachePrev = cacheCur;
         return output;

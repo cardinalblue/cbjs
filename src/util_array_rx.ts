@@ -6,7 +6,9 @@ import {taplog} from "./util"
 
 export function cachedMapperArray<TFrom, K, TTo>(
   keyF: (t: TFrom) => K,
-  createF: (t: TFrom) => TTo)
+  createF: (t: TFrom) => TTo,
+  disposeF: (t: TTo) => void = (_) => {}
+  )
   : ((from: Array<TFrom>) => Array<TTo>) {
   type Cache = Map<K, TTo>
   let cachePrev: Cache = new Map()
@@ -24,6 +26,11 @@ export function cachedMapperArray<TFrom, K, TTo>(
       cacheCur.set(key, tTo)
       return tTo
     })
+    // Clean up the difference
+    const difference = _.difference(Array.from(cachePrev.values()),
+                                    Array.from(cacheCur.values()))
+    difference.forEach(i => disposeF(i))
+
     // Update the cache
     cachePrev = cacheCur
     return output

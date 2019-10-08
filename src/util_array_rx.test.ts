@@ -5,28 +5,40 @@ import {map} from "rxjs/operators"
 
 class Output1 {
   s: string
+  disposed = false
   constructor(s: string) { this.s = "out" + s; }
 }
 it('cachedMapperArray works', () => {
 
   type INPUT = string
-  const mapper = cachedMapperArray((s: INPUT) => { return "k" + s },
-    (s: INPUT) => { return new Output1(s) })
+  const mapper = cachedMapperArray(
+      (s: INPUT) => { return "k" + s },
+      (s: INPUT) => { return new Output1(s) },
+      (o: Output1) => { o.disposed = true }
+    )
 
   const o1 = mapper(["1"])
   expect(o1.length).toEqual(1)
   expect(o1[0].s).toEqual("out1")
+  expect(o1[0].disposed).toBeFalsy()
 
   const o2 = mapper(["1"])
   expect(o1).toEqual(o2)
   expect(o1[0] === o2[0]).toEqual(true)
+  expect(o2[0].disposed).toBeFalsy()
 
   const o3 = mapper(["1", "2"])
   expect(o1[0]).toEqual(o3[0])
   expect(o1[0] === o3[0]).toEqual(true)
   expect(o3[0].s).toEqual("out1")
   expect(o3[1].s).toEqual("out2")
+  expect(o3[0].disposed).toBeFalsy()
+  expect(o3[1].disposed).toBeFalsy()
 
+  const o4 = mapper(["2"])
+  expect(o3[1]).toEqual(o4[0])
+  expect(o3[0].disposed).toBeTruthy()
+  expect(o3[1].disposed).toBeFalsy()
 })
 
 it('arrayMap works simple level', () => {
