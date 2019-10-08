@@ -6,12 +6,4 @@ export * from './domainer'
 export * from './firestore_sync'
 export * from './firestore_sync_types'
 export * from './input_streamer'
-export {mergingMap} from "./util_array_rx";
-export {sortingMap} from "./util_array_rx";
-export {undiff} from "./util_array_rx";
-export {removed} from "./util_array_rx";
-export {added} from "./util_array_rx";
-export {arraySubjectRemove} from "./util_array_rx";
-export {arraySubjectAdd} from "./util_array_rx";
-export {arrayMap} from "./util_array_rx";
-export {cachedMapperArray} from "./util_array_rx";
+export * from "./util_array_rx";
