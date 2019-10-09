@@ -213,9 +213,7 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
     return merge<[boolean, T]>(add$, del$).pipe(
       scan(
         (acc: Array<T>, [op, t]: [boolean, T]) =>
-          LOG(">>>> prolong ====",
-            op ? [...acc, t] : withoutFirst(acc, t)
-            , acc, op, t),
+            op ? [...acc, t] : withoutFirst(acc, t),
         []
       ),
     )

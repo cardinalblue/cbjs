@@ -38,13 +38,11 @@ export function cachedMapperArray<TFrom, K, TTo>(
 }
 
 export function arraySubjectAdd<T>(subject: BehaviorSubject<Array<T>>, t: T) {
-  console.log(">>>> arraySubjectAdd", t)
   subject.next(
     _.concat(subject.value, t))
 }
 
 export function arraySubjectRemove<T>(subject: BehaviorSubject<Array<T>>, t: T) {
-  console.log(">>>> arraySubjectRemove", t)
   subject.next(
     _.without(subject.value, t))
 }
