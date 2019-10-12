@@ -2,7 +2,7 @@
   "name": "cbjs",
   "version": "0.7.0",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
-  "main": "dist/index.ts",
+  "main": "dist/index.js",
   "files": ["src", "dist/**/*"],
   "scripts": {
     "test": "jest --config jest.config.json",
