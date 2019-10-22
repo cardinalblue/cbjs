@@ -1,5 +1,5 @@
 import {BehaviorSubject, combineLatest, merge, Observable, of, OperatorFunction} from "rxjs";
-import {last, map, mergeMap, pairwise, scan, share, switchMap, takeUntil} from "rxjs/operators";
+import {filter, last, map, mergeMap, pairwise, scan, share, switchMap, takeUntil} from "rxjs/operators";
 import * as _ from "lodash";
 import {Comparable} from "./util_rx";
 import {taplog} from "./util"
@@ -51,7 +51,7 @@ export function added<T>()
   : (source: Observable<Array<T>>) => Observable<Array<T>> {
   return source => source.pipe(
     pairwise(),
-    map(([t0, t1]) => _.difference(t1, t0))
+    map(([t0, t1]) => _.difference(t1, t0)),
   )
 }
 
@@ -59,7 +59,7 @@ export function removed<T>()
   : (source: Observable<Array<T>>) => Observable<Array<T>> {
   return source => source.pipe(
     pairwise(),
-    map(([t0, t1]) => _.difference(t0, t1))
+    map(([t0, t1]) => _.difference(t0, t1)),
   )
 }
 
@@ -69,7 +69,7 @@ export function undiff<T>(
   seed: Array<T> = [])
   : Observable<Array<T>> {
   const merged$ = merge(
-    added$.pipe(map(t => [true, t])) as Observable<[boolean, Array<T>]>,
+    added$  .pipe(map(t => [true,  t])) as Observable<[boolean, Array<T>]>,
     removed$.pipe(map(t => [false, t])) as Observable<[boolean, Array<T>]>,
   )
   return merged$.pipe(

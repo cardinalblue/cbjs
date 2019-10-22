@@ -1,6 +1,6 @@
 import {BehaviorSubject, concat, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
-import {arrayFilterMap, arrayMap, cachedMapperArray, removed, sortingMap, undiff} from "./util_array_rx";
+import {added, arrayFilterMap, arrayMap, cachedMapperArray, removed, sortingMap, undiff} from "./util_array_rx";
 import {map} from "rxjs/operators"
 
 class Output1 {
@@ -283,6 +283,35 @@ it('removed works', () => {
 
   })
 })
+
+it('added works', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+    const values = {
+      a: [],
+      b: [],
+      c: [1,2],
+      d: [2,3],
+      e: [3,2],
+      f: [2,4,5],
+      g: [4,6],
+      h: [6]
+    }
+    ex(cold('--a--b--c--d--e--f--g--h--|', values).pipe(added()))
+      .toBe('-----b--c--d--e--f--g--h--|', {
+        b: [],
+        c: [1,2],
+        d: [3],
+        e: [],
+        f: [4,5],
+        g: [6],
+        h: [],
+      })
+  })
+})
+
+
 it('undiff works', () => {
   const scheduler = testScheduler()
   scheduler.run( helpers => {
