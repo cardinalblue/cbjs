@@ -1,7 +1,8 @@
-import {tap} from "rxjs/operators"
+import {finalize, tap} from "rxjs/operators"
 import {Observable} from "rxjs"
 import {ReactComponentElement, ReactDOM, RefObject} from "react"
 import * as _ from "lodash"
+import {doOnSubscribe} from "./util_rx"
 
 export const BLANK = ""
 
@@ -12,6 +13,14 @@ export function taplog<X>(label: string, ...vars: any[])
   : (s: Observable<X>) => Observable<X> {
   return (s: Observable<X>) => s.pipe(
     tap(x => console.log(label, x, ...vars))
+  )
+}
+
+export function tap$<T>(s: string) {
+  return (source: Observable<T>) => source.pipe(
+      doOnSubscribe(() => console.log(s, "subscribe")),
+      finalize(     () => console.log(s, "finalize")),
+      taplog(s),
   )
 }
 
