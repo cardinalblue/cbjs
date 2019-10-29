@@ -17,7 +17,7 @@ beforeEach(function() {
               }
             }
           }
-          return { pass: true, message: "Ok!" }
+          return { pass: true, message: () => "Ok!" }
         }
       }
     }
