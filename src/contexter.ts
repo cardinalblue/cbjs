@@ -25,7 +25,7 @@ export class Contexter {
     const found = _.findLast(this.contexts, c => c instanceof contextType)
     return (found as C) || null
   }
-  get_<C extends Context>(contextType: _Constructor<C>): C {
+  use<C extends Context>(contextType: _Constructor<C>): C {
     const c = this.get(contextType)
     if (!c) throw Error(`Context ${contextType} not set`)
     return c
