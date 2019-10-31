@@ -20,6 +20,7 @@ export function tap$<T>(s: string) {
   return (source: Observable<T>) => source.pipe(
       doOnSubscribe(() => console.log(s, "subscribe")),
       finalize(     () => console.log(s, "finalize")),
+      tap(() => {}, error => console.error(s, error)),
       taplog(s),
   )
 }
