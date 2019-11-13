@@ -41,6 +41,12 @@ export type Millisec = number
 // --------------------------------------------------------------------
 // Operators
 
+export function tapWithIndex<T>(f: (t: T, index: number) => any) {
+  return map((t: T, index: number) => {
+    f(t, index)
+    return t
+  })
+}
 export function lastOrEmpty<T>() {
   return (source: Observable<T>) =>
     source.pipe(
