@@ -41,11 +41,11 @@ export type Millisec = number
 // --------------------------------------------------------------------
 // Operators
 
-export function tapWithIndex<T>(f: (t: T, index: number) => any)
+export function tapWithIndex<T>(action: (t: T, index: number) => any)
   : MonoTypeOperatorFunction<T>
 {
   return map((t: T, index: number) => {
-    f(t, index)
+    action(t, index)
     return t
   })
 }
