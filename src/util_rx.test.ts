@@ -4,7 +4,7 @@ import {
   filterObservable,
   lastOrEmpty,
   pairFirst, prolong, scan2,
-  takeDuring
+  takeDuring, tapWithIndex
 } from "./util_rx"
 import {concat, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
@@ -252,5 +252,21 @@ it(('TESTING'), () => {
 
     ))
       .toBe(        "----------------m----n---|")
+  })
+})
+
+it('tapWithIndex works', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const res: any[] = []
+    of('a', 'b', 'c').pipe(
+      tapWithIndex((t, index) => {
+        res.push([t, index])
+      })
+    ).subscribe()
+
+    expect(res).toStrictEqual([['a', 0], ['b', 1], ['c', 2]])
   })
 })
