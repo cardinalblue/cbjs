@@ -65,7 +65,7 @@ export function takeDuring<T,C>(control$: Observable<C>): MonoTypeOperatorFuncti
   return takeUntil(stop$)
 }
 
-export function filterTruthy<T>()
+export function filterDefined<T>()
 {
   return (s: Observable<T|null|undefined>) =>
     s.pipe(filter((x: T|null|undefined) => x !== null && x !== undefined)) as Observable<T>
