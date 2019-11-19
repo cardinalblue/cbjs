@@ -5,7 +5,7 @@ import {Comparable} from "./util_rx";
 import {taplog} from "./util"
 
 
-function arrayEquals<T>(a1: T[], a2: T[]): boolean {
+export function arrayEquals<T>(a1: T[], a2: T[]): boolean {
   if (a1.length !== a2.length)
     return false
   return a1.every((t, i) => t === a2[i])
