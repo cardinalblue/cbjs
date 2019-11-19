@@ -280,8 +280,7 @@ export function pairFirst<T>() {
   return (source: Observable<T>) =>
     combineLatest([
       source.pipe(take(1)),
-      source.pipe(skip(1)
-      )
+      source.pipe(skip(1)),
     ]).pipe()
 }
 

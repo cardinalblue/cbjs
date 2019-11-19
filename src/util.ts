@@ -154,6 +154,10 @@ export function ifNumber(x: any, or: number) {
   else return or
 }
 
+export function now() {
+  return (new Date()).getTime()
+}
+
 // ----------------------------------------------------------------------------
 // DOM/React related
 

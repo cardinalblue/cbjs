@@ -4,6 +4,13 @@ import * as _ from "lodash";
 import {Comparable} from "./util_rx";
 import {taplog} from "./util"
 
+
+function arrayEquals<T>(a1: T[], a2: T[]): boolean {
+  if (a1.length !== a2.length)
+    return false
+  return a1.every((t, i) => t === a2[i])
+}
+
 export function cachedMapperArray<TFrom, K, TTo>(
   keyF: (t: TFrom) => K,
   createF: (t: TFrom) => TTo,
