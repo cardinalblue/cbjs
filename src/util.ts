@@ -16,12 +16,12 @@ export function taplog<X>(label: string, ...vars: any[])
   )
 }
 
-export function tap$<T>(s: string) {
+export function tap$<T>(s: string, ...vars: any[]) {
   return (source: Observable<T>) => source.pipe(
-      doOnSubscribe(() => console.log(s, "subscribe")),
-      finalize(     () => console.log(s, "finalize")),
-      tap(() => {}, error => console.error(s, error)),
-      taplog(s),
+      doOnSubscribe(() => console.log(s, "subscribe", ...vars)),
+      finalize(     () => console.log(s, "finalize", ...vars)),
+      tap(() => {}, error => console.error(s, error, ...vars)),
+      taplog(s, ...vars),
   )
 }
 
