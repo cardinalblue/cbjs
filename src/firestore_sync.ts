@@ -8,7 +8,7 @@ export type DocRef        = firebase.firestore.DocumentReference
 export type CollectionRef = firebase.firestore.CollectionReference
 export type Query         = firebase.firestore.Query
 
-export function firestoreGetDocument(docRef: DocRef)
+export function firestoreSyncDocument(docRef: DocRef)
   : Observable<DocSnap>
 {
   return new Observable((subs: Subscriber<DocSnap>) =>
@@ -21,7 +21,7 @@ export function firestoreGetDocument(docRef: DocRef)
   )
 }
 
-export function firestoreGetCollectionArray(ref: CollectionRef|Query)
+export function firestoreSyncCollectionArray(ref: CollectionRef|Query)
   : Observable<Array<DocSnap>>
 {
   return new Observable((subs: Subscriber<Array<DocSnap>>) =>
@@ -36,3 +36,4 @@ export function firestoreGetCollectionArray(ref: CollectionRef|Query)
     )
   )
 }
+
