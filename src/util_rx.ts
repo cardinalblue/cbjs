@@ -49,6 +49,24 @@ export function tapWithIndex<T>(action: (t: T, index: number) => any)
     return t
   })
 }
+
+export function tapScan<T,R,SEED>(seed: SEED, f: (acc: R|SEED, t: T, index: number) => R)
+    : MonoTypeOperatorFunction<T>
+{
+
+  type R_INNER    = { acc: R|SEED, t: T }
+  type SEED_INNER = { acc: SEED }
+
+  return (source: Observable<T>) => source.pipe(
+      scan2({ acc: seed },
+          (acc: R_INNER|SEED_INNER, t: T, index: number) => {
+            const inner = f(acc.acc, t, index)
+            return { acc: inner, t }
+          }),
+      map(({ t }: R_INNER) => t)
+  )
+}
+
 export function lastOrEmpty<T>() {
   return (source: Observable<T>) =>
     source.pipe(
