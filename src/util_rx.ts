@@ -83,6 +83,16 @@ export function takeDuring<T,C>(control$: Observable<C>): MonoTypeOperatorFuncti
   return takeUntil(stop$)
 }
 
+export function postponeUntil<T,S>(signal: Observable<S>)
+    : MonoTypeOperatorFunction<T>
+{
+  return (source: Observable<T>) =>
+      zip(source, signal).pipe(
+          first(),
+          map(([t, s]) => t)
+      )
+}
+
 export function filterDefined<T>()
 {
   return (s: Observable<T|null|undefined>) =>
@@ -324,6 +334,4 @@ export function finding$<T>(a$: Observable<T[]>, f: (t: T) => boolean)
 {
   return a$.pipe(finding(f))
 }
-
-
 
