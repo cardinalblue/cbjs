@@ -18,6 +18,10 @@ export class Contexter {
     Contexter.curContexts.pop()
     return r
   }
+  child<R extends { contexter: Contexter }>(_child: R): R {
+    _child.contexter.prepend(this.contexts)
+    return _child
+  }
   has<C extends Context>(contextType: _Constructor<C>): boolean {
     return _.findIndex(this.contexts, c => c instanceof contextType) >= 0
   }
