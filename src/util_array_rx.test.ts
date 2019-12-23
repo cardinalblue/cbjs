@@ -1,6 +1,6 @@
 import {BehaviorSubject, concat, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
-import {added, arrayFilterMap, arrayMap, cachedMapperArray, removed, sortingMap, undiff} from "./util_array_rx";
+import {added, arrayFilterMap, arrayMap, cachedArrayMapper, removed, sortingMap, undiff} from "./util_array_rx";
 import {map} from "rxjs/operators"
 
 class Output1 {
@@ -8,10 +8,10 @@ class Output1 {
   disposed = false
   constructor(s: string) { this.s = "out" + s; }
 }
-it('cachedMapperArray works', () => {
+it('cachedArrayMapper works', () => {
 
   type INPUT = string
-  const mapper = cachedMapperArray(
+  const mapper = cachedArrayMapper(
       (s: INPUT) => { return "k" + s },
       (s: INPUT) => { return new Output1(s) },
       (o: Output1) => { o.disposed = true }
@@ -175,14 +175,14 @@ it('sortingMap works changing sort values', () => {
   })
 })
 
-it('cachedMapperArray works', () => {
+it('cachedArrayMapper works', () => {
 
   type INPUT = string
   class Output {
     s: string
     constructor(s: string) { this.s = "out" + s; }
   }
-  const mapper = cachedMapperArray((s: INPUT) => { return "k" + s },
+  const mapper = cachedArrayMapper((s: INPUT) => { return "k" + s },
     (s: INPUT) => { return new Output(s) })
   const o1 = mapper(["1"])
   expect(o1.length).toEqual(1)

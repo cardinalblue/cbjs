@@ -11,7 +11,7 @@ export function arrayEquals<T>(a1: T[], a2: T[]): boolean {
   return a1.every((t, i) => t === a2[i])
 }
 
-export function cachedMapperArray<TFrom, K, TTo>(
+export function cachedArrayMapper<TFrom, K, TTo>(
   keyF: (t: TFrom) => K,
   createF: (t: TFrom) => TTo,
   disposeF: (t: TTo) => void = (_) => {}
