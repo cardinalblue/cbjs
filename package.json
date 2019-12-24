@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest --config jest.config.json",
     "build": "tsc",
-    "prepare": "npm run build"
+    "prepare": "yarn run build"
   },
   "repository": {
     "type": "git",
