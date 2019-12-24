@@ -101,6 +101,7 @@ export function filterDefined<T>()
 
 // Delays passing on the Observable until the predicate Observable issues a single
 // true or false.
+// If predicate completes without issuing a true, then nothing gets passed.
 //
 export function filterObservable<T>(predicate: (input: Observable<T>) => Observable<boolean>)
   : (source: Observable<Observable<T>>) => Observable<Observable<T>>
