@@ -5,5 +5,6 @@ export * from './contexter'
 export * from './domainer'
 export * from './firestore_sync'
 export * from './firestore_sync_types'
+export * from './firestore_clone'
 export * from './input_streamer'
 export * from "./util_array_rx";
