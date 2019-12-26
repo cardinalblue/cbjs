@@ -15,7 +15,7 @@ it ('contexter works', () => {
     contexter = new Contexter(new ContextA('_A', this))
     children: Component2[]
     constructor(readonly name: string) {
-      this.children = this.contexter.children(() => [
+      this.children = this.contexter.legate(() => [
         new Component2('LEFT'),
         new Component2('RIGHT'),
       ])
@@ -27,7 +27,7 @@ it ('contexter works', () => {
     children: Component3[]
     constructor(readonly name: string) {
       this.contexter = new Contexter(new ContextB('contextB:' + name, this))
-      this.children = this.contexter.children(() => [
+      this.children = this.contexter.legate(() => [
         new Component3('LEFT'),
         new Component3('RIGHT'),
       ])

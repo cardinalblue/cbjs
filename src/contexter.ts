@@ -12,13 +12,13 @@ export class Contexter {
   constructor(...contexts: Context[]) {
     this.contexts = [ ...(last(Contexter.curContexts) || []), ...contexts ]
   }
-  children<R>(block: () => R): R {
+  legate<R>(block: () => R): R {
     Contexter.curContexts.push(this.contexts)
     const r = block()
     Contexter.curContexts.pop()
     return r
   }
-  child<R extends { contexter: Contexter }>(_child: R): R {
+  adopt<R extends { contexter: Contexter }>(_child: R): R {
     _child.contexter.prepend(this.contexts)
     return _child
   }
@@ -53,9 +53,9 @@ class X {
 
   someMethod() {
 
-    // Creating children that will get passed on the Context
-    this.contexter.children(() => {
-      // Code that creates children, will automatically get a copy of parent contexts
+    // Creating legate that will get passed on the Context
+    this.contexter.legate(() => {
+      // Code that creates legate, will automatically get a copy of parent contexts
     })
 
     // Reading the Context
