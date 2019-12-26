@@ -9,6 +9,8 @@ export class Contexter {
   static curContexts: Context[][] = []
   private contexts: Context[]
 
+  static DEFAULT = new Contexter()
+
   constructor(...contexts: Context[]) {
     this.contexts = [ ...(last(Contexter.curContexts) || []), ...contexts ]
   }
