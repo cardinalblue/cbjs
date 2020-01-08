@@ -3,12 +3,13 @@ import {
   enqueue, extend,
   filterObservable,
   lastOrEmpty,
-  pairFirst, prolong, scan2,
+  pairFirst, prolong, promise$, scan2,
   takeDuring, tapScan, tapWithIndex
 } from "./util_rx"
-import {concat, Observable, of} from "rxjs"
+import {concat, from, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
-import {flatMap, map, mergeMap, share, take} from "rxjs/operators"
+import {delay, flatMap, map, mergeMap, share, take} from "rxjs/operators"
+import {tap$} from "./util"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -295,4 +296,27 @@ it(('tapScan'), () => {
     '=a0b1c2',
     '=a0b1c2d3',
   ])
+})
+
+it(('promise$ works'), () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    let n = 0
+    expect(n).toBe(0)
+
+    function p() {
+      return new Promise((resolve, reject) => resolve(n++))
+    }
+    p()
+    expect(n).toBe(1)
+
+    promise$(() => p())
+    expect(n).toBe(1)
+
+    promise$(() => p()).subscribe()
+    expect(n).toBe(2)
+
+  })
 })

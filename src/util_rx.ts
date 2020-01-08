@@ -318,13 +318,8 @@ export function pairFirst<T>() {
 // ----------------------------------------------------------------------------
 // Promise utility
 
-export function promiseToObservable<T>(f: () => Promise<T>): Observable<T> {
-  return new Observable((subs: Subscriber<Observable<T>>) => {
-    const promise = f()
-    subs.next(from(promise))
-    subs.complete()
-  })
-    .pipe(flatMap(x => x))
+export function promise$<T>(f: () => Promise<T>): Observable<T> {
+  return defer(() => from(f()))
 }
 
 // ----------------------------------------------------------------
