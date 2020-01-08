@@ -1,6 +1,6 @@
 import {CollectionRef, DocRef, DocSnap, firestoreSyncCollectionArray} from "./firestore_sync"
 import {Observable, throwError, zip} from "rxjs"
-import {promiseToObservable} from "./util_rx"
+import {promise$} from "./util_rx"
 import {first, flatMap} from "rxjs/operators"
 
 export function firestoreCloneReference(from: DocRef,
@@ -8,7 +8,7 @@ export function firestoreCloneReference(from: DocRef,
                                         extra: Object = {})
     : Observable<DocRef>
 {
-    return promiseToObservable(() => from.get()).pipe(
+    return promise$(() => from.get()).pipe(
         flatMap((docSnap: DocSnap) => firestoreCloneSnapshot(docSnap, toCollection, extra)),
     )
 }
@@ -20,7 +20,7 @@ export function firestoreCloneSnapshot(from: DocSnap,
     const data = from.data()
     if (!data)
         return throwError(`No data on docSnap ${from.id}`)
-    return promiseToObservable<DocRef>(() =>
+    return promise$<DocRef>(() =>
         toCollection.add({ ...data, ...extra }))
 
 }
