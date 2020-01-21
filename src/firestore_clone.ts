@@ -36,9 +36,10 @@ export function firestoreCloneCollection(fromCollection: CollectionRef,
       querySnap.empty ? of([]) : of(querySnap.docs)
     ),
     flatMap(array => {
+      if (array.length === 0)
+        return of([])
       const eachSnap = (docSnap: DocSnap) => firestoreCloneSnapshot(docSnap, toCollection, extra)
       return zip(...array.map(eachSnap))
     })
   )
 }
-
