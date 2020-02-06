@@ -1,5 +1,5 @@
 import {
-  mapmap, arrayRemove, insertAt
+  mapmap, arrayRemove, insertAt, typeCheck
 } from "./util"
 import {Contexter} from "./contexter"
 
@@ -19,5 +19,11 @@ it ('insertAt works', () => {
   expect(insertAt("abcdef", 1, "FOO")).toBe("aFOObcdef")
   expect(insertAt("", 3, "FOO")).toBe("FOO")
   expect(insertAt("", 300, "FOO")).toBe("FOO")
+})
+
+it ('typeCheck works', () => {
+  expect(typeCheck(10, "number", 3)).toBe(10)
+  expect(typeCheck("10", "number", 3)).toBe(3)
+  expect(typeCheck("10", "number", null)).toBe(null)
 })
 

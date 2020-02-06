@@ -202,4 +202,15 @@ export class Range {
   constructor(readonly index: number, readonly length: number) {}
 }
 
+// =======================================================================
+
+export function typeCheck<T>(value: any,
+                             type: "undefined"|"boolean"|"number"|"bigint"|"string"|"symbol"|"function"|"object",
+                             _default: T): T
+{
+  if (typeof value === type)
+    return value
+  return _default
+}
+
 
