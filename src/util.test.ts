@@ -1,5 +1,5 @@
 import {
-  mapmap, arrayRemove, insertAt, typeCheck
+  mapmap, arrayRemove, insertAt, typeCheck, toMap
 } from "./util"
 import {Contexter} from "./contexter"
 
@@ -27,3 +27,7 @@ it ('typeCheck works', () => {
   expect(typeCheck("10", "number", null)).toBe(null)
 })
 
+it ('toMap works', () => {
+  expect(toMap(['a', 'bc', 'def'], s => s.length))
+    .toEqual(new Map([[1, 'a'], [2, 'bc'], [3, 'def']]))
+})

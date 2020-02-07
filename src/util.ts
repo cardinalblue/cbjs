@@ -213,4 +213,14 @@ export function typeCheck<T>(value: any,
   return _default
 }
 
+// =======================================================================
+
+export function toMap<A,K>(source: A[], f: (a: A) => K)
+  : Map<K,A> {
+  const pairs = source.map(a => ([f(a), a])) as [K, A][]
+  return new Map(pairs)
+}
+
+
+
 
