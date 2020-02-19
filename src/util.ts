@@ -1,6 +1,5 @@
 import {finalize, tap} from "rxjs/operators"
 import {Observable} from "rxjs"
-import {ReactComponentElement, ReactDOM, RefObject} from "react"
 import * as _ from "lodash"
 import {doOnSubscribe} from "./util_rx"
 
@@ -95,6 +94,15 @@ export function next<T>(array: T[], target: T): T|null {
   return array[i+1]
 }
 
+type Constructor = new (args: any) => any
+export function findInstanceOf<A, T extends Constructor>(a: Array<A>, type: T): InstanceType<T>|undefined {
+  for (let i of a) {
+    if (i instanceof type)
+      return i as InstanceType<T>
+  }
+  return undefined
+}
+
 // ----------------------------------------------------------------------------
 // Map/Object
 
@@ -110,6 +118,11 @@ export function mapmap<T, R>(map: {[k: string]: T}, f: ((t: T) => R))
 
 // ----------------------------------------------------------------------------
 // Functional
+
+export function iff<A,B>(a: A|undefined|null, f: ((a: A) => B)): B|null {
+  if (!!a) return f(a)
+  return null
+}
 
 export function apply<T>(t: T, f: (t: T) => any) {
   f(t).bind(t)
