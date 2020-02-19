@@ -11,7 +11,6 @@ import {
   of,
   OperatorFunction,
   SchedulerLike,
-  Subscriber,
   timer,
   zip
 } from "rxjs"
@@ -30,7 +29,7 @@ import {
   take,
   takeUntil
 } from "rxjs/operators"
-import {LOG, withoutFirst} from "./util";
+import {withoutFirst} from "./util";
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)
@@ -91,6 +90,13 @@ export function postponeUntil<T,S>(signal: Observable<S>)
           first(),
           map(([t, s]) => t)
       )
+}
+
+type Constructor = new (args: any) => any
+export function filterInstanceOf<T extends Constructor>(klass: T)
+{
+  return (s: Observable<any>) =>
+    s.pipe(filter(x => x instanceof klass)) as Observable<InstanceType<T>>
 }
 
 export function filterDefined<T>()

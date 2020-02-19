@@ -1,15 +1,22 @@
 import {
   cachedMapper,
-  enqueue, extend,
+  enqueue,
+  extend,
+  filterInstanceOf,
   filterObservable,
   lastOrEmpty,
-  pairFirst, prolong, promise$, scan2,
-  takeDuring, tapScan, tapWithIndex
+  pairFirst,
+  prolong,
+  promise$,
+  scan2,
+  takeDuring,
+  tapScan,
+  tapWithIndex
 } from "./util_rx"
-import {concat, from, Observable, of} from "rxjs"
+import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "./setup_test"
-import {delay, flatMap, map, mergeMap, share, take} from "rxjs/operators"
-import {tap$} from "./util"
+import {catchError, filter, flatMap, map, mergeMap, share, take, tap} from "rxjs/operators"
+import {taplog} from "./util"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -317,6 +324,73 @@ it(('promise$ works'), () => {
 
     promise$(() => p()).subscribe()
     expect(n).toBe(2)
+
+  })
+})
+
+it(('catchError exploration'), () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const o$ = throwError(new Error('error!')).pipe(
+      map(s => s),
+      tap(() => console.log("!!!!")),
+      catchError(err => of(1)),
+    )
+    ex(o$).toBe('(a|)', {a: 1})
+
+  })
+})
+
+it(('promise$ errors'), () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const p = new Promise((resolve, reject) => {
+      reject('ERR')
+    })
+    const p$ = promise$(() => p)
+    ex(p$.pipe(
+      map(s => s),
+      filter(s => !!s),
+      taplog(">>>> !!!!"),
+      catchError(err => {
+        console.error("!!!! catchError", err)
+        return of(1)
+      })
+    )).toBe('(a|)', {a: 1})
+
+  })
+})
+
+it('filterInstanceOf works', () => {
+
+  class X { constructor(readonly n: string) {} }
+  class Y { constructor(readonly n: string) {} }
+  class Z { constructor(readonly n: string) {} }
+
+
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const s = of(new X("a"), new Y("b"), new X("c"), new Y("d"))
+    ex(s.pipe(
+      filterInstanceOf(X),
+      map(_ => _.n),
+    )).toBe("(ac|)")
+
+    ex(s.pipe(
+      filterInstanceOf(Y),
+      map(_ => _.n),
+    )).toBe("(bd|)")
+
+    ex(s.pipe(
+      filterInstanceOf(Z),
+      map(_ => _.n),
+    )).toBe("(|)")
 
   })
 })
