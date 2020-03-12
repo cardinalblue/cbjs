@@ -71,6 +71,10 @@ export function withoutFirst<T>(a: Array<T>, t: T) {
   return r
 }
 
+export function filterTruthy<T>(a: ArrayLike<T|null|undefined>): Array<T> {
+  return Array.from(a).filter(t => !!t) as Array<T>
+}
+
 export function arrayRemove<T>(array: T[], f: (t: T) => boolean) {
   const index = array.findIndex(f)
   if (index >= 0) {

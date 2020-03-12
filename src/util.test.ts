@@ -1,7 +1,4 @@
-import {
-  mapmap, arrayRemove, insertAt, typeCheck, toMap
-} from "./util"
-import {Contexter} from "./contexter"
+import {arrayRemove, filterTruthy, insertAt, mapmap, toMap, typeCheck} from "./util"
 
 it('mapmap works', () => {
   expect(mapmap({ a: 2, b: 3 }, v => v + 1)).toEqual({ a: 3, b: 4})
@@ -30,4 +27,9 @@ it ('typeCheck works', () => {
 it ('toMap works', () => {
   expect(toMap(['a', 'bc', 'def'], s => s.length))
     .toEqual(new Map([[1, 'a'], [2, 'bc'], [3, 'def']]))
+})
+
+it ('filterTruthy', () => {
+  expect(filterTruthy([ 1, null, 2, 3, 4 ]))
+    .toEqual([1,2,3,4])
 })
