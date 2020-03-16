@@ -11,6 +11,7 @@ import {
   of,
   OperatorFunction,
   SchedulerLike,
+  Subscription,
   timer,
   zip
 } from "rxjs"
@@ -305,11 +306,6 @@ export interface Comparable<X> {
 }
 
 // ----------------------------------------------------------------------------
-// mergingMap:
-//
-// Works like `mergeMap` but takes a function which can be used to produce extra
-// output Observables, all of which will get merged together into one output.
-// The inner function must produce at least one Observable.
 
 export function pairFirst<T>() {
   return (source: Observable<T>) =>
@@ -336,4 +332,47 @@ export function finding$<T>(a$: Observable<T[]>, f: (t: T) => boolean)
 {
   return a$.pipe(finding(f))
 }
+
+// =======================================================================
+
+export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
+  : OperatorFunction<TIN, TOUT>
+{
+  let subsCur: Subscription|undefined
+  return source => {
+    const input$ = source.pipe(map(f))
+    return new Observable<TOUT>(subsOut => {
+      const subsOuter = input$.subscribe(
+        in$ => {
+          // ---- Subscribe to the NEW observable,
+          //      and THEN unsubscribe to the previous one
+          const subsNew = in$.subscribe(
+            t =>      subsOut.next(t),
+            error =>  subsOut.error(error),
+            () =>     { if (subsOuter.closed) subsOut.complete() },
+          )
+          if (subsCur) subsCur.unsubscribe()
+          subsCur = subsNew
+        },
+        error => subsOut.error(error),
+        () => { if (!subsCur) subsOut.complete() }
+      )
+      return () => {
+        if (subsCur) {
+          subsCur.unsubscribe()
+          subsCur = undefined
+        }
+        subsOuter.unsubscribe()
+      }
+    })
+  }
+
+
+}
+
+
+
+
+
+
 

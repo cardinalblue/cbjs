@@ -9,13 +9,14 @@ import {
   prolong,
   promise$,
   scan2,
+  swapMap,
   takeDuring,
   tapScan,
   tapWithIndex
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "./setup_test"
-import {catchError, filter, flatMap, map, mergeMap, share, take, tap} from "rxjs/operators"
+import {catchError, filter, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
 import {taplog} from "./util"
 
 it('lastOrEmpty works', () => {
@@ -393,4 +394,67 @@ it('filterInstanceOf works', () => {
     )).toBe("(|)")
 
   })
+})
+
+it('swapMap works', () => {
+
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const s1 = cold('--a--b--c-|')
+    const s2 = cold('----m----n-|')
+    const e  = cold('--#')
+
+    const s$ = cold('--a---b|', { a: s1, b: s2 })
+
+    // ---- Output continues until output Observables finish
+    ex(s$.pipe(flatMap(i => i)))
+      .toBe('----a--b--(cm)-n-|')
+
+    // ==== switchMap
+
+    // ---- Output continues until output Observables finish
+    ex(s$.pipe(switchMap(i => i)))
+      .toBe('----a-----m----n-|')
+
+    // ---- Complete with empty completes everything
+    ex(cold('----|').pipe(switchMap(i => i)))
+      .toBe('----|')
+
+    // ---- Error on inner errors everything
+    ex(cold('-a---#', { a: s1 }).pipe(switchMap(i => i)))
+      .toBe('---a-#')
+
+    // ---- Error on outer errors everything
+    ex(cold('--a-----e', { a: s1, e: e }).pipe(switchMap(i => i)))
+      .toBe('----a--b--#')
+
+    // ---- Error on outer errors everything
+    ex(cold('--a-----------------b-|', { a: s1, b: s2 }).pipe(switchMap(i => i)))
+      .toBe('----a--b--c-------------m----n-|')
+
+    // ==== swapMap
+
+    // ---- Output continues until output Observables finish
+    ex(s$.pipe(swapMap(i => i)))
+      .toBe('----a-----m----n-|')
+
+    // ---- Complete with empty completes everything
+    ex(cold('----|').pipe(swapMap(i => of(i))))
+      .toBe('----|')
+
+    // ---- Error on inner errors everything
+    ex(cold('-a---#', { a: s1 }).pipe(swapMap(i => i)))
+      .toBe('---a-#')
+
+    // ---- Error on outer errors everything
+    ex(cold('--a-----e', { a: s1, e: e }).pipe(swapMap(i => i)))
+      .toBe('----a--b--#')
+
+    // ---- Error on outer errors everything
+    ex(cold('--a-----------------b-|', { a: s1, b: s2 }).pipe(swapMap(i => i)))
+      .toBe('----a--b--c-------------m----n-|')
+  })
+
 })

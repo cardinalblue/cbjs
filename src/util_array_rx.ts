@@ -1,8 +1,7 @@
 import {BehaviorSubject, combineLatest, merge, Observable, of, OperatorFunction} from "rxjs";
-import {filter, last, map, mergeMap, pairwise, scan, share, switchMap, takeUntil} from "rxjs/operators";
+import {last, map, mergeMap, pairwise, scan, share, switchMap, takeUntil} from "rxjs/operators";
 import * as _ from "lodash";
 import {Comparable} from "./util_rx";
-import {taplog} from "./util"
 
 
 export function arrayEquals<T>(a1: T[], a2: T[]): boolean {
@@ -130,7 +129,13 @@ export function sortingMap<X, C extends (Comparable<C> | number)>(
   }
 }
 
+// ------------------------------------------------------------
+// mergingMap:
 //
+// Works like `mergeMap` but takes a function which can be used to produce extra
+// output Observables, all of which will get merged together into one output.
+// The inner function must produce at least one Observable.
+
 export function mergingMap<T, R>(inner: (t: T, merging: (output$: Observable<R>) => void) => Observable<R>)
   : OperatorFunction<T, R> {
   return mergeMap((t: T) => {
