@@ -52,6 +52,18 @@ export function subkeys<T>(target: T, ...keys: Array<keyof T>) {
   return keys.reduce((out, k) => ({ ...out, [k]: target[k] }), {})
 }
 
+
+export function filterObject<T, M>(map: M, f: (v: any) => boolean = (b) => !!b)
+  : M
+{
+  const ret:M = {} as M
+  for (const k in map) {
+    if (f(map[k]))
+      ret[k] = map[k]
+  }
+  return ret
+}
+
 // ----------------------------------------------------------------------------
 // Enumerable/Array
 
