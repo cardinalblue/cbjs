@@ -94,10 +94,15 @@ export function postponeUntil<T,S>(signal: Observable<S>)
 }
 
 type Constructor = new (args: any) => any
-export function filterInstanceOf<T extends Constructor>(klass: T)
+export function filterInstanceOf<TIN, T extends Constructor>(klass: T)
 {
-  return (s: Observable<any>) =>
+  return (s: Observable<TIN>) =>
     s.pipe(filter(x => x instanceof klass)) as Observable<InstanceType<T>>
+}
+export function filterIs<TIN, TOUT extends TIN>(f: ((t: TIN) => t is TOUT)):
+  OperatorFunction<TIN, TOUT>
+{
+  return filter(f) as OperatorFunction<TIN, TOUT>
 }
 
 export function filterDefined<T>()
