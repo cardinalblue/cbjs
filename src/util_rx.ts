@@ -115,10 +115,10 @@ export function filterDefined<T>()
 // true or false.
 // If predicate completes without issuing a true, then nothing gets passed.
 //
-export function filterObservable<T>(predicate: (input: Observable<T>) => Observable<boolean>)
-  : (source: Observable<Observable<T>>) => Observable<Observable<T>>
+export function filterObservable<T>(predicate: (input: T) => Observable<boolean>)
+  : (source: Observable<T>) => Observable<T>
 {
-  return (source: Observable<Observable<T>>) =>
+  return (source: Observable<T>) =>
     zip(
       source,
       source.pipe(
@@ -130,8 +130,8 @@ export function filterObservable<T>(predicate: (input: Observable<T>) => Observa
       ),
     )
       .pipe(
-        filter(([orig, bool]: [Observable<T>, boolean]) => bool),
-        map   (([orig, bool]: [Observable<T>, boolean]) => orig)
+        filter(([orig, bool]: [T, boolean]) => bool),
+        map   (([orig, bool]: [T, boolean]) => orig)
       )
 }
 

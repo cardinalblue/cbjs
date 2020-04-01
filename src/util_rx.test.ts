@@ -17,7 +17,6 @@ import {
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "./setup_test"
 import {catchError, filter, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
-import {taplog} from "./util"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -356,9 +355,7 @@ it(('promise$ errors'), () => {
     ex(p$.pipe(
       map(s => s),
       filter(s => !!s),
-      taplog(">>>> !!!!"),
       catchError(err => {
-        console.error("!!!! catchError", err)
         return of(1)
       })
     )).toBe('(a|)', {a: 1})
