@@ -1,6 +1,7 @@
 import {Observable} from 'rxjs'
 import {Point} from './kor'
-import {Millisec, now} from "cbjs"
+import {Millisec} from "./util_rx"
+import {now} from "./util"
 import * as _ from "lodash"
 import {safeKey} from "./util_math";
 

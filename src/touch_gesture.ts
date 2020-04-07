@@ -1,4 +1,5 @@
-import {Millisec, now, pairFirst} from "cbjs"
+import {Millisec, pairFirst} from "./util_rx"
+import {now} from "./util"
 import {interval, Observable, OperatorFunction, zip} from "rxjs"
 import {delay, every, filter, first, map, take, takeUntil} from "rxjs/operators"
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"

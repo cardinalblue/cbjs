@@ -3,7 +3,7 @@ import {exhaustMap, filter, map, publishReplay, refCount, share, takeUntil, tap}
 import {Point} from './kor'
 import {TTouch, TTouchEvent, TTouchGesture} from './touch'
 import React, {RefObject, useEffect} from 'react'
-import {log$, now, taplog} from "cbjs";
+import {log$, now, taplog} from "./util";
 
 // ---- Button event codes (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
 export const BUTTON_MAIN      = 0

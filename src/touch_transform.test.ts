@@ -3,7 +3,7 @@ import '../../setup_test'
 import {TTouch, TTouchEvent} from "./touch"
 import {$P} from "./kor"
 import {calculateTransformFromEvents, Transform, transformsFromRadialGesture} from "./touch_transform"
-import {expectElem, testScheduler} from "../../setup_test"
+import {expectElem, testScheduler} from "./setup_test"
 import {Observable} from "rxjs"
 
 const $E  = function(touches: TTouch[]) { return new TTouchEvent(touches, 1); }

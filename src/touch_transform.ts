@@ -5,7 +5,8 @@ import {TTouch, TTouchEvent} from "./touch"
 import {OperatorFunction} from "rxjs"
 import {map, pairwise, scan} from "rxjs/operators"
 import {calculateTransformFromVectors2} from "./util_math"
-import {Elementable, filterDefined, ifNumber, pairFirst} from "cbjs"
+import {Elementable, ifNumber} from "./util"
+import {filterDefined, pairFirst} from "./util_rx"
 
 export class Transform implements Elementable<number> {
   move:   Point
