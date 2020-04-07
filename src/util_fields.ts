@@ -1,3 +1,4 @@
+import * as _ from "lodash"
 import {Point, Size} from "./kor"
 
 export function fieldToString<D>(field: any, _default: D): string | D {
