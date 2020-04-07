@@ -1,3 +1,11 @@
+
+export {};
+declare global {
+  interface Window {
+    opera: any;
+  }
+}
+
 const isMobileF = function() {
   let check = false;
   (function(a) {
@@ -11,7 +19,9 @@ const isMobileF = function() {
       )
     )
       check = true;
-  })(navigator.userAgent || navigator.vendor || window.opera);
+  })(navigator.userAgent ||
+     navigator.vendor    ||
+     window.opera)
   return check;
 };
 export const isMobile = isMobileF()

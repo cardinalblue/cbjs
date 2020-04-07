@@ -328,6 +328,21 @@ it(('promise$ works'), () => {
   })
 })
 
+it(('promise$ works sequence'), () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(of(2)).toBe('(a|)', { a: 2 })
+
+    // function p() {
+    //   return new Promise((resolve, reject) => resolve(1))
+    // }
+    //
+    // ex(promise$(() => p())).toBe('(a|)', { a: 1 })
+  })
+})
+
 it(('catchError exploration'), () => {
   const scheduler = testScheduler()
   scheduler.run(helpers => {
@@ -359,6 +374,8 @@ it(('promise$ errors'), () => {
         return of(1)
       })
     )).toBe('(a|)', {a: 1})
+
+
 
   })
 })

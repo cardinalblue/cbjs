@@ -1,4 +1,4 @@
-import '../../setup_test'
+import './setup_test'
 import {TTouch, TTouchEvent} from "./touch";
 import {Point} from "./kor";
 import {testScheduler} from "./setup_test";

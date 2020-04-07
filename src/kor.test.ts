@@ -1,4 +1,4 @@
-import '../../setup_test'
+import './setup_test'
 import {$P, normalizeRotation, Point, Size} from './kor'
 
 const PI = Math.PI

@@ -1,5 +1,5 @@
 /// <reference path="./custom_matchers.d.ts"/>
-import '../../setup_test'
+import './setup_test'
 import {TTouch, TTouchEvent} from "./touch"
 import {$P} from "./kor"
 import {calculateTransformFromEvents, Transform, transformsFromRadialGesture} from "./touch_transform"

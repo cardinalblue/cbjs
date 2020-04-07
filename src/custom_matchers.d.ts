@@ -1,5 +1,5 @@
 declare namespace jest {
-  interface Matchers<T> {
+  interface Matchers<R, T> {
     toBeEnumerableCloseTo(
       expected: any
     ): { pass: boolean; message: () => string };

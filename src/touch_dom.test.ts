@@ -1,4 +1,4 @@
-import '../../setup_test'
+import './setup_test'
 import {testScheduler} from "./setup_test"
 import {windowToggle,} from "rxjs/operators";
 import {Observable} from "rxjs";
