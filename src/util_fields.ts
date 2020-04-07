@@ -7,7 +7,7 @@ export function fieldToString<D>(field: any, _default: D): string | D {
   return _default
 }
 
-function fieldToPoint<D>(field: any, _default: D)
+export function fieldToPoint<D>(field: any, _default: D)
   : Point | D {
   if (field instanceof Array
     && field.length === 2

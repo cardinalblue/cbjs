@@ -119,7 +119,7 @@ export function findInstanceOf<A, T extends Constructor>(a: Array<A>, type: T): 
   return undefined
 }
 
-function includedOrDefault<T, D>(t: T, ts: Array<T>, _default: D): T | D {
+export function includedOrDefault<T, D>(t: T, ts: Array<T>, _default: D): T | D {
   if (ts.find(x => x === t)) return t
   return _default
 }
