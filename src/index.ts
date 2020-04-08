@@ -1,5 +1,6 @@
 export * from './animatorer'
 export * from './command'
+export * from './contexted_domainer'
 export * from './contexter'
 export * from './domainer'
 export * from './firestore_sync'
