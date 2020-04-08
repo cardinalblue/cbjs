@@ -19,8 +19,8 @@ const isMobileF = function() {
       )
     )
       check = true;
-  })(navigator.userAgent ||
-     navigator.vendor    ||
+  })(navigator && navigator.userAgent ||
+     navigator && navigator.vendor    ||
      window.opera)
   return check;
 };

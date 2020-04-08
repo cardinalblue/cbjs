@@ -3,8 +3,12 @@
 export {};
 declare global {
   interface Window {
-    FB: any;
-    mobileAndTabletcheck: any;
-    opera: any;
+    FB: any
+    mobileAndTabletcheck: any
+    opera: any
+  }
+  interface Navigator {
+    vendor?: any
+    userAgent?: any
   }
 }
