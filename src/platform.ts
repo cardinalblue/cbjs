@@ -21,7 +21,8 @@ const isMobileF = function() {
       check = true;
   })(typeof navigator !== "undefined" && navigator.userAgent ||
      typeof navigator !== "undefined" && navigator.vendor    ||
-     typeof window    !== "undefined" && window.opera)
+     typeof window    !== "undefined" && window.opera        ||
+     "userAgent")
   return check;
 };
 export const isMobile = isMobileF()
