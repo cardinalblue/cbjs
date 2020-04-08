@@ -1,5 +1,6 @@
 import {Command} from "./command";
-import {Context, Domainer} from "cbjs";
+import {Context} from "./contexter";
+import {Domainer} from "./domainer";
 import {BehaviorSubject} from "rxjs";
 import {List} from "immutable";
 import {map} from "rxjs/operators";
