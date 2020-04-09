@@ -14,7 +14,9 @@ export function firestoreSyncDocument(docRef: DocRef)
   return new Observable((subs: Subscriber<DocSnap>) =>
     // `onSnapshot` already returns a function that ends the subscription
     docRef.onSnapshot(
-      snap => subs.next(snap),
+      snap => snap.exists ?
+        subs.next(snap) :
+        subs.error(`firestoreSyncDocument error, doesn't exist ${ docRef.path}`),
       (error: Error) => subs.error(error),
       () => subs.complete()
     )
