@@ -1,4 +1,4 @@
-import {Observable, Subject} from "rxjs"
+import {BehaviorSubject, Observable, Subject} from "rxjs"
 import {switchMap, takeUntil, tap} from "rxjs/operators"
 
 export class Domainer {
@@ -19,4 +19,17 @@ export class Domainer {
       tap((t: T) => destination.next(t))
     ).subscribe()
   }
+
+  updating<T>(source: Observable<T>,
+              destination: BehaviorSubject<T>,
+              isEqual: (a: T, b: T) => boolean = (a,b) => a === b) {
+    return source.pipe(
+      takeUntil(this.shutdown$),
+      tap((t: T) => {
+        if (!isEqual(destination.value, t))
+          destination.next(t)
+      })
+    ).subscribe()
+  }
+
 }
