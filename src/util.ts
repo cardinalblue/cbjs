@@ -124,6 +124,13 @@ export function includedOrDefault<T, D>(t: T, ts: Array<T>, _default: D): T | D 
   return _default
 }
 
+export function filterInstances<TIN, TOUT extends Constructor>(
+  array: TIN[],
+  klass: TOUT
+)
+{
+  return array.filter(x => x instanceof klass) as any as Array<InstanceType<TOUT>>
+}
 
 // ----------------------------------------------------------------------------
 // Map/Object
@@ -136,6 +143,10 @@ export function mapmap<T, R>(map: {[k: string]: T}, f: ((t: T) => R))
     ret[k] = f(map[k])
   }
   return ret
+}
+
+export function MAP(object: Object) {
+  return new Map(Object.entries(object))
 }
 
 // ----------------------------------------------------------------------------
