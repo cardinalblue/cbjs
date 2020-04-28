@@ -35,9 +35,9 @@ export function useBehaviorSubject<T>(subject: BehaviorSubject<T>,
   useEffect(() => {
     const subs = subject.subscribe((tNew: T) => {
       if (useBehaviorSubject.debug)
-        console.log("---- useBehaviorSubject", tNew)
+        console.log("---- useBehaviorSubject", t, tNew)
       if (!isEqual(t, tNew))
-        setT(t)
+        setT(tNew)
     })
     return () => subs.unsubscribe()
   }, [subject])
