@@ -4,7 +4,7 @@ import {switchMap, takeUntil, tap} from "rxjs/operators"
 export class Domainer {
   shutdown$ = new Subject<any>()
 
-  static debug = false
+  static debug: boolean = false
 
   triggering<T, M>(trigger$: Observable<T>,
                      manipulator: (t: T) => Observable<M>,
