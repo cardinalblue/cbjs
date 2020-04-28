@@ -1,6 +1,7 @@
 import {DependencyList, MutableRefObject, useEffect, useState} from "react";
 import {Queue} from "./util";
 import {BehaviorSubject, Observable} from "rxjs";
+import * as _ from "lodash"
 
 
 // ----------------------------------------------------------------
@@ -25,14 +26,18 @@ export function useObservable<T>(observable: Observable<T>,
 }
 useObservable.debug = false
 
-export function useBehaviorSubject<T>(subject: BehaviorSubject<T>): T {
+export function useBehaviorSubject<T>(subject: BehaviorSubject<T>,
+                                      isEqual: (a: T, b: T) => boolean = _.isEqual)
+  : T
+{
   const [t, setT] = useState(subject.value)
 
   useEffect(() => {
-    const subs = subject.subscribe((t: T) => {
+    const subs = subject.subscribe((tNew: T) => {
       if (useBehaviorSubject.debug)
-        console.log("---- useBehaviorSubject", t)
-      setT(t)
+        console.log("---- useBehaviorSubject", tNew)
+      if (!isEqual(t, tNew))
+        setT(t)
     })
     return () => subs.unsubscribe()
   }, [subject])
