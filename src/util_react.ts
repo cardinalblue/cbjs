@@ -25,10 +25,17 @@ export function useObservable<T>(observable: Observable<T>,
 }
 useObservable.debug = false
 
-export function useBehaviorSubject<T>(subject: BehaviorSubject<T>)
-  : T
+export function useBehaviorSubject<T,DEFAULT>(subject: BehaviorSubject<T>|DEFAULT)
+  : T|DEFAULT
 {
-  const [t, setT] = useState(subject.value)
+  // React hook always have to call `useState`, even if not passed a BehaviorSubject
+  const [t, setT] = useState(subject instanceof BehaviorSubject ?
+    subject.value : subject
+  )
+
+  // Default case of no BehaviorSubject given
+  if (!(subject instanceof BehaviorSubject))
+    return t
 
   useEffect(() => {
     const subs = subject.subscribe((tNew: T) => {
