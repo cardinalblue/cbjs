@@ -25,8 +25,8 @@ export function useObservable<T>(observable: Observable<T>,
 }
 useObservable.debug = false
 
-export function useBehaviorSubject<T>(subject: T) : T;
 export function useBehaviorSubject<T>(subject: BehaviorSubject<T>) : T;
+export function useBehaviorSubject<T>(subject: T) : T;
 export function useBehaviorSubject<T,DEFAULT>(subject: BehaviorSubject<T>|DEFAULT)
   : T|DEFAULT
 {
