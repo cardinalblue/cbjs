@@ -15,8 +15,8 @@ import {
   tapWithIndex
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
-import {testScheduler} from "./setup_test"
-import {catchError, filter, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
+import {testScheduler} from "../setup_test"
+import {catchError, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -354,28 +354,6 @@ it(('catchError exploration'), () => {
       catchError(err => of(1)),
     )
     ex(o$).toBe('(a|)', {a: 1})
-
-  })
-})
-
-it(('promise$ errors'), () => {
-  const scheduler = testScheduler()
-  scheduler.run(helpers => {
-    const {cold, expectObservable: ex} = helpers
-
-    const p = new Promise((resolve, reject) => {
-      reject('ERR')
-    })
-    const p$ = promise$(() => p)
-    ex(p$.pipe(
-      map(s => s),
-      filter(s => !!s),
-      catchError(err => {
-        return of(1)
-      })
-    )).toBe('(a|)', {a: 1})
-
-
 
   })
 })

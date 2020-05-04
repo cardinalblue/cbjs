@@ -1,5 +1,5 @@
-import {BehaviorSubject, concat, Observable, of} from "rxjs"
-import {testScheduler} from "./setup_test"
+import {BehaviorSubject, Observable, of} from "rxjs"
+import {testScheduler} from "../setup_test"
 import {added, arrayFilterMap, arrayMap, cachedArrayMapper, removed, sortingMap, undiff} from "./util_array_rx";
 import {map} from "rxjs/operators"
 
