@@ -1,5 +1,4 @@
-import * as React from "react"
-import {createRef, RefObject, useContext, useEffect, useRef, useState} from "react"
+import {createContext, createRef, RefObject, useContext, useEffect, useRef, useState} from "react"
 
 export class RefStore<K, R> {
   constructor() {
@@ -36,7 +35,7 @@ export class RefStore<K, R> {
 // ------------------------------------------------------------
 // React Context and Hook integration
 
-export const RefStoreContext = React.createContext(new RefStore())
+export const RefStoreContext = createContext(new RefStore())
 
 // Use this to record React ref associated with an object (e.g. a Widget).
 // It gets passed via a React Context to children widget.

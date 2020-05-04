@@ -2,7 +2,7 @@ import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subscri
 import {exhaustMap, filter, map, publishReplay, refCount, share, takeUntil, tap} from 'rxjs/operators'
 import {Point} from './kor'
 import {TTouch, TTouchEvent, TTouchGesture} from './touch'
-import React, {RefObject, useEffect} from 'react'
+import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect} from 'react'
 import {log$, now, taplog} from "./util";
 
 // ---- Button event codes (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
@@ -30,13 +30,13 @@ export function taplogT<X>(label: string, ...vars: any[])
 // -------------------------------------------------------------------------
 // Convert React events to our own events.
 //
-export function convertMouseToTouchEvent(e: React.MouseEvent<any>): TTouchEvent {
+export function convertMouseToTouchEvent(e: MouseEvent<any>): TTouchEvent {
   return new TTouchEvent(
     [ new TTouch(0, new Point(e.clientX, e.clientY), e.button)],
     now(),
     e)
 }
-export function convertTouchToTouchEvent(e: React.TouchEvent<any>): TTouchEvent {
+export function convertTouchToTouchEvent(e: TouchEvent<any>): TTouchEvent {
   const touches = []
   for (let i=0; i<e.touches.length; i++) {
     const t = e.touches.item(i)
@@ -47,10 +47,10 @@ export function convertTouchToTouchEvent(e: React.TouchEvent<any>): TTouchEvent 
   return new TTouchEvent(touches, now(), e)
 }
 
-export function preventDefault<T extends React.BaseSyntheticEvent>() {
+export function preventDefault<T extends BaseSyntheticEvent>() {
   return tap((e: T) => e.preventDefault())
 }
-export function stopPropagation<T extends React.BaseSyntheticEvent>() {
+export function stopPropagation<T extends BaseSyntheticEvent>() {
   return tap((e: T) => e.stopPropagation())
 }
 
@@ -65,9 +65,9 @@ export function mouseGesturesFromDOM(dom: Element)
   // LEARN: Can examine stack: `console.log(">>>>", new Error().stack)`.
 
   // ---- Because
-  const mousedown$   = fromEvent<React.MouseEvent>(dom, 'mousedown')
-  const mousemove$   = fromEvent<React.MouseEvent>(document, 'mousemove')
-  const mouseup$     = fromEvent<React.MouseEvent>(document, 'mouseup')
+  const mousedown$   = fromEvent<MouseEvent>(dom, 'mousedown')
+  const mousemove$   = fromEvent<MouseEvent>(document, 'mousemove')
+  const mouseup$     = fromEvent<MouseEvent>(document, 'mouseup')
 
   // Need preventDefault otherwise will image drag
   return mousedown$.pipe(
@@ -125,11 +125,11 @@ export function touchGesturesFromDOM(dom: Element)
   // LEARN: `takeUntil` works differently in RxJS and RxJava, the EMPTY control
   // behavior!!!
 
-  const start$ = (t: any) => fromEvent<React.TouchEvent>(t, 'touchstart')
-  const move$  = (t: any) => fromEvent<React.TouchEvent>(t, 'touchmove')
+  const start$ = (t: any) => fromEvent<TouchEvent>(t, 'touchstart')
+  const move$  = (t: any) => fromEvent<TouchEvent>(t, 'touchmove')
   const end$   = (t: any) => merge(
-    fromEvent<React.TouchEvent>(t, 'touchend'),
-    fromEvent<React.TouchEvent>(t, 'touchcancel'),
+    fromEvent<TouchEvent>(t, 'touchend'),
+    fromEvent<TouchEvent>(t, 'touchcancel'),
   ).pipe(
     share(),
   )
@@ -195,7 +195,7 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
         touchGesturesFromDOM(e)
           .subscribe(output))
       subs.push(
-        fromEvent<React.MouseEvent>(e, 'mousedown')
+        fromEvent<MouseEvent>(e, 'mousedown')
           .subscribe(e => e.preventDefault())
       )
     }
