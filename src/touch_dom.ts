@@ -186,7 +186,7 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
 
     const subs: Subscription[] = []
 
-    if (typeof window.ontouchstart === 'undefined') {
+    if (typeof window !== "undefined" && typeof window.ontouchstart === 'undefined') {
       subs.push(mouseGesturesFromDOM(e).subscribe(output))
     }
     else {
