@@ -31,7 +31,9 @@ export const isMobile = isMobileF()
 //      See https://stackoverflow.com/a/14439915/304734.
 //
 const isTouchyF = function() {
-  return (typeof window !== "undefined") && (
+  if (typeof window === "undefined")
+    return false
+  return (
     ('ontouchstart' in window) ||
          ((window as any).DocumentTouch && document instanceof (window as any).DocumentTouch) ||
          (navigator.maxTouchPoints > 0) ||
