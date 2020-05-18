@@ -132,6 +132,17 @@ export function filterInstances<TIN, TOUT extends Constructor>(
   return array.filter(x => x instanceof klass) as any as Array<InstanceType<TOUT>>
 }
 
+export function objectToArray<T>(obj: { [k: string]: T }): Array<[string, T]> {
+  return Object.keys(obj).map(key => [key, obj[key]]);
+}
+export function objectFromArray<V>(array: Array<[string, V]>): { [s: string]: V } {
+  return array.reduce<{ [k: string]: V }>((obj, [k, v]) => {
+    obj[k] = v
+    return obj
+  }, {});
+}
+
+
 // ----------------------------------------------------------------------------
 // Map/Object
 

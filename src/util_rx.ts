@@ -1,5 +1,7 @@
+import * as _ from "lodash"
 import {
   asyncScheduler,
+  BehaviorSubject,
   combineLatest,
   concat,
   defer,
@@ -10,6 +12,7 @@ import {
   Observable,
   of,
   OperatorFunction,
+  pipe,
   SchedulerLike,
   Subscription,
   timer,
@@ -19,18 +22,24 @@ import {
   catchError,
   concatMap,
   delay,
+  endWith,
   filter,
+  finalize,
   first,
   flatMap,
   ignoreElements,
   last,
   map,
+  mergeMap,
   scan,
   skip,
+  startWith,
+  switchMap,
   take,
-  takeUntil
+  takeUntil,
+  tap
 } from "rxjs/operators"
-import {withoutFirst} from "./util";
+import {objectFromArray, objectToArray, withoutFirst} from "./util";
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)
@@ -269,14 +278,18 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
   }
 }
 
-export function doOnSubscribe<T>(onSubscribe: () => void): (source: Observable<T>) =>  Observable<T> {
-  return function inner(source: Observable<T>): Observable<T> {
+export function doOnSubscribe<T>(f: () => void)
+  : MonoTypeOperatorFunction<T>
+{
+  return (source: Observable<T>) => {
     return defer(() => {
-      onSubscribe();
+      f();
       return source;
     });
   };
 }
+
+
 // ---------------------------------------------------------------------------
 
 export function cachedMapper<TFrom, K, TTo>(
@@ -371,9 +384,104 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
       }
     })
   }
-
-
 }
+
+// --------------------------------------------------------------------
+// Flattening
+
+export function flattenObject<TIN, TOUT>(
+  f: (tIn: TIN) => Observable<TOUT>
+): (source: Observable<{ [s: string]: TIN }>) => Observable<{ [s: string]: TOUT }> {
+  return pipe(
+    map(objectToArray),
+    map(a =>
+      a.map(([k, v]) =>
+        f(v).pipe(
+          map(tOut => [k, tOut])
+        )
+      )
+    ),
+    flatMap(obs => combineLatest(obs) as Observable<[[string, TOUT]]>),
+    map(objectFromArray)
+  )
+}
+
+export function flattenArray<TIN, TOUT>(
+  f: (tIn: TIN) => Observable<TOUT>
+): (source: Observable<TIN[]>) => Observable<TOUT[]> {
+  return (source: Observable<TIN[]>) => source.pipe(
+    switchMap((ts: TIN[]) =>
+      ts.length > 0 ? combineLatest(ts.map(t => f(t))) : of([])
+    )
+  )
+}
+
+export function repeating<T>(
+  f: T | ((n: number) => T),
+  dueTime: number | Date = 0,
+  periodOrScheduler?: number | SchedulerLike,
+  scheduler?: SchedulerLike
+): Observable<T> {
+  return timer(dueTime, periodOrScheduler, scheduler).pipe(
+    map(n =>
+      (f instanceof Function ? f(n) : f) as T
+    )
+  );
+}
+
+export function nextIfNotEqual<T>(value: T, dest: BehaviorSubject<T>) {
+  if (!_.isEqual(value, dest.value)) dest.next(value)
+}
+
+// -------------------------------------------------------------------------
+// Progress
+//
+// Usage
+//
+//     const progresses$ = new Subject<Progress>
+//
+//     longProcess1$.pipe(
+//       progressFork(progress => progresses$.next(progress)
+//     ).subscribe(...)
+//
+//     longProcess2$.pipe(
+//       progressFork(progress => progresses$.next(progress)
+//     ).subscribe(...)
+//
+//     const count$ = progresses$.pipe(
+//       progressCount()
+//     )
+//     // count$ will be 0...1...0...1....2...3...2...1..0......
+//
+
+export type Progress = Observable<string|null>
+export function progressFork<T>(f: (p: Progress) => void,
+                                status: (t: T) => string|null = () => null)
+  : MonoTypeOperatorFunction<T>
+{
+  const p = new BehaviorSubject<string|null>(null)
+  return (source: Observable<T>) => source.pipe(
+    doOnSubscribe(() => f(p)),
+    tap(t => p.next(status(t))),
+    finalize(() => p.complete()),
+  )
+}
+
+export function progressCount(): OperatorFunction<Progress, number>
+{
+  return (source: Observable<Progress>) =>
+    source.pipe(
+      mergeMap(p => p.pipe(
+        ignoreElements(),
+        startWith(1),
+        endWith(-1),
+      )),
+      scan2(0, (count: number, n: number) => count + n),
+      startWith(0),
+    )
+}
+
+
 
 
 

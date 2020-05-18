@@ -4,8 +4,11 @@ import {
   extend,
   filterInstanceOf,
   filterObservable,
+  flattenArray,
+  flattenObject,
   lastOrEmpty,
   pairFirst,
+  progressCount,
   prolong,
   promise$,
   scan2,
@@ -449,4 +452,78 @@ it('swapMap works', () => {
       .toBe('----a--b--c-------------m----n-|')
   })
 
+})
+
+it('flattenObject works', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(
+      cold('a', { a: { k1: 1, k2: 2 }}).pipe(
+        flattenObject(n => of(n * 10))
+      )
+    ).toBe('a', { a: { k1: 10, k2: 20 }})
+
+  })
+})
+
+it('flattenArray works', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(
+      cold('a', { a: [ 1, 2 ]}).pipe(
+        flattenArray(n => of(n * 10))
+      )
+    ).toBe('a', { a: [ 10, 20 ]})
+
+  })
+})
+
+it('flattenArray switching', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const $ = cold('---a-------b-------c', {
+      a: [cold('m---n'), cold('o---p')],
+      b: [cold('q---r')],
+      c: [],
+    })
+    ex($.pipe(
+      flattenArray(x => x)
+    )).toBe(
+      '---0---(12)3---4---5', [
+        ["m", "o"],
+        ["n", "o"],
+        ["n", "p"],
+        ["q"],
+        ["r"],
+        []
+      ]
+    )
+
+  })
+})
+
+it('ProgressCounter works', () => {
+
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+
+    const s$ = cold('----a---------b----c----------', {
+      a: cold('        ----|'),
+      b: cold('                  --------|'),
+      c: cold('                       --------|'),
+    })
+    ex(s$.pipe(progressCount())).toBe(
+      '              0---1---0-----1----2--1----0',
+      [0,1,2,3,4,5]
+    )
+
+  })
 })
