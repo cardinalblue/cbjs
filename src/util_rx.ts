@@ -120,6 +120,10 @@ export function filterDefined<T>()
     s.pipe(filter((x: T|null|undefined) => x !== null && x !== undefined)) as Observable<T>
 }
 
+export function flipBoolean(): OperatorFunction<boolean, boolean> {
+  return map(b => !b)
+}
+
 // Delays passing on the Observable until the predicate Observable issues a single
 // true or false.
 // If predicate completes without issuing a true, then nothing gets passed.
