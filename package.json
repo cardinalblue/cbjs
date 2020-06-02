@@ -10,7 +10,8 @@
   "scripts": {
     "test": "jest --config jest.config.js",
     "build": "tsc",
-    "prepare": "yarn run build"
+    "prepare": "yarn run build",
+    "publish": "npm publish --access public"
   },
   "repository": {
     "type": "git",
