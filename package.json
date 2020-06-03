@@ -1,8 +1,8 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "files": [
     "dist/**/*"
   ],
