@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.0.6",
+  "version": "1.0.13",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "files": [
@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "jest --config jest.config.js",
-    "build": "tsc",
+    "build": "yarn version --patch && tsc",
     "prepare": "yarn run build",
     "publish": "npm publish --access public"
   },
