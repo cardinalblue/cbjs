@@ -149,7 +149,7 @@ export function touchGesturesFromDOM(dom: Element)
   // LEARN: No preventDefault/stopPropagation otherwise tapping scrolling doesn't work
 
   return start$(dom).pipe(
-    taplog("++++ touch start"),
+    taplog("++++ touch start", now()),
     exhaustMap(start => {
       const t = start.target
       const gesture: Observable<TTouchEvent> = merge(
