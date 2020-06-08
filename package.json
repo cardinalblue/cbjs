@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -17,7 +17,7 @@
     "url": "git+https://github.com/cardinalblue/cbjs.git"
   },
   "keywords": [
-    "JavaScript",safar
+    "JavaScript",
     "TypeScript",
     "React",
     "RxJS"
