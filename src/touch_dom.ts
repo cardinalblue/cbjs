@@ -73,7 +73,7 @@ export function mouseGesturesFromDOM(dom: Element)
   return mousedown$.pipe(
     map(mousedown => {
 
-      console.log("++++ mousedown")
+      console.log("++++ mousedown", now())
       const source$: Observable<TTouchEvent> =  concat(
         of(mousedown),
         mousemove$
