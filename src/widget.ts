@@ -5,7 +5,7 @@ import {takeUntil} from "rxjs/operators";
 
 export class Widget extends ContextedDomainer
 {
-  isHit(p: Point, rect: Rect): boolean {
+  isTarget(p: Point, rect: Rect): boolean {
     // Default implementation
     return p.x >= rect.origin.x &&
            p.y >= rect.origin.y &&

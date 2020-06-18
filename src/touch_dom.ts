@@ -73,7 +73,7 @@ export function mouseGesturesFromDOM(dom: Element)
   return mousedown$.pipe(
     map(mousedown => {
 
-      console.log("++++ mousedown", now())
+      taplogT("++++ mousedown")
       const source$: Observable<TTouchEvent> =  concat(
         of(mousedown),
         mousemove$
@@ -149,7 +149,7 @@ export function touchGesturesFromDOM(dom: Element)
   // LEARN: No preventDefault/stopPropagation otherwise tapping scrolling doesn't work
 
   return start$(dom).pipe(
-    taplog("++++ touch start", now()),
+    taplogT("++++ touch start"),
     exhaustMap(start => {
       const t = start.target
       const gesture: Observable<TTouchEvent> = merge(
@@ -160,7 +160,7 @@ export function touchGesturesFromDOM(dom: Element)
       ).pipe(
         takeUntil(end0$(t)),
         map(convertTouchToTouchEvent),
-        log$(`++++ touch gesture ${now()}`),
+        log$(() => `++++ touch gesture ${now()}`),
         publishReplay(), refCount(),
       )
       // ---- This works together with the exhaustMap to prevent more than
