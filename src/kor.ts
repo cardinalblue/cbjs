@@ -131,6 +131,7 @@ export class Size extends Point {
 
 export class Rect {
   static ONE  = new Rect(Point.ZERO, Size.ONE)
+  static ZERO = new Rect(Point.ZERO, Size.ZERO)
 
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly origin: Point, readonly size: Size) {
