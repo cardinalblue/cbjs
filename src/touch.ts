@@ -1,18 +1,22 @@
 import {Observable} from 'rxjs'
-import {Point} from './kor'
+import {Point, Rect} from './kor'
 import {Millisec} from "./util_rx"
 import {now} from "./util"
 import * as _ from "lodash"
 import {safeKey} from "./util_math";
 
 export interface TTouchTarget {}
+export type TTouchTargeting = {
+  target: TTouchTarget,
+  rect:   Rect,
+}
 
 export class TTouch {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly identifier: number,
               readonly point: Point,
               readonly button: number|undefined = undefined,
-              readonly targets: TTouchTarget[] = [],
+              readonly targetings: TTouchTargeting[] = [],
               )
   {
   }
