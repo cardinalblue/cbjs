@@ -45,8 +45,8 @@ export class TTouchEvent<PlatformEvent=any> {
     }
 
     // Convenient function
-  get targets(): TTouchTarget[] {
-    return _.uniq(_.flatMap(this.touches, touch => touch.targets))
+  get targetings(): TTouchTargeting[] {
+    return _.uniq(_.flatMap(this.touches, touch => touch.targetings))
   }
 }
 
