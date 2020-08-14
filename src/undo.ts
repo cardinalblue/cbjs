@@ -13,10 +13,15 @@ import {map} from "rxjs/operators";
 declare module "./command" {
   interface Command<T> {
     push(context: UndoContext): Command<T>
+    tap(f: (c: Command<T>) => any): Command<T>
   }
 }
 Command.prototype.push = function(context: UndoContext) {
   context.push(this)
+  return this
+}
+Command.prototype.tap = function<T>(f: (c: Command<T>) => any) {
+  f(this)
   return this
 }
 

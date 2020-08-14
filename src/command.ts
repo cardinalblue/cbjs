@@ -1,6 +1,6 @@
 import {EMPTY, Observable, zip} from "rxjs";
 
-export class Command<T,MEMO=undefined> {
+export class Command<T,MEMO=any> {
   static NOP = new Command('NOP', () => EMPTY)
   memo: MEMO|undefined
   constructor(readonly description: string,
@@ -12,7 +12,7 @@ export class Command<T,MEMO=undefined> {
   unexecution(): Observable<T> { return this.unexecutionF(this) }
 }
 
-export function commandCompose<T,MEMO=undefined>(...commands: Command<T,MEMO>[])
+export function commandCompose<T,MEMO=any>(...commands: Command<T,MEMO>[])
   : Command<T[],MEMO>
 {
   // LEARN: Composing easy!
