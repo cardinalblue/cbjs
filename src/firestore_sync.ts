@@ -2,11 +2,12 @@ import {Observable, Subscriber} from "rxjs"
 
 import * as firebase from "firebase"
 
-export type QuerySnap     = firebase.firestore.QuerySnapshot
-export type DocSnap       = firebase.firestore.DocumentSnapshot
-export type DocRef        = firebase.firestore.DocumentReference
-export type CollectionRef = firebase.firestore.CollectionReference
-export type Query         = firebase.firestore.Query
+export type QuerySnap           = firebase.firestore.QuerySnapshot
+export type DocSnap             = firebase.firestore.DocumentSnapshot
+export type DocRef              = firebase.firestore.DocumentReference
+export type CollectionRef       = firebase.firestore.CollectionReference
+export type Query               = firebase.firestore.Query
+export type UploadTaskSnapshot  = firebase.storage.UploadTaskSnapshot
 
 export function firestoreSyncDocument(docRef: DocRef)
   : Observable<DocSnap>
