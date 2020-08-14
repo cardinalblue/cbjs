@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import {Observable} from "rxjs";
 import * as firebaseui from "firebaseui";
-import {promise$} from "@piccollage/cbjs";
+import {promise$} from "./util_rx"
 
 let firebaseAuthUI: firebaseui.auth.AuthUI|null = null
 
