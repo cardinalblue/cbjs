@@ -12,11 +12,11 @@ const config = {
 };
 console.log("++++ Firebase config", config)
 
-export default () => {
+export function firebaseInit() {
   if (!firebase.apps.length) {
     firebase.initializeApp(config)
     // firebase.analytics()
   }
-};
+}
 
 
