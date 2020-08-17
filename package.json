@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.0.51",
+  "version": "1.0.52",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "test": "jest --config jest.config.js",
+    "clean": "rimraf lib dist",
     "build": "yarn version --patch && tsc",
     "p": "yarn publish --access public"
   },
@@ -53,6 +54,7 @@
     "jest": "^24.9.0",
     "lodash": "^4.17.20",
     "react": "^16.13.1",
+    "rimraf": "^3.0.2",
     "rxjs": "^6.6.2",
     "ts-jest": "^24.0.2",
     "typescript": "^3.6.2"
