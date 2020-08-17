@@ -5,7 +5,7 @@ export class RefStore<K, R> {
     console.log("++++ RefStore constructor")
   }
 
-  _stored: Array<{ref: RefObject<R>, key: K}> = []
+  _stored: {ref: RefObject<R>, key: K}[] = []
   insert(key: K, ref: RefObject<R>) {
     const i = this.stored.findIndex(j => j.key === key)
     if (i < 0) {  this.stored.push({ ref, key }); }
@@ -46,7 +46,7 @@ export function useNewRefStore<K,R>() {
 }
 
 // Can pass `null` as the key, in which case the ref will not be stored.
-export function useRefStore<K, R>(key: K|null, _refStore: RefStore<K,R>|null = null)
+export function useRefStore<K=any, R=any>(key: K|null, _refStore: RefStore<K,R>|null = null)
   : RefObject<R>
 {
   // Use the RefStore given or the one in the Context if not given
