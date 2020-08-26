@@ -1,5 +1,5 @@
 import {
-  cachedMapper,
+  cachedMapper, combineLatestWithEmpty,
   enqueue,
   extend,
   filterInstanceOf,
@@ -19,7 +19,7 @@ import {
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "../setup_test"
-import {catchError, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
+import {catchError, map, mergeMap, share, switchMap, take, tap, flatMap} from "rxjs/operators"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -158,6 +158,29 @@ it('pairFirst works', () => {
       .toBe('---')
     ex(cold('--a-b---c--d').pipe(pairFirst()))
       .toBe('----m---n--o', {m: ['a', 'b'], n: ['a', 'c'], o: ['a', 'd']})
+  })
+})
+it('combineLatestWithEmpty works', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(combineLatestWithEmpty([ cold('-a-b--'), cold('c-d---')]))
+      .toBe('-nop--',
+        {
+          n: ['a', 'c'],
+          o: ['a', 'd'],
+          p: ['b', 'd']
+        })
+
+    ex(cold('---m--', {
+      m: [],
+    }).pipe(
+      mergeMap(arr => combineLatestWithEmpty(arr))
+    ))
+      .toBe('---n--', {
+        n: [],
+      })
   })
 })
 it('cachedMapper works', () => {

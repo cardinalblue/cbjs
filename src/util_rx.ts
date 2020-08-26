@@ -337,6 +337,12 @@ export function pairFirst<T>() {
     ]).pipe()
 }
 
+// ----------------------------------------------------------------------------
+
+
+export function combineLatestWithEmpty<T>(arr: Array<Observable<T>>) {
+  return arr.length ? combineLatest(arr) : of([]); // used instead of EMPTY so the Observable does not complete()
+}
 
 
 // ----------------------------------------------------------------------------
@@ -484,9 +490,6 @@ export function progressCount(): OperatorFunction<Progress, number>
       startWith(0),
     )
 }
-
-
-
 
 
 
