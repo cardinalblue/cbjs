@@ -1,6 +1,8 @@
-import {Observable, Subscriber} from "rxjs"
+import {Observable, Subscriber, from, forkJoin} from "rxjs"
+import {flatMap, mergeMap} from "rxjs/operators";
 
 import * as firebase from "firebase"
+import {promise$} from "./util_rx";
 
 export type QuerySnap           = firebase.firestore.QuerySnapshot
 export type DocSnap             = firebase.firestore.DocumentSnapshot
@@ -38,5 +40,18 @@ export function firestoreSyncCollectionArray(ref: CollectionRef|Query)
       () => subs.complete()
     )
   )
+}
+
+export function firestoreDeleteCollection(collectionRef: CollectionRef)
+  : Observable<void[]>
+{
+  return promise$(() => collectionRef.get())
+    .pipe(
+      mergeMap((querySnap: QuerySnap) =>
+        from(forkJoin(
+          querySnap.docs.map(doc => from(doc.ref.delete()))
+        ))
+      )
+    );
 }
 
