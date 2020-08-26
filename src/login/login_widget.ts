@@ -7,5 +7,9 @@ export class LoginRequest {
 }
 export class LoginWidget extends Widget {
   loginRequest = new LoginRequest()
+
+  close() {
+    this.loginRequest.firebaseUser$.complete()
+  }
 }
 
