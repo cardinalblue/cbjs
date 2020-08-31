@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.4/libexec/bin/yarn.js publish --access public
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.22.4/libexec/bin/yarn.js build
 
 PATH: 
-  /var/folders/g0/v8ppxyvn4yx9bnz2h6d8_67w0000gn/T/yarn--1598598689178-0.9511063603264207:/Users/jasper.huang/Documents/Career/PicCollage/Code/cbjs/node_modules/.bin:/Users/jasper.huang/.config/yarn/link/node_modules/.bin:/usr/local/libexec/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/lib/node_modules/npm/bin/node-gyp-bin:/usr/local/bin/node_modules/npm/bin/node-gyp-bin:/Users/jasper.huang/Documents/School/USC/SPRING20/CSCI310/Project2/google-cloud-sdk/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/usr/local/CrossPack-AVR/bin:/Library/Frameworks/Python.framework/Versions/3.5/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/opt/X11/bin:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/local/CrossPack-AVR/bin:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/jasper.huang/Documents/Career/PicCollage/Code/cbjs/node_modules/.bin
+  /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:/opt/X11/bin:~/.dotnet/tools:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/usr/local/CrossPack-AVR/bin:/Applications/Xamarin Workbooks.app/Contents/SharedSupport/path-bin:/Users/jasper.huang/Documents/Career/PicCollage/Code/cbjs/node_modules/.bin:/Users/jasper.huang/.rvm/bin
 
 Yarn version: 
   1.22.4
@@ -14,22 +14,21 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: canceled
-      at Interface.<anonymous> (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:137008:13)
-      at Interface.emit (events.js:311:20)
-      at Interface._ttyWrite (readline.js:893:16)
-      at ReadStream.onkeypress (readline.js:198:10)
-      at ReadStream.emit (events.js:311:20)
-      at emitKeys (internal/readline/utils.js:438:14)
-      at emitKeys.next (<anonymous>)
-      at ReadStream.onData (readline.js:1160:36)
-      at ReadStream.emit (events.js:311:20)
-      at addChunk (_stream_readable.js:294:12)
+  SyntaxError: /Users/jasper.huang/Documents/Career/PicCollage/Code/cbjs/package.json: Unexpected token < in JSON at position 32
+      at JSON.parse (<anonymous>)
+      at /usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:310:30)
+      at /usr/local/Cellar/yarn/1.22.4/libexec/lib/cli.js:321:13
 
 npm manifest: 
   {
     "name": "@piccollage/cbjs",
-    "version": "1.0.51",
+  <<<<<<< HEAD
+    "version": "1.0.60",
+  =======
+    "version": "1.0.59",
+  >>>>>>> b8153f8a12126b99d03c6aca7b06a00bbd7635b3
     "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
     "main": "dist/src/index.js",
     "typings": "dist/src/index.d.ts",

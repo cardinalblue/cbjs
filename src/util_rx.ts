@@ -321,12 +321,6 @@ export function zipEmptiable<T>(...observables: Array<Observable<T>>) {
   return zip(...observables)
 }
 
-// ----------------------------------------------------------------
-//
-export interface Comparable<X> {
-  compare(other: X): number
-}
-
 // ----------------------------------------------------------------------------
 
 export function pairFirst<T>() {
