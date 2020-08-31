@@ -1,7 +1,6 @@
 import {BehaviorSubject, combineLatest, merge, Observable, of, OperatorFunction} from "rxjs";
 import {last, map, mergeMap, pairwise, scan, share, switchMap, takeUntil} from "rxjs/operators";
 import * as _ from "lodash";
-import {Comparable} from "./util_rx";
 
 
 export function arrayEquals<T>(a1: T[], a2: T[]): boolean {
@@ -88,9 +87,12 @@ export function undiff<T>(
   )
 }
 
-export function sortingMap<X, C extends (Comparable<C> | number)>(
-  comparatorF: (x: X) => Observable<C>)
-  : (source: Observable<X[]>) => Observable<X[]> {
+export function sortingMap<X, C>(
+  comparatorF: (x: X) => Observable<C>,
+  compareF: (c1: C, c2: C) => number = (a: any, b: any) => (a - b)
+  )
+  : (source: Observable<X[]>) => Observable<X[]>
+{
   return (source: Observable<X[]>) => {
     const source$ = source.pipe(share());  // Turn into Hot so we can use it in takeUntil
     const sourceFinished$ = source$.pipe(last(null, true))
@@ -112,8 +114,6 @@ export function sortingMap<X, C extends (Comparable<C> | number)>(
         return of([])
       } else {
         // Combine to form a stream of Lists of Pairs of <comparable, element>, sorted
-        const compareF = (a: C, b: C) =>
-          (typeof a === 'number') ? a - (<number>b) : (<Comparable<C>>a).compare(b)
         return combineLatest(obs).pipe(
           takeUntil(sourceFinished$), // Stop when the original source finished
           map((pairs: { comparator: C, x: X }[]) =>
