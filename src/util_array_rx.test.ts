@@ -1,6 +1,15 @@
 import {BehaviorSubject, Observable, of} from "rxjs"
 import {testScheduler} from "../setup_test"
-import {added, arrayFilterMap, arrayMap, cachedArrayMapper, removed, sortingMap, undiff} from "./util_array_rx";
+import {
+  added,
+  arrayFilterMap,
+  arrayMap,
+  cachedArrayMapper,
+  compareArray,
+  removed,
+  sortingMap,
+  undiff
+} from "./util_array_rx";
 import {map} from "rxjs/operators"
 
 class Output1 {
@@ -172,6 +181,60 @@ it('sortingMap works changing sort values', () => {
     ex(_cold('--0---------1-------|', [ [x2,x1,x3,x5],                [x3,x1] ]).pipe(sm))
       .toBe('-----0----1-2-------|', [ [x5,x1,x2,x3], [x1,x2,x5,x3], [x1,x3] ])
 
+  })
+})
+
+it ("compareArray (numbers) works", () => {
+  let arr1: number[], arr2: number[]
+
+  arr1 = []
+  arr2 = [1, 2, 3, 4]
+  expect(compareArray(arr1, arr2)).toBeGreaterThanOrEqual(-1)
+
+  arr1 = [1, 2, 3, 4]
+  arr2 = []
+  expect(compareArray(arr1, arr2)).toBeLessThanOrEqual(1)
+
+  arr1 = []
+  arr2 = []
+  expect(compareArray(arr1, arr2)).toBe(0)
+
+  arr1 = [1, 2, 3, 4]
+  arr2 = [1, 2, 3, 4]
+  expect(compareArray(arr1, arr2)).toBe(0)
+
+  arr1 = [1, 2, 3, 4]
+  arr2 = [1, 2, 3, 5]
+  expect(compareArray(arr1, arr2)).toBeGreaterThanOrEqual(-1)
+
+  arr1 = [1, 2, 3, 5]
+  arr2 = [1, 2, 3, 4]
+  expect(compareArray(arr1, arr2)).toBeGreaterThanOrEqual(1)
+
+  arr1 = [1, 2, 3]
+  arr2 = [1, 1, 4, 5]
+  expect(compareArray(arr1, arr2)).toBeGreaterThanOrEqual(1)
+
+  arr1 = [1]
+  arr2 = [1, 2, 3]
+  expect(compareArray(arr1, arr2)).toBeLessThanOrEqual(1)
+})
+
+it('sortingMap works custom compareF', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    const sm = sortingMap(
+      (x: number[]) => of(x),
+      (arr1, arr2) => arr1.length - arr2.length
+    )
+
+    ex(cold<number[][]>('--|').pipe(sm))
+      .toBe('--|')
+    ex(cold('-a-|', { a: [ [1,2,3,4], [1,2], [1,2,3], [] ] })
+      .pipe(sm))
+      .toBe('-a-|', { a: [ [], [1,2], [1,2,3], [1,2,3,4] ] })
   })
 })
 

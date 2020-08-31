@@ -87,6 +87,39 @@ export function undiff<T>(
   )
 }
 
+export function compareDefault<T>(a: T|undefined, b: T|undefined): number {
+  function defined<T>(x: T|undefined): x is T {
+    return x !== undefined;
+  }
+  if (!defined(a)) {
+    if (!defined(b)) return 0
+    return 1
+  }
+  else {
+    if (!defined(b)) return -1
+    return a === b ? 0 : a < b ? -1 : 1;
+  }
+}
+
+/**
+ * Comparison function to use when sorting array of arrays.
+ */
+export function compareArray<T>(a: T[], b: T[],
+                                compareF: (a: T|undefined, b: T|undefined) => number = compareDefault)
+  : number
+{
+  const len = Math.max(a.length, b.length)
+
+  for (let i=0; i<=len ;i++) {
+    const A = a[i]
+    const B = b[i]
+    const c = compareF(A, B)
+    if (c !== 0)
+      return c
+  }
+  return 0
+}
+
 export function sortingMap<X, C>(
   comparatorF: (x: X) => Observable<C>,
   compareF: (c1: C, c2: C) => number = (a: any, b: any) => (a - b)

@@ -121,6 +121,12 @@ export function tapsFromGesture(gesture: TTouchGesture, maxDrag: number = 10.0)
   )
 }
 
+// export function doubleTaps(duration: number, distance: number)
+//   : OperatorFunction<TTap, TTap[]>
+// {
+//   // TODO: in progress
+// }
+
 export function pressesFromGesture(gesture: TTouchGesture,
                                    maxDuration: number,
                                    maxDrag: number = 10.0)
