@@ -137,11 +137,9 @@ export function doubleTaps<T>(duration: number, distance: number)
       const p0 = tap0.touch.point
       const p1 = tap0.touch.point
 
-
-
       return (
         t1 - t0 <= duration &&
-        Point.distance(p0, p1) <= distance
+       p0.distanceWithin(p1, distance)
       )
     })
   )
