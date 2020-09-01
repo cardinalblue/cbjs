@@ -123,7 +123,7 @@ export function tapsFromGesture(gesture: TTouchGesture, maxDrag: number = 10.0)
   )
 }
 
-function doubleTargetTaps<T>(duration: number, distance: number)
+export function doubleTargetTaps<T>(duration: number, distance: number)
   : OperatorFunction<[Widget|undefined, TTap], [Widget|undefined, TTap][]>
 {
   return src$ => src$.pipe(
