@@ -123,14 +123,14 @@ export function tapsFromGesture(gesture: TTouchGesture, maxDrag: number = 10.0)
   )
 }
 
-export function doubleTargetTaps<T>(duration: number, distance: number)
-  : OperatorFunction<[Widget|undefined, TTap], [Widget|undefined, TTap][]>
+export function doubleTaps<T>(duration: number, distance: number)
+  : OperatorFunction<TTap, TTap[]>
 {
   return src$ => src$.pipe(
     pairwise(),
-    filter(targetTaps => {
-      const tap0 = targetTaps[0][1]
-      const tap1 = targetTaps[1][1]
+    filter(taps => {
+      const tap0 = taps[0]
+      const tap1 = taps[1]
 
       const t0 = tap0.tStart
       const t1 = tap1.tStart

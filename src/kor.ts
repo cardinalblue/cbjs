@@ -70,16 +70,18 @@ export class Point implements Elementable<number>{
   dot(other: Point): number {
     return this.x * other.x + this.y * other.y
   }
+  distanceWithin(point: Point, distance: number): boolean {
+    const distanceSquared = distance * distance
+    const actualDistanceSquared = (
+      (this.x - point.x) * (this.x - point.x) +
+      (this.y - point.y) * (this.y - point.y)
+    )
+    return actualDistanceSquared <= distanceSquared
+  }
   static centroid(...points: Point[]): Point {
     return new Point(
       points.reduce((t, p) => t + p.x, 0) / points.length,
       points.reduce((t, p) => t + p.y, 0) / points.length
-    )
-  }
-  static distance(p0: Point, p1: Point) {
-    return Math.sqrt(
-      Math.pow(p0.x - p1.x, 2) +
-      Math.pow(p0.y - p1.y, 2)
     )
   }
 }
