@@ -1,9 +1,11 @@
 import {Millisec, pairFirst} from "./util_rx"
 import {now} from "./util"
 import {interval, Observable, OperatorFunction, zip} from "rxjs"
-import {delay, every, filter, first, map, take, takeUntil} from "rxjs/operators"
+import {delay, every, filter, first, map, pairwise, take, takeUntil} from "rxjs/operators"
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
 import {taplogT} from "./touch_dom";
+import {Point} from "./kor";
+import {Widget} from "./widget";
 
 export class TTap<PlatformEvent=any> {
   constructor(readonly touch: TTouch,                             // The first touch of the tap
@@ -121,11 +123,29 @@ export function tapsFromGesture(gesture: TTouchGesture, maxDrag: number = 10.0)
   )
 }
 
-// export function doubleTaps(duration: number, distance: number)
-//   : OperatorFunction<TTap, TTap[]>
-// {
-//   // TODO: in progress
-// }
+function doubleTargetTaps<T>(duration: number, distance: number)
+  : OperatorFunction<[Widget|undefined, TTap], [Widget|undefined, TTap][]>
+{
+  return src$ => src$.pipe(
+    pairwise(),
+    filter(targetTaps => {
+      const tap0 = targetTaps[0][1]
+      const tap1 = targetTaps[1][1]
+
+      const t0 = tap0.tStart
+      const t1 = tap1.tStart
+      const p0 = tap0.touch.point
+      const p1 = tap0.touch.point
+
+
+
+      return (
+        t1 - t0 <= duration &&
+        Point.distance(p0, p1) <= distance
+      )
+    })
+  )
+}
 
 export function pressesFromGesture(gesture: TTouchGesture,
                                    maxDuration: number,
