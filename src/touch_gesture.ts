@@ -121,21 +121,22 @@ export function tapsFromGesture(gesture: TTouchGesture, maxDrag: number = 10.0)
   )
 }
 
-export function doubleTaps<T>(duration: number, distance: number)
+export function isDoubleTap(tap0: TTap, tap1: TTap) {
+  const t0 = tap0.tStart
+  const t1 = tap1.tStart
+  const p0 = tap0.touch.point
+  const p1 = tap0.touch.point
+  return (
+    t1 - t0 <= duration &&
+    p0.distanceWithin(p1, distance)
+  )
+}
+export function doubleTaps(duration: number, distance: number)
   : OperatorFunction<TTap, TTap[]>
 {
   return src$ => src$.pipe(
     pairwise(),
-    filter(([tap0, tap1]) => {
-      const t0 = tap0.tStart
-      const t1 = tap1.tStart
-      const p0 = tap0.touch.point
-      const p1 = tap0.touch.point
-      return (
-        t1 - t0 <= duration &&
-        p0.distanceWithin(p1, distance)
-      )
-    })
+    filter(taps => isDoubleTap(...taps)),
   )
 }
 
