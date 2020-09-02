@@ -125,7 +125,7 @@ export function isDoubleTap(duration: number, distance: number, tap0: TTap, tap1
   const t0 = tap0.tStart
   const t1 = tap1.tStart
   const p0 = tap0.touch.point
-  const p1 = tap0.touch.point
+  const p1 = tap1.touch.point
   return (
     t1 - t0 <= duration &&
     p0.distanceWithin(p1, distance)
