@@ -137,8 +137,8 @@ export function filterInstances<TIN, TOUT extends Constructor>(
   return array.filter(x => x instanceof klass) as any as Array<InstanceType<TOUT>>
 }
 
-type TYPER<T, C> = (t: T) => boolean
-function filterType<T, C>(ts: T[], f: TYPER<T, C>): C[] {
+export type TYPER<T, C> = (t: T) => boolean
+export function filterType<T, C>(ts: T[], f: TYPER<T, C>): C[] {
   return (ts.filter(f) as any) as C[]
 }
 
