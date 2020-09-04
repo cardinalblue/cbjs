@@ -35,7 +35,6 @@ export class BaseAnimation<X> implements IAnimation<X> {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly valueTo: IAnimationValueF<X>, readonly t: Millisec = 0) {}
   static NULL: BaseAnimation<any> = new BaseAnimation((x: any) => x, 0)
-
   multi(other: IAnimation<X>) {
     return new MultiAnimation(this, other)
   }
@@ -66,7 +65,7 @@ export class Animatorer<X> {
   // ---- Lifecycle
   constructor(xInitial: X, readonly scheduler: SchedulerLike = asyncScheduler) {
 
-    this.output$   = new BehaviorSubject([xInitial, BaseAnimation.NULL])
+    this.output$   = new BehaviorSubject([xInitial, BaseAnimation.NULL as IAnimation<X>])
     this.value$    = new BehaviorSubject(xInitial)
 
     // ---- This enqueues-out MultiAnimations based on their duration
