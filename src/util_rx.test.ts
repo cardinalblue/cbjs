@@ -1,5 +1,7 @@
 import {
-  cachedMapper, combineLatestWithEmpty,
+  cachedMapper,
+  combineLatestWithChanges,
+  combineLatestWithEmpty,
   enqueue,
   extend,
   filterInstanceOf,
@@ -19,7 +21,7 @@ import {
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "../setup_test"
-import {catchError, map, mergeMap, share, switchMap, take, tap, flatMap} from "rxjs/operators"
+import {catchError, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -181,6 +183,27 @@ it('combineLatestWithEmpty works', () => {
       .toBe('---n--', {
         n: [],
       })
+  })
+})
+it('combineLatestWithChanges works', () => {
+  const scheduler = testScheduler()
+  scheduler.run( helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(combineLatestWithChanges([])).toBe('(a|', {a: [[], []]})
+
+    const a$ = cold('---a----c----e----g-----|')
+    const b$ = cold('------b----d----f----h------|')
+    ex(combineLatestWithChanges([a$, b$]))
+      .toBe(        '------0-1--2-3--4-5--6------|', [
+        [['a', 'b'], ['b']],
+        [['c', 'b'], ['c']],
+        [['c', 'd'], ['d']],
+        [['e', 'd'], ['e']],
+        [['e', 'f'], ['f']],
+        [['g', 'f'], ['g']],
+        [['g', 'h'], ['h']],
+      ])
   })
 })
 it('cachedMapper works', () => {
