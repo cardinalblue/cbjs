@@ -338,6 +338,8 @@ export function combineLatestWithEmpty<T>(arr: Array<Observable<T>>) {
   return arr.length ? combineLatest(arr) : of([]); // used instead of EMPTY so the Observable does not complete()
 }
 
+export function combineLatestWithChanges<T1, T2>(arr: [Observable<T1>, Observable<T2>])
+  : Observable<[[T1, T2], (T1|T2)[]]>;
 export function combineLatestWithChanges<T>(arr: Array<Observable<T>>): Observable<[T[], T[]]> {
   var version = 0
   const arrV$ = arr.map(
