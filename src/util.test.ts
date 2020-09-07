@@ -1,4 +1,4 @@
-import {arrayRemove, filterTruthy, insertAt, mapmap, toMap, typeCheck} from "./util"
+import {arrayRemove, filterTruthy, filterType, insertAt, mapmap, toMap, typeCheck} from "./util"
 
 it('mapmap works', () => {
   expect(mapmap({ a: 2, b: 3 }, v => v + 1)).toEqual({ a: 3, b: 4})
@@ -32,4 +32,13 @@ it ('toMap works', () => {
 it ('filterTruthy', () => {
   expect(filterTruthy([ 1, null, 2, 3, 4 ]))
     .toEqual([1,2,3,4])
+})
+
+it ('filterType works', () => {
+
+  const a: number[] =
+    filterType<any, number>([1, "22", 3, "444"],
+        i => typeof i === 'number')
+  expect(a).toEqual([1, 3])
+
 })

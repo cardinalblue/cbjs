@@ -5,26 +5,25 @@ import {now} from "./util"
 import * as _ from "lodash"
 import {safeKey} from "./util_math";
 
-export interface TTouchTarget {}
-export type TTouchTargeting = {
-  target: TTouchTarget,
+export type TTouchTargeting<TT=any> = {
+  target: TT,
   rect:   Rect,
 }
 
-export class TTouch {
+export class TTouch<TT=any> {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly identifier: number,
               readonly point: Point,
               readonly button: number|undefined = undefined,
-              readonly targetings: TTouchTargeting[] = [],
+              readonly targetings: TTouchTargeting<TT>[] = [],
               )
   {
   }
 }
 
-export class TTouchEvent<PlatformEvent=any> {
+export class TTouchEvent<PlatformEvent=any, TT=any> {
   // eslint-disable-next-line no-useless-constructor
-  constructor(readonly touches: TTouch[],
+  constructor(readonly touches: TTouch<TT>[],
               readonly t: Millisec = now(),
               readonly platform: PlatformEvent|null = null,
               ) {
@@ -45,7 +44,7 @@ export class TTouchEvent<PlatformEvent=any> {
     }
 
     // Convenient function
-  get targetings(): TTouchTargeting[] {
+  get targetings(): TTouchTargeting<TT>[] {
     return _.uniq(_.flatMap(this.touches, touch => touch.targetings))
   }
 }
