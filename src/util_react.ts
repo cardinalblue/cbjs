@@ -25,9 +25,9 @@ export function useObservable<T>(observable: Observable<T>,
 }
 useObservable.debug = false
 
-export function useBehaviorSubject<T>(subject: BehaviorSubject<T>) : T;
-export function useBehaviorSubject<T>(subject: T) : T;
-export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T, debugF?: (t: T) => any)
+export function useBehaviorSubject<T>(subject: BehaviorSubject<T>,    debugF?: (t: T) => any) : T;
+export function useBehaviorSubject<T>(subject: T,                     debugF?: (t: T) => any) : T;
+export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (t: T) => any)
   : T
 {
   // React hook always have to call `useState`, even if not passed a BehaviorSubject

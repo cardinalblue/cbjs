@@ -11,11 +11,13 @@ export type TTouchTargeting<TT=any> = {
 }
 
 export class TTouch<TT=any> {
+  targetings: TTouchTargeting<TT>[] = []
+
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly identifier: number,
               readonly point: Point,
-              readonly button: number|undefined = undefined,
-              readonly targetings: TTouchTargeting<TT>[] = [],
+              readonly pointElement?: Point,
+              readonly button?: number,
               )
   {
   }

@@ -190,7 +190,8 @@ it('combineLatestWithChanges works', () => {
   scheduler.run( helpers => {
     const {cold, expectObservable: ex} = helpers
 
-    ex(combineLatestWithChanges([])).toBe('(a|', {a: [[], []]})
+    // @ts-ignore
+    ex(combineLatestWithChanges<number>([])).toBe('(a|', {a: [[], []]})
 
     const a$ = cold('---a----c----e----g-----|')
     const b$ = cold('------b----d----f----h------|')
