@@ -1,4 +1,4 @@
-import {arrayRemove, filterTruthy, filterType, insertAt, mapmap, toMap, typeCheck} from "./util"
+import {arrayRemove, clone, filterTruthy, filterType, insertAt, mapmap, toMap, typeCheck} from "./util"
 
 it('mapmap works', () => {
   expect(mapmap({ a: 2, b: 3 }, v => v + 1)).toEqual({ a: 3, b: 4})
@@ -41,4 +41,31 @@ it ('filterType works', () => {
         i => typeof i === 'number')
   expect(a).toEqual([1, 3])
 
+})
+
+class M {
+  constructor(readonly a: number, readonly b: number) {}
+  toString() {
+    return `${this.a}`
+  }
+}
+class N extends M {
+  constructor(readonly c: number, readonly d: number) {
+    super(100, 200)
+  }
+  to100() {
+    return this.a * 100
+  }
+}
+it ('clone works', () => {
+  const n1 = new N(3, 4)
+  expect(n1.a).toStrictEqual(100)
+  expect(n1.c).toStrictEqual(3)
+
+  const n2 = clone(n1, { c: 3000, a: 5 })
+  expect(n1.c).toStrictEqual(3)
+  expect(n2.c).toStrictEqual(3000)
+  expect(n2.toString()).toStrictEqual('5')
+  expect(n2.to100()).toStrictEqual(500)
+  expect(n1.to100()).toStrictEqual(10000)
 })

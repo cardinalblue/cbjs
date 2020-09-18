@@ -28,20 +28,38 @@ import {enqueue, extend, Millisec} from "./util_rx"
 
 type IAnimationValueF<X> = (x: X) => X
 export interface IAnimation<X> {
-  valueTo:    IAnimationValueF<X>
-  t:          Millisec
+  valueTo:                IAnimationValueF<X>
+  t:                      Millisec
+  map(f: (x: X) => X): IAnimation<X>
 }
 export class BaseAnimation<X> implements IAnimation<X> {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly valueTo: IAnimationValueF<X>, readonly t: Millisec = 0) {}
+
+  // ---- Convenience
   static NULL: BaseAnimation<any> = new BaseAnimation((x: any) => x, 0)
+
+  // ---- IAnimation interface
+  map(mapper: (x: X) => X) {
+    return new BaseAnimation<X>((x: X) => mapper(this.valueTo(x)), this.t)
+  }
+  multi(other: IAnimation<X>) {
+    return new MultiAnimation(this, other)
+  }
 }
 export class MultiAnimation<X> implements IAnimation<X> {
+
+  // ---- IAnimation interface
   get valueTo(): IAnimationValueF<X> {
     return (x0: X) =>
       this.animations.reduce((x, a: IAnimation<X>) => a.valueTo(x), x0)
   }
   get t() { return this.animations.reduce((t, a) => t + a.t, 0) }
+  map(mapper: (x: X) => X) {
+    return new MultiAnimation<X>(
+      ...this.animations.map(a => a.map(mapper))
+    )
+  }
 
   animations: Array<IAnimation<X>>
   constructor(...animations: Array<IAnimation<X>>) {
@@ -62,7 +80,7 @@ export class Animatorer<X> {
   // ---- Lifecycle
   constructor(xInitial: X, readonly scheduler: SchedulerLike = asyncScheduler) {
 
-    this.output$   = new BehaviorSubject([xInitial, BaseAnimation.NULL])
+    this.output$   = new BehaviorSubject([xInitial, BaseAnimation.NULL as IAnimation<X>])
     this.value$    = new BehaviorSubject(xInitial)
 
     // ---- This enqueues-out MultiAnimations based on their duration

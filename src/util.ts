@@ -189,6 +189,9 @@ export function alos<T>(input: T, f: (t: T) => any): T {
   f(input)
   return input
 }
+export function clone<T extends object>(t: T, mod: Partial<T> = {}): T {
+  return Object.assign(Object.create(t), mod)
+}
 
 // ----------------------------------------------------------------------------
 // String
