@@ -157,7 +157,7 @@ export class Size extends Point {
     )
   }
   add(ps: Point|Size) {
-    return new Size(ps.x, ps.y)
+    return new Size(this.x + ps.x, this.y + ps.y)
   }
 
   toPoint(): Point {
