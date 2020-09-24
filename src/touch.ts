@@ -20,6 +20,7 @@ export class TTouch<TT=any> {
               readonly targetings: TTouchTargeting<TT>[] = [])
   {
   }
+
 }
 
 export class TTouchEvent<PlatformEvent=any, TT=any> {
