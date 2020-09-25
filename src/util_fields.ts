@@ -7,6 +7,10 @@ export function fieldToString<D>(field: any, _default: D): string | D {
   return _default
 }
 
+export function fieldToArray<D>(field: any[], _default: D): any[] | D {
+  return Array.isArray(field) ? field : _default
+}
+
 export function fieldToPoint<D>(field: any, _default: D)
   : Point | D {
   if (field instanceof Array
