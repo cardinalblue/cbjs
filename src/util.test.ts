@@ -1,4 +1,4 @@
-import {arrayRemove, clone, filterTruthy, filterType, insertAt, mapmap, toMap, typeCheck} from "./util"
+import {allMaxBy, arrayRemove, clone, filterTruthy, filterType, insertAt, mapmap, maxBy, toMap, typeCheck} from "./util"
 
 it('mapmap works', () => {
   expect(mapmap({ a: 2, b: 3 }, v => v + 1)).toEqual({ a: 3, b: 4})
@@ -42,6 +42,59 @@ it ('filterType works', () => {
   expect(a).toEqual([1, 3])
 
 })
+
+it("allMaxBy works", () => {
+
+  let arr = [0, 1, 2, 3, 5, 5, 5, 5, 5, 5, 5, 2, 3, 5, 4, 3, -1]
+  let max = allMaxBy(
+    arr,
+    (a, b) => a-b
+  )
+  expect(max).toEqual(expect.arrayContaining([5, 5, 5, 5, 5, 5, 5, 5]))
+  expect(max.length).toEqual(8)
+
+  arr = []
+  max = allMaxBy(
+    arr,
+    (a, b) => a-b
+  )
+  expect(max).toEqual(expect.arrayContaining([]))
+  expect(max.length).toEqual(0)
+
+  arr = [5]
+  max = allMaxBy(
+    arr,
+    (a, b) => a-b
+  )
+  expect(max).toEqual(expect.arrayContaining([5]))
+  expect(max.length).toEqual(1)
+
+});
+
+it("maxBy works", () => {
+
+  let arr = [0, 1, 2, 3, 5, 5, 5, 5, 5, 5, 5, 2, 3, 5, 4, 3, -1]
+  let max = maxBy(
+    arr,
+    (a, b) => a-b
+  )
+  expect(max).toEqual(5)
+
+  arr = []
+  max = maxBy(
+    arr,
+    (a, b) => a-b
+  )
+  expect(max).toEqual(undefined)
+
+  arr = [5]
+  max = maxBy(
+    arr,
+    (a, b) => a-b
+  )
+  expect(max).toEqual(5)
+
+});
 
 class M {
   constructor(readonly a: number, readonly b: number) {}
