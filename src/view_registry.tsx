@@ -1,11 +1,12 @@
+import * as React from "react";
+
 // ------------------------------------------------------------
 // TypeRegistry
 //
-import React, {ReactElement, useContext} from "react";
 
 export type Newable<T> = { new (...args: any[]): T; }
 
-export class TypeRegistry<T,V> extends Array<[ Newable<T>, (t: T) => V ]> {
+export class TypeRegistry<T,V> extends Array<[ Newable<T>, (ta: T) => V ]> {
   constructor() {
     super();
   }
@@ -13,7 +14,7 @@ export class TypeRegistry<T,V> extends Array<[ Newable<T>, (t: T) => V ]> {
     this.push([
       n,
       factory as (t: T) => V    // Force TypeScript because we manually
-                                // typecheck before we call the factoriy
+                                // typecheck before we call the factory
     ])
   }
   produce(k: T): V|undefined {
@@ -26,25 +27,26 @@ export class TypeRegistry<T,V> extends Array<[ Newable<T>, (t: T) => V ]> {
 // ------------------------------------------------------------
 // ViewRegistry use hooks
 //
-const ViewRegistryContext = React.createContext(new TypeRegistry<object, ReactElement>())
+const ViewRegistryContext = React.createContext(new TypeRegistry<object, React.ReactElement>())
 
-export function ViewRegistryProvider(props: {
-  registry: TypeRegistry<object, ReactElement>,
-  children: ReactElement|(ReactElement[])
-})
+export const ViewRegistryProvider = React.memo((props: {
+  registry: TypeRegistry<object, React.ReactElement>,
+  children: React.ReactElement|(React.ReactElement[])
+}) =>
 {
+
   return (
     <ViewRegistryContext.Provider value={props.registry}>
       { props.children }
     </ViewRegistryContext.Provider>
   )
+})
+export function useViewRegistry(): TypeRegistry<object, React.ReactElement> {
+  return React.useContext(ViewRegistryContext)
 }
-export function useViewRegistry(): TypeRegistry<object, ReactElement> {
-  return useContext(ViewRegistryContext)
-}
-export function useViewFor(k: object|null|undefined): ReactElement|undefined
+export function useViewFor(k: object|null|undefined): React.ReactElement|undefined
 {
-  const registry = useContext(ViewRegistryContext)
+  const registry = React.useContext(ViewRegistryContext)
   if (!k) return undefined
   return registry.produce(k)
 }
