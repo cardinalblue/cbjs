@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.43",
+  "version": "1.1.44",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -32,7 +32,6 @@
   "peerDependencies": {
     "@types/lodash": ">=4.14",
     "@types/react": ">=16.9",
-    "@types/react-dom": "^16.9.8",
     "firebase": "^7.18.0",
     "firebaseui": "^4.6.1",
     "lodash": ">=4.14",
@@ -50,6 +49,7 @@
     "@types/jest": "^24.0.18",
     "@types/lodash": ">=4.14",
     "@types/react": ">=16.9.2",
+    "@types/react-dom": "^16.9.8",
     "babel-jest": "^24.9.0",
     "firebase": "^7.18.0",
     "firebaseui": "^4.6.1",
