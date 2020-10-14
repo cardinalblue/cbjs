@@ -1,4 +1,6 @@
 import * as React from "react";
+import {ID} from "./util";
+import {BehaviorSubject} from "rxjs";
 
 // ------------------------------------------------------------
 // TypeRegistry
@@ -17,6 +19,7 @@ export class TypeRegistry<T,V> extends Array<[ Newable<T>, (ta: T) => V ]> {
                                 // typecheck before we call the factory
     ])
   }
+
   produce(k: T): V|undefined {
     const [ t, factory ] = this.find(([ t, factory ]) => k instanceof t) ||
     [undefined, undefined]
