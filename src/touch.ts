@@ -15,9 +15,10 @@ export class TTouch<TT=any> {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly identifier: number,
               readonly point: Point,
-              readonly pointElement?: Point,
+              readonly elementRect: Rect,
               readonly button?: number,
-              readonly targetings: TTouchTargeting<TT>[] = [])
+              readonly targetings: TTouchTargeting<TT>[] = [],
+              )
   {
   }
 

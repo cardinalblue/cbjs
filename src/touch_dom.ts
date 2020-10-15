@@ -35,22 +35,21 @@ function pointNormalized(point: Point, rect: Rect) {
   return point.subtract(rect.origin).scale(1/rect.size.x, 1/rect.size.y)
 }
 
-export function convertMouseToTouchEvent(e: MouseEvent<any>, elementRect?: Rect): TTouchEvent {
+export function convertMouseToTouchEvent(e: MouseEvent<any>, elementRect: Rect): TTouchEvent {
   const point = new Point(e.clientX, e.clientY)
-  const pointElement = elementRect ? pointNormalized(point, elementRect) : undefined
   return new TTouchEvent(
-    [ new TTouch(0, point, pointElement, e.button)],
+    [ new TTouch(0, point, elementRect, e.button)],
     now(),
     e)
 }
-export function convertTouchToTouchEvent(e: TouchEvent<any>, elementRect?: Rect): TTouchEvent {
+export function convertTouchToTouchEvent(e: TouchEvent<any>, elementRect: Rect): TTouchEvent {
   const touches = []
   for (let i=0; i<e.touches.length; i++) {
     const t = e.touches.item(i)
     if (t) {
       const point = new Point(t.clientX, t.clientY)
       const pointElement = elementRect ? pointNormalized(point, elementRect) : undefined
-      touches.push(new TTouch(t.identifier, point, pointElement))
+      touches.push(new TTouch(t.identifier, point, elementRect))
     }
   }
   return new TTouchEvent(touches, now(), e)
