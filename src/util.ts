@@ -152,6 +152,49 @@ export function objectFromArray<V>(array: Array<[string, V]>): { [s: string]: V 
   }, {});
 }
 
+/**
+ * Finds all max values in `arr` using `compareF`.
+ */
+export function allMaxBy<T>(arr: T[],
+                            compareF: (a: T, b: T) => number)
+  : T[]
+{
+  if (!arr.length) return []
+
+  let max = arr[0], maxes = [arr[0]]
+  for (let i = 1; i < arr.length; i++) {
+    const compare = compareF(max, arr[i])
+    if (compare < 0) {
+      max = arr[i]
+      maxes = [max]
+    }
+    else if (compare === 0) {
+      maxes.push(arr[i])
+    }
+  }
+
+  return maxes
+}
+
+/**
+ * Finds the max value in `arr` using `compareF`.
+ */
+export function maxBy<T>(arr: T[],
+                         compareF: (a: T, b: T) => number)
+  : T|undefined
+{
+  if (!arr.length) return undefined
+
+  let max = arr[0]
+  for (let i = 1; i < arr.length; i++) {
+    const compare = compareF(max, arr[i])
+    if (compare < 0)
+      max = arr[i]
+  }
+
+  return max
+}
+
 
 // ----------------------------------------------------------------------------
 // Map/Object
