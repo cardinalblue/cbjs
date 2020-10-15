@@ -15,7 +15,6 @@ export class TTouch<TT=any> {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly identifier: number,
               readonly point: Point,
-              readonly elementRect: Rect,
               readonly button?: number,
               readonly targetings: TTouchTargeting<TT>[] = [],
               )
@@ -27,6 +26,7 @@ export class TTouch<TT=any> {
 export class TTouchEvent<PlatformEvent=any, TT=any> {
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly touches: TTouch<TT>[],
+              readonly elementRect: Rect,
               readonly t: Millisec = now(),
               readonly platform: PlatformEvent|null = null,
               ) {
