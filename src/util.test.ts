@@ -37,8 +37,10 @@ it ('filterTruthy', () => {
 it ('filterType works', () => {
 
   const a: number[] =
-    filterType<any, number>([1, "22", 3, "444"],
-        i => typeof i === 'number')
+    filterType<any, number>(
+      [1, "22", 3, "444"],
+      (i): i is number => typeof i === 'number'
+    )
   expect(a).toEqual([1, 3])
 
 })
