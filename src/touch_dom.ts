@@ -49,7 +49,6 @@ export function convertTouchToTouchEvent(e: TouchEvent<any>, elementRect: Rect):
     const t = e.touches.item(i)
     if (t) {
       const point = new Point(t.clientX, t.clientY)
-      const pointElement = elementRect ? pointNormalized(point, elementRect) : undefined
       touches.push(new TTouch(t.identifier, point))
     }
   }

@@ -23,6 +23,7 @@ export * from "./util_rx";
 export * from "./widget";
 export * from "./firebaseInit";
 export * from "./firebaseUpload";
+export * from "./registries";
 
 // TODO: moved to @piccollage/cbjs due to firebaseui bug when running tests
 // export * from './login/login_view'
