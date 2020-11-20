@@ -6,6 +6,12 @@ export class Domainer {
 
   static debug: boolean = false
 
+  observing<T>(source: Observable<T>) {
+    source.pipe(
+      takeUntil(this.shutdown$),
+    ).subscribe()
+  }
+
   triggering<T, M>(trigger$: Observable<T>,
                      manipulator: (t: T) => Observable<M>,
                      monad = switchMap) {
