@@ -1,7 +1,7 @@
-import {Observable, Subscriber, from, forkJoin} from "rxjs"
-import {flatMap, mergeMap} from "rxjs/operators";
+import {forkJoin, from, Observable, Subscriber} from "rxjs"
+import {mergeMap} from "rxjs/operators";
 
-import * as firebase from "firebase"
+import * as firebase from "firebase/app"
 import {promise$} from "./util_rx";
 
 export type QuerySnap           = firebase.firestore.QuerySnapshot

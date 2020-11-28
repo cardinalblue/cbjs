@@ -26,7 +26,6 @@ import {
   filter,
   finalize,
   first,
-  flatMap,
   ignoreElements,
   last,
   map,
@@ -135,7 +134,7 @@ export function filterObservable<T>(predicate: (input: T) => Observable<boolean>
     zip(
       source,
       source.pipe(
-        flatMap(s =>
+        mergeMap(s =>
           predicate(s).pipe(
             first(_ => true, false)
             // WARNING: `first` is different in RxJS that in RxJava!
@@ -154,7 +153,7 @@ export function detour<T, R>(
   observableFalse: ((t: T) => Observable<R>) = PASSTHRU)
   : OperatorFunction<T, R>
 {
-  return flatMap((t: T) =>
+  return mergeMap((t: T) =>
     selector(t) ? observableTrue(t) : observableFalse(t)
   )
 }
@@ -425,7 +424,7 @@ export function flattenObject<TIN, TOUT>(
         )
       )
     ),
-    flatMap(obs => combineLatest(obs) as Observable<[[string, TOUT]]>),
+    mergeMap(obs => combineLatest(obs) as Observable<[[string, TOUT]]>),
     map(objectFromArray)
   )
 }
