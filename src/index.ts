@@ -6,6 +6,8 @@ export * from "./command";
 export * from "./contexted_domainer";
 export * from "./contexter";
 export * from "./domainer";
+export * from "./firebaseInit";
+export * from "./firebaseUpload";
 export * from "./firestore_sync";
 export * from "./firestore_clone";
 export * from "./font"
@@ -16,10 +18,12 @@ export * from "./platform";
 export * from "./progress_plugin";
 export * from "./progress_widget";
 export * from "./ref_store";
+export * from "./registries";
 export * from "./touch";
 export * from "./touch_dom";
 export * from "./touch_gesture";
 export * from "./touch_transform";
+export * from "./type_map_registry"
 export * from "./undo";
 export * from "./upload_view"
 export * from "./upload_widget"
@@ -31,9 +35,6 @@ export * from "./util_react";
 export * from "./util_react_views"
 export * from "./util_rx";
 export * from "./widget";
-export * from "./firebaseInit";
-export * from "./firebaseUpload";
-export * from "./registries";
 
 // TODO: moved to @piccollage/cbjs due to firebaseui bug when running tests
 // export * from './login/login_view'
