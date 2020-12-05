@@ -69,3 +69,8 @@ export function safeKey(obj: any, key: string) {
     && obj[key]
 }
 
+// ==========================================================================
+
+export const radToDeg = (rad: number) => rad * (180 / Math.PI)
+export const degToRad = (deg: number) => deg * (Math.PI / 180)
+

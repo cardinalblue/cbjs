@@ -39,7 +39,8 @@
     "rxjs": ">=6.5"
   },
   "dependencies": {
-    "immutable": "^4.0.0-rc.12"
+    "immutable": "^4.0.0-rc.12",
+    "resize-observer": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

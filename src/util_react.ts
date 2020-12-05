@@ -1,6 +1,9 @@
-import {DependencyList, MutableRefObject, useEffect, useState} from "react";
+import {DependencyList, MutableRefObject, RefObject, useEffect, useState} from "react";
 import {Queue} from "./util";
 import {BehaviorSubject, Observable} from "rxjs";
+import {Rect, Size} from "./kor"
+import {ResizeObserver} from "resize-observer"
+import {domBoundingClientRect} from "./touch_dom"
 
 
 // ----------------------------------------------------------------
@@ -80,3 +83,71 @@ export function useFocusing(ref: MutableRefObject<HTMLElement | null>, doFocus: 
     )
   })
 }
+
+// -----------------------------------------------------------------------
+
+export function useResize(element: RefObject<Element>|Element|Window|null,
+                          callback: (size: Size) => void)
+{
+  useEffect(() => {
+
+    let e = element as any
+    if (e && e.current !== undefined)
+      e = e.current
+
+    const listener = () => {
+      if (e !== null && e !== undefined) {
+        const size =
+          (e.innerWidth  !== undefined) ? new Size(e.innerWidth, e.innerHeight) :
+            (e.clientWidth !== undefined) ? new Size(e.clientWidth, e.clientHeight) :
+              null
+        size && callback(size)
+      }
+    }
+
+    // Call initially and listen for further updates
+    listener()
+    const obs = new ResizeObserver(entries => listener())
+    const dom =
+      (e === null) ? null :
+        (e.innerWidth !== undefined)  ? e.window.body :
+          (e.clientWidth !== undefined) ? e :
+            null
+    dom && obs.observe(dom)
+
+    // Cleanup
+    return () => ((dom && obs.unobserve(dom)))
+  })
+}
+
+export function useBoundingClientRect(element: RefObject<Element>|Element|Window|null,
+                                      callback: (rect: Rect) => void)
+{
+  useEffect(() => {
+
+    let e = element as any
+    if (e && e.current !== undefined)
+      e = e.current
+
+    const listener = () => {
+      if (e !== null && e !== undefined) {
+        const rect = domBoundingClientRect(e)
+        rect && callback(rect)
+      }
+    }
+
+    // Call initially and listen for further updates
+    listener()
+    const obs = new ResizeObserver(entries => listener())
+    const dom =
+      (e === null) ? null :
+        (e.innerWidth !== undefined)  ? e.window.body :
+          (e.clientWidth !== undefined) ? e :
+            null
+    dom && obs.observe(dom)
+
+    // Cleanup
+    return () => ((dom && obs.unobserve(dom)))
+  })
+}
+
