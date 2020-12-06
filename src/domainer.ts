@@ -12,6 +12,13 @@ export class Domainer {
     ).subscribe()
   }
 
+  activating<T>(activator$: Observable<T>, action: (t: T) => any) {
+    return activator$.pipe(
+      takeUntil(this.shutdown$),
+      tap(action),
+    ).subscribe()
+  }
+
   triggering<T, M>(trigger$: Observable<T>,
                      manipulator: (t: T) => Observable<M>,
                      monad = switchMap) {
