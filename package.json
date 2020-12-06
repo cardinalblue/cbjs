@@ -39,7 +39,9 @@
     "rxjs": ">=6.5"
   },
   "dependencies": {
+    "@types/react-dom": "^17.0.0",
     "immutable": "^4.0.0-rc.12",
+    "react-dom": "^17.0.1",
     "resize-observer": "^1.0.0"
   },
   "devDependencies": {
