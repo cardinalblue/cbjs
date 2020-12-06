@@ -15,6 +15,7 @@ export * from "./input_streamer";
 export * from "./kor";
 export * from "./manipulators"
 export * from "./platform";
+export * from "./portal";
 export * from "./progress_plugin";
 export * from "./progress_widget";
 export * from "./ref_store";
