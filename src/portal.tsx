@@ -5,7 +5,7 @@ import ReactDOM from "react-dom"
 import {useBehaviorSubject} from "./util_react"
 
 
-class MapDefault<K,V> extends Map<K,V> {
+export class MapDefault<K,V> extends Map<K,V> {
   constructor(readonly defaulter: (k: K) => V) { super() }
 
   static EMPTY() {
@@ -24,7 +24,7 @@ class MapDefault<K,V> extends Map<K,V> {
   }
 }
 
-const PortalContext = React.createContext(MapDefault.EMPTY())
+export const PortalContext = React.createContext(MapDefault.EMPTY())
 
 export function PortalProvider(props: {children: React.ReactElement|React.ReactElement[]}) {
   return (
@@ -37,6 +37,7 @@ export function PortalProvider(props: {children: React.ReactElement|React.ReactE
 export function PortalOutlet(props: { id: string,
                                       className?: string,
                                       style?: CSSProperties }) {
+
   const ref = useRef(null)
   const map = useContext(PortalContext)
   useEffect(() => {
