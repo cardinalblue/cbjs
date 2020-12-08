@@ -361,7 +361,7 @@ it('added works', () => {
       g: [4,6],
       h: [6]
     }
-    ex(cold('--a--b--c--d--e--f--g--h--|', values).pipe(added()))
+    ex(cold('--a--b--c--d--e--f--g--h--|', values).pipe(added<number>()))
       .toBe('-----b--c--d--e--f--g--h--|', {
         b: [],
         c: [1,2],

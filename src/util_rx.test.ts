@@ -540,7 +540,7 @@ it('flattenArray switching', () => {
       c: [],
     })
     ex($.pipe(
-      flattenArray(x => x)
+      flattenArray<Observable<string>, string>(x => x)
     )).toBe(
       '---0---(12)3---4---5', [
         ["m", "o"],
