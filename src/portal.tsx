@@ -1,5 +1,5 @@
 import * as React from "react";
-import {CSSProperties, ReactPortal, useContext, useEffect, useRef} from "react";
+import {CSSProperties, ReactNode, ReactNodeArray, ReactPortal, useContext, useEffect, useRef} from "react";
 import {BehaviorSubject} from "rxjs";
 import ReactDOM from "react-dom"
 import {useBehaviorSubject} from "./util_react"
@@ -36,7 +36,8 @@ export function PortalProvider(props: {children: React.ReactElement|React.ReactE
 
 export function PortalOutlet(props: { id: string,
                                       className?: string,
-                                      style?: CSSProperties }) {
+                                      style?: CSSProperties,
+                                      children: ReactNode|ReactNodeArray }) {
 
   const ref = useRef(null)
   const map = useContext(PortalContext)
@@ -44,11 +45,14 @@ export function PortalOutlet(props: { id: string,
     const bs$ = map.get(props.id)
     bs$.next(ref.current)
   })
-  return (<div id={`Portal_${props.id}`}
-               ref={ref}
-               className={ props.className }
-               style={ props.style }
-               />)
+  return (
+    <div id={`Portal_${props.id}`}
+         ref={ref}
+         className={ props.className }
+         style={ props.style }
+      >
+      { props.children }
+    </div>)
 }
 
 export function PortalContent(props: { id: string,
