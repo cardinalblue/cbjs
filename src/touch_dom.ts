@@ -1,6 +1,6 @@
 import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subject, Subscription} from 'rxjs'
 import {exhaustMap, filter, map, publishReplay, refCount, share, takeUntil, tap} from 'rxjs/operators'
-import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect} from 'react'
+import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect, useState} from 'react'
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
 import {Point, Rect, Size} from "./kor"
 import {log$, now} from "./util"
@@ -221,7 +221,7 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
 }
 
 export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
-                                 output$: (gesture: TTouchGesture) => void)
+                                  output$: (gesture: TTouchGesture) => void)
 {
   // LEARN: React and native browsers have entirely different event
   // sequences. So should NOT mix addEventListener/fromEvents and React event
@@ -231,9 +231,11 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
   // See https://fortes.com/2018/react-and-dom-events/
   //
 
-  const mousedown$ = new Subject<MouseEvent>()
-  const mousemove$ = new Subject<MouseEvent>()
-  const mouseup$   = new Subject<MouseEvent>()
+  const [state] = useState({
+    mousedown$: new Subject<MouseEvent>(),
+    mousemove$: new Subject<MouseEvent>(),
+    mouseup$:   new Subject<MouseEvent>(),
+  })
 
   useEffect(() => {
     console.log("++++ useGesturesReact")
@@ -244,9 +246,9 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
 
     if (typeof window !== "undefined" && typeof window.ontouchstart === 'undefined') {
       const mouseGesture$ = mouseGesturesFromEvents(
-        mousedown$,
-        mousemove$,
-        mouseup$,
+        state.mousedown$,
+        state.mousemove$,
+        state.mouseup$,
         domBoundingClientRect(e)
       )
       subs.push(mouseGesture$.subscribe(output$))
@@ -260,9 +262,9 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
   }, [elementRef, output$])
 
   return {
-    onMouseDown: (e: MouseEvent) => mousedown$.next(e),
-    onMouseMove: (e: MouseEvent) => mousemove$.next(e),
-    onMouseUp:   (e: MouseEvent) => mouseup$.next(e)
+    onMouseDown: (e: MouseEvent) => state.mousedown$.next(e),
+    onMouseMove: (e: MouseEvent) => state.mousemove$.next(e),
+    onMouseUp:   (e: MouseEvent) => state.mouseup$.next(e)
   }
 }
 
