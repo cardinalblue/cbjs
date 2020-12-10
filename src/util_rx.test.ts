@@ -21,7 +21,7 @@ import {
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "../setup_test"
-import {catchError, flatMap, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
+import {catchError, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -306,7 +306,7 @@ it(('TESTING'), () => {
     const a$ = cold("-----a|")
     const b$ = cold("-----------m----n---|")
     ex(a$.pipe(
-      flatMap(_ => b$),
+      mergeMap(_ => b$),
 
     ))
       .toBe(        "----------------m----n---|")
@@ -451,7 +451,7 @@ it('swapMap works', () => {
     const s$ = cold('--a---b|', { a: s1, b: s2 })
 
     // ---- Output continues until output Observables finish
-    ex(s$.pipe(flatMap(i => i)))
+    ex(s$.pipe(mergeMap(i => i)))
       .toBe('----a--b--(cm)-n-|')
 
     // ==== switchMap
@@ -540,7 +540,7 @@ it('flattenArray switching', () => {
       c: [],
     })
     ex($.pipe(
-      flattenArray(x => x)
+      flattenArray<Observable<string>, string>(x => x)
     )).toBe(
       '---0---(12)3---4---5', [
         ["m", "o"],

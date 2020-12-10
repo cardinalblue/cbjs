@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.46",
+  "version": "1.1.84",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -32,15 +32,17 @@
   "peerDependencies": {
     "@types/lodash": ">=4.14",
     "@types/react": ">=16.9",
+    "@types/react-dom": "^17.0.0",
     "firebase": "^7.18.0",
     "firebaseui": "^4.6.1",
     "lodash": ">=4.14",
     "react": ">=16.9",
-    "react-dom": "^16.13.1",
+    "react-dom": "^17.0.1",
     "rxjs": ">=6.5"
   },
   "dependencies": {
-    "immutable": "^4.0.0-rc.12"
+    "immutable": "^4.0.0-rc.12",
+    "resize-observer": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
@@ -49,13 +51,14 @@
     "@types/jest": "^24.0.18",
     "@types/lodash": ">=4.14",
     "@types/react": ">=16.9.2",
-    "@types/react-dom": "^16.9.8",
+    "@types/react-dom": "^17.0.0",
     "babel-jest": "^24.9.0",
     "firebase": "^7.18.0",
     "firebaseui": "^4.6.1",
     "jest": "^24.9.0",
     "lodash": "^4.17.20",
     "react": "^16.13.1",
+    "react-dom": "^17.0.1",
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.2",
     "ts-jest": "^24.0.2",

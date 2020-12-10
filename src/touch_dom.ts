@@ -1,9 +1,9 @@
-import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subscription} from 'rxjs'
+import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subject, Subscription} from 'rxjs'
 import {exhaustMap, filter, map, publishReplay, refCount, share, takeUntil, tap} from 'rxjs/operators'
-import {Point, Rect, Size} from './kor'
-import {TTouch, TTouchEvent, TTouchGesture} from './touch'
 import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect} from 'react'
-import {log$, now} from "./util";
+import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
+import {Point, Rect, Size} from "./kor"
+import {log$, now} from "./util"
 
 // ---- Button event codes (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
 export const BUTTON_MAIN      = 0
@@ -35,25 +35,24 @@ function pointNormalized(point: Point, rect: Rect) {
   return point.subtract(rect.origin).scale(1/rect.size.x, 1/rect.size.y)
 }
 
-export function convertMouseToTouchEvent(e: MouseEvent<any>, elementRect?: Rect): TTouchEvent {
+export function convertMouseToTouchEvent(e: MouseEvent<any>, elementRect: Rect): TTouchEvent {
   const point = new Point(e.clientX, e.clientY)
-  const pointElement = elementRect ? pointNormalized(point, elementRect) : undefined
   return new TTouchEvent(
-    [ new TTouch(0, point, pointElement, e.button)],
+    [ new TTouch(0, point, e.button)],
+    elementRect,
     now(),
     e)
 }
-export function convertTouchToTouchEvent(e: TouchEvent<any>, elementRect?: Rect): TTouchEvent {
+export function convertTouchToTouchEvent(e: TouchEvent<any>, elementRect: Rect): TTouchEvent {
   const touches = []
   for (let i=0; i<e.touches.length; i++) {
     const t = e.touches.item(i)
     if (t) {
       const point = new Point(t.clientX, t.clientY)
-      const pointElement = elementRect ? pointNormalized(point, elementRect) : undefined
-      touches.push(new TTouch(t.identifier, point, pointElement))
+      touches.push(new TTouch(t.identifier, point))
     }
   }
-  return new TTouchEvent(touches, now(), e)
+  return new TTouchEvent(touches, elementRect, now(), e)
 }
 
 export function preventDefault<T extends BaseSyntheticEvent>() {
@@ -63,21 +62,19 @@ export function stopPropagation<T extends BaseSyntheticEvent>() {
   return tap((e: T) => e.stopPropagation())
 }
 
+// LEARN: Can examine stack: `console.log(">>>>", new Error().stack)`.
+
 // -------------------------------------------------------------------------
 // Put all together into an Observable of Observables (gestures).
 //
-export function mouseGesturesFromDOM(dom: Element)
+export function mouseGesturesFromEvents(mousedown$: Observable<MouseEvent>,
+                                        mousemove$: Observable<MouseEvent>,
+                                        mouseup$: Observable<MouseEvent>,
+                                        elementRect: Rect)
+
   : Observable<TTouchGesture>
 {
   console.log("++++ mouseGesturesFromDOM")
-
-  // LEARN: Can examine stack: `console.log(">>>>", new Error().stack)`.
-
-  const mousedown$   = fromEvent<MouseEvent>(dom, 'mousedown')
-  const mousemove$   = fromEvent<MouseEvent>(document, 'mousemove')
-  const mouseup$     = fromEvent<MouseEvent>(document, 'mouseup')
-
-  const elementRect = domBoundingClientRect(dom)
 
   // Need preventDefault otherwise will image drag
   return mousedown$.pipe(
@@ -88,11 +85,11 @@ export function mouseGesturesFromDOM(dom: Element)
         of(mousedown),
         mousemove$
       )
-      .pipe(
-        preventDefault(),
-        takeUntil(mouseup$),
-        map(e => convertMouseToTouchEvent(e, elementRect)),
-      )
+        .pipe(
+          preventDefault(),
+          takeUntil(mouseup$),
+          map(e => convertMouseToTouchEvent(e, elementRect)),
+        )
       const subject$ = source$.pipe(
         publishReplay(),
       ) as ConnectableObservable<TTouchEvent>
@@ -186,7 +183,7 @@ export function touchGesturesFromDOM(dom: Element)
 }
 
 export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
-                            output: (gesture: TTouchGesture) => void)
+                            output$: (gesture: TTouchGesture) => void)
 {
   // LEARN: gesture handling, needs to be able to handle re-renders.
   // Gesture events get lost upon re-rendering because source$ get reconnected.
@@ -199,12 +196,18 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
     const subs: Subscription[] = []
 
     if (typeof window !== "undefined" && typeof window.ontouchstart === 'undefined') {
-      subs.push(mouseGesturesFromDOM(e).subscribe(output))
+      const mouseGesture$ = mouseGesturesFromEvents(
+        fromEvent<MouseEvent>(e, 'mousedown'),
+        fromEvent<MouseEvent>(e, 'mousemove'),
+        fromEvent<MouseEvent>(e, 'mouseup'),
+        domBoundingClientRect(e)
+      )
+      subs.push(mouseGesture$.subscribe(output$))
     }
     else {
       // Subscribe to touch and then preventDefault on the mouse events
       subs.push(
-        touchGesturesFromDOM(e).subscribe(output)
+        touchGesturesFromDOM(e).subscribe(output$)
       )
       subs.push(
         fromEvent<MouseEvent>(e, 'mousedown').subscribe(e => e.preventDefault())
@@ -214,7 +217,52 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
     return () => {
       subs.forEach(s => s.unsubscribe())
     }
-  }, [elementRef, output])
+  }, [elementRef, output$])
+}
+
+export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
+                                 output$: (gesture: TTouchGesture) => void)
+{
+  // LEARN: React and native browsers have entirely different event
+  // sequences. So should NOT mix addEventListener/fromEvents and React event
+  // handlers, if you want to use stopPropagation(), etc.
+  //
+  // This version of `useGestures` returns React-ready event handlers.
+  //
+
+  const mousedown$ = new Subject<MouseEvent>()
+  const mousemove$ = new Subject<MouseEvent>()
+  const mouseup$   = new Subject<MouseEvent>()
+
+  useEffect(() => {
+    console.log("++++ useGesturesReact")
+
+    const e = (console.assert(elementRef.current), elementRef.current!!)
+
+    const subs: Subscription[] = []
+
+    if (typeof window !== "undefined" && typeof window.ontouchstart === 'undefined') {
+      const mouseGesture$ = mouseGesturesFromEvents(
+        mousedown$,
+        mousemove$,
+        mouseup$,
+        domBoundingClientRect(e)
+      )
+      subs.push(mouseGesture$.subscribe(output$))
+    }
+    else {
+      // TODO: deal with touch gestures
+    }
+    return () => {
+      subs.forEach(s => s.unsubscribe())
+    }
+  }, [elementRef, output$])
+
+  return {
+    onMouseDown: (e: MouseEvent) => mousedown$.next(e),
+    onMouseMove: (e: MouseEvent) => mousemove$.next(e),
+    onMouseUp:   (e: MouseEvent) => mouseup$.next(e)
+  }
 }
 
 // -----------------------------------------------------------------------

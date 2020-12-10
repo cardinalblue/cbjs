@@ -14,6 +14,10 @@ export class Widget extends ContextedDomainer
 
   }
 
+  isEqual(other: any) {
+    return this === other
+  }
+
   // TEST OVERRIDE
   connecting$<T>(source: Observable<T>, destination: Subject<T>) {
     return source.pipe(

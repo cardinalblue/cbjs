@@ -1,4 +1,4 @@
-import firebase from "firebase";
+import * as firebase from "firebase/app";
 import {Observable} from "rxjs";
 import * as firebaseui from "firebaseui";
 import {promise$} from "./util_rx"

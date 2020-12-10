@@ -1,5 +1,5 @@
-import firebase from 'firebase'
-import {flatMap} from "rxjs/operators";
+import * as firebase from "firebase/app"
+import {mergeMap} from "rxjs/operators";
 import {from, Observable} from "rxjs"
 import {UploadTaskSnapshot} from "./firestore_sync"
 
@@ -27,7 +27,7 @@ export function firestoreUploadImage(file: File,
     )
   })
   return snapshot$.pipe(
-    flatMap(s => from(s.ref.getDownloadURL()))
+    mergeMap(s => from(s.ref.getDownloadURL()))
   )
 }
 

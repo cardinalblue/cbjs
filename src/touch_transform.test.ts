@@ -1,12 +1,12 @@
 /// <reference path="./custom_matchers.d.ts"/>
 import '../setup_test'
 import {TTouch, TTouchEvent} from "./touch"
-import {$P} from "./kor"
+import {$P, Rect} from "./kor"
 import {calculateTransformFromEvents, Transform, transformsFromRadialGesture} from "./touch_transform"
 import {expectElem, testScheduler} from "../setup_test"
 import {Observable} from "rxjs"
 
-const $E  = function(touches: TTouch[]) { return new TTouchEvent(touches, 1); }
+const $E  = function(touches: TTouch[]) { return new TTouchEvent(touches, Rect.ZERO, 1); }
 const $T  = function(id: number, x: number, y: number) { return new TTouch(id, $P(x, y)); }
 it('calculateTransformFromEvents drags one finger ok', () => {
   expectElem(calculateTransformFromEvents(

@@ -1,6 +1,6 @@
 import '../setup_test'
 import {TTouch, TTouchEvent} from "./touch";
-import {Point} from "./kor";
+import {Point, Rect} from "./kor";
 import {testScheduler} from "../setup_test";
 import {isDragOrPinch, isPinch$} from "./touch_gesture";
 import {delay, takeUntil} from "rxjs/operators";
@@ -8,7 +8,7 @@ import {delay, takeUntil} from "rxjs/operators";
 let identifier = 1
 
 function $T(x: number, y: number) { return new TTouch(++identifier, new Point(x,y)); }
-function $E(touches: TTouch[])    { return new TTouchEvent(touches); }
+function $E(touches: TTouch[])    { return new TTouchEvent(touches, Rect.ZERO); }
 
 it('isDragOrPinch works', () => {
 
