@@ -37,7 +37,7 @@ export function PortalProvider(props: {children: React.ReactElement|React.ReactE
 export function PortalOutlet(props: { id: string,
                                       className?: string,
                                       style?: CSSProperties,
-                                      children: ReactNode|ReactNodeArray }) {
+                                      children?: ReactNode|ReactNodeArray }) {
 
   const ref = useRef(null)
   const map = useContext(PortalContext)

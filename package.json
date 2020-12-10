@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.89",
+  "version": "1.1.90",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -63,5 +63,8 @@
     "rxjs": "^6.6.2",
     "ts-jest": "^24.0.2",
     "typescript": "^3.6.2"
+  },
+  "resolutions": {
+    "@types/react": ">=16.9"
   }
 }
