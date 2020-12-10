@@ -228,6 +228,7 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
   // handlers, if you want to use stopPropagation(), etc.
   //
   // This version of `useGestures` returns React-ready event handlers.
+  // See https://fortes.com/2018/react-and-dom-events/
   //
 
   const mousedown$ = new Subject<MouseEvent>()
