@@ -1,5 +1,6 @@
 import * as _ from "lodash"
 import {Point, Size} from "./kor"
+import {Color} from "./color"
 
 export function fieldToString<D>(field: any, _default: D): string | D {
   if (typeof field == "string")
@@ -41,4 +42,14 @@ export function fieldToNumber<D>(field: any, _default: D)
     return field
   return _default
 }
+
+export function fieldToColor<D>(field: any, _default: D)
+  : Color | D {
+  if (typeof field == "string") {
+    return new Color(field)
+  }
+  return _default
+}
+
+
 
