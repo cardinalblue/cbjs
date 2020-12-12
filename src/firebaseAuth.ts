@@ -1,6 +1,6 @@
-import * as firebase from "firebase/app";
-import {Observable} from "rxjs";
+import firebase from "firebase/app";
 import * as firebaseui from "firebaseui";
+import {Observable} from "rxjs";
 import {promise$} from "./util_rx"
 
 let firebaseAuthUI: firebaseui.auth.AuthUI|null = null

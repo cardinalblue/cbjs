@@ -1,4 +1,4 @@
-import * as firebase from "firebase/app"
+import firebase from "firebase/app";
 import {mergeMap} from "rxjs/operators";
 import {from, Observable} from "rxjs"
 import {UploadTaskSnapshot} from "./firestore_sync"
