@@ -19,7 +19,7 @@ export * from "./portal";
 export * from "./progress_plugin";
 export * from "./progress_widget";
 export * from "./ref_store";
-// export * from "./registries";
+export * from "./view_registry";
 export * from "./touch";
 export * from "./touch_dom";
 export * from "./touch_gesture";
