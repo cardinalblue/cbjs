@@ -45,7 +45,7 @@ export function fieldToNumber<D>(field: any, _default: D)
 
 export function fieldToBoolean<D>(field: any, _default: D)
   : boolean | D {
-  if (typeof field == "boolean" &&)
+  if (typeof field == "boolean")
     return field
   return _default
 }
