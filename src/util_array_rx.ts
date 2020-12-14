@@ -9,18 +9,22 @@ export function arrayEquals<T>(a1: T[], a2: T[]): boolean {
   return a1.every((t, i) => t === a2[i])
 }
 
-export function cachedArrayMapper<TFrom, K, TTo>(
-  keyF: (t: TFrom) => K,
+export function cachedArrayMapper<TFrom, TTo>(
+  keyF: keyof TFrom | ((t: TFrom) => any),
   createF: (t: TFrom) => TTo,
   disposeF: (t: TTo) => void = (_) => {}
   )
-  : ((from: Array<TFrom>) => Array<TTo>) {
-  type Cache = Map<K, TTo>
+  : ((from: Array<TFrom>) => Array<TTo>)
+{
+  type Cache = Map<any, TTo>
   let cachePrev: Cache = new Map()
+
+  const _keyF = keyF instanceof Function ? keyF : (t: TFrom) => t[keyF]
+
   return function (tFrom: Array<TFrom>) {
     const cacheCur: Cache = new Map()
     const output = tFrom.map((tFrom: TFrom) => {
-      const key = keyF(tFrom)
+      const key = _keyF(tFrom)
       const prev = cacheCur.get(key) || cachePrev.get(key)
       if (prev) {
         cacheCur.set(key, prev)
