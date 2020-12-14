@@ -43,6 +43,13 @@ export function fieldToNumber<D>(field: any, _default: D)
   return _default
 }
 
+export function fieldToBoolean<D>(field: any, _default: D)
+  : boolean | D {
+  if (typeof field == "boolean" &&)
+    return field
+  return _default
+}
+
 export function fieldToColor<D>(field: any, _default: D)
   : Color | D {
   if (typeof field == "string") {
