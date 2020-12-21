@@ -225,7 +225,7 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
   }, [elementRef, output$])
 }
 
-export function _useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
+export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
                                   output$: (gesture: TTouchGesture) => void)
 {
   // LEARN: React and native browsers have entirely different event
