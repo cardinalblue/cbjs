@@ -128,24 +128,24 @@ export function mouseGesturesFromEvents(mousedown$: Observable<MouseEvent>,
 // behavior!!!
 
 export function touchGesturesFromEvents(touchstart$: Observable<TouchEvent>,
-                                     elementRect: Rect)
+                                        elementRect: Rect)
   : Observable<TTouchGesture>
 {
   console.log("++++ touchGesturesFromDOM")
 
-  const start$ = (t: any) => fromEvent<TouchEvent>(t, 'touchstart')
-  const move$  = (t: any) => fromEvent<TouchEvent>(t, 'touchmove')
-  const end$   = (t: any) => merge(
+  const start$ = (t: Element) => fromEvent<TouchEvent>(t, 'touchstart')
+  const move$  = (t: Element) => fromEvent<TouchEvent>(t, 'touchmove')
+  const end$   = (t: Element) => merge(
     fromEvent<TouchEvent>(t, 'touchend'),
     fromEvent<TouchEvent>(t, 'touchcancel'),
   ).pipe(
     share(),
   )
-  const end0$  = (t: any) => end$(t).pipe(
+  const end0$  = (t: Element) => end$(t).pipe(
     filter(e => e.target === t && e.targetTouches.length === 0),
     share(),
   )
-  const endN$  = (t: any) => end$(t).pipe(
+  const endN$  = (t: Element) => end$(t).pipe(
     filter(e => e.target === t && e.targetTouches.length > 0),
     share(),
   )
@@ -159,7 +159,8 @@ export function touchGesturesFromEvents(touchstart$: Observable<TouchEvent>,
   return touchstart$.pipe(
     taplogT("++++ touch start"),
     exhaustMap(start => {
-      const t = start.target
+      start.persist()     // Needed since we resend it below to keep React from reusing it
+      const t = start.target as Element
       const gesture: Observable<TTouchEvent> = merge(
         of(start),
         start$(t),
@@ -224,7 +225,7 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
   }, [elementRef, output$])
 }
 
-export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
+export function _useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
                                   output$: (gesture: TTouchGesture) => void)
 {
   // LEARN: React and native browsers have entirely different event
