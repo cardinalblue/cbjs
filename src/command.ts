@@ -5,7 +5,7 @@ export class Command<T,MEMO=any> {
   memo: MEMO|undefined
   constructor(readonly description: string,
               readonly executionF:    (command: Command<T,MEMO>) => Observable<T>,
-              readonly unexecutionF:  (command: Command<T,MEMO>) => Observable<T> = () => EMPTY)
+              readonly unexecutionF:  (command: Command<T,MEMO>) => Observable<any> = () => EMPTY)
   {}
 
   execution()  : Observable<T> { return this.executionF(this) }

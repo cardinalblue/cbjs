@@ -295,14 +295,17 @@ export function doOnSubscribe<T>(f: () => void)
 
 // ---------------------------------------------------------------------------
 
-export function cachedMapper<TFrom, K, TTo>(
-  keyF: (t: TFrom) => K,
+export function cachedMapper<TFrom, TTo>(
+  keyF: keyof TFrom | ((t: TFrom) => any),
   mapF: (t: TFrom) => TTo)
   : ((t: TFrom) => TTo)
 {
-  const cache: Map<K, TTo> = new Map()
+  const cache: Map<any, TTo> = new Map()
+
+  const _keyF = keyF instanceof Function ? keyF : (t: TFrom) => t[keyF]
+
   return function(tFrom: TFrom) {
-    const key = keyF(tFrom)
+    const key = _keyF(tFrom)
     const prev = cache.get(key)
     if (prev) { return prev; }
     // else

@@ -1,4 +1,4 @@
-import * as firebase from "firebase/app"
+import firebase from "firebase/app";
 import {Subject} from "rxjs"
 import {Widget} from "../widget"
 

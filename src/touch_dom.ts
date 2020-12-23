@@ -1,6 +1,6 @@
 import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subject, Subscription} from 'rxjs'
 import {exhaustMap, filter, map, publishReplay, refCount, share, takeUntil, tap} from 'rxjs/operators'
-import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect} from 'react'
+import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect, useState} from 'react'
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
 import {Point, Rect, Size} from "./kor"
 import {log$, now} from "./util"
@@ -100,56 +100,55 @@ export function mouseGesturesFromEvents(mousedown$: Observable<MouseEvent>,
   )
 }
 
-export function touchGesturesFromDOM(dom: Element)
+// LEARN: Touch behavior matters which target:
+// https://stackoverflow.com/questions/33298828/touch-move-event-dont-fire-after-touch-start-target-is-removed
+// So we have to attach the `touchmove` and `touchend` handlers to the
+// *exact* event target that did the `touchstart`.
+//
+// LEARN: `touchend` only happens for fingers that were started in that
+// target, and not for other fingers. It only happens when the the original
+// finger lifts up.
+// That's why we use `targetTouches`.
+//
+// LEARN:
+//   TouchEvent:
+//     - target:        bottom-most Element that received the touch (even if bubbled up)
+//     - targetTouches: current touches (out of all of them) that are of the 'target'.
+//     - touches:       all the touches on the screen.
+//
+//   Subsequent fingers can be "started" on other Elements, dependent on where
+//   they start.
+//   TouchEvents/Touches keep the `target` they started at.
+//
+//   Events start at a handler and then bubble up to the handlers, but keep
+//   the same target.
+//
+
+// LEARN: `takeUntil` works differently in RxJS and RxJava, the EMPTY control
+// behavior!!!
+
+export function touchGesturesFromEvents(touchstart$: Observable<TouchEvent>,
+                                        elementRect: Rect)
   : Observable<TTouchGesture>
 {
   console.log("++++ touchGesturesFromDOM")
 
-  // LEARN: Touch behavior matters which target:
-  // https://stackoverflow.com/questions/33298828/touch-move-event-dont-fire-after-touch-start-target-is-removed
-  // So we have to attach the `touchmove` and `touchend` handlers to the
-  // *exact* event target that did the `touchstart`.
-  //
-  // LEARN: `touchend` only happens for fingers that were started in that
-  // target, and not for other fingers. It only happens when the the original
-  // finger lifts up.
-  // That's why we use `targetTouches`.
-  //
-  // LEARN:
-  //   TouchEvent:
-  //     - target:        bottom-most Element that received the touch (even if bubbled up)
-  //     - targetTouches: current touches (out of all of them) that are of the 'target'.
-  //     - touches:       all the touches on the screen.
-  //
-  //   Subsequent fingers can be "started" on other Elements, dependent on where
-  //   they start.
-  //   TouchEvents/Touches keep the `target` they started at.
-  //
-  //   Events start at a handler and then bubble up to the handlers, but keep
-  //   the same target.
-  //
-
-  // LEARN: `takeUntil` works differently in RxJS and RxJava, the EMPTY control
-  // behavior!!!
-
-  const start$ = (t: any) => fromEvent<TouchEvent>(t, 'touchstart')
-  const move$  = (t: any) => fromEvent<TouchEvent>(t, 'touchmove')
-  const end$   = (t: any) => merge(
+  const start$ = (t: Element) => fromEvent<TouchEvent>(t, 'touchstart')
+  const move$  = (t: Element) => fromEvent<TouchEvent>(t, 'touchmove')
+  const end$   = (t: Element) => merge(
     fromEvent<TouchEvent>(t, 'touchend'),
     fromEvent<TouchEvent>(t, 'touchcancel'),
   ).pipe(
     share(),
   )
-  const end0$  = (t: any) => end$(t).pipe(
+  const end0$  = (t: Element) => end$(t).pipe(
     filter(e => e.target === t && e.targetTouches.length === 0),
     share(),
   )
-  const endN$  = (t: any) => end$(t).pipe(
+  const endN$  = (t: Element) => end$(t).pipe(
     filter(e => e.target === t && e.targetTouches.length > 0),
     share(),
   )
-
-  const elementRect = domBoundingClientRect(dom)
 
   function seed<T>(...ts: T[]): Observable<T> {
     return new Observable(subs => ts.forEach(t => subs.next(t)))
@@ -157,10 +156,11 @@ export function touchGesturesFromDOM(dom: Element)
 
   // LEARN: No preventDefault/stopPropagation otherwise tapping scrolling doesn't work
 
-  return start$(dom).pipe(
+  return touchstart$.pipe(
     taplogT("++++ touch start"),
     exhaustMap(start => {
-      const t = start.target
+      start.persist()     // Needed since we resend it below to keep React from reusing it
+      const t = start.target as Element
       const gesture: Observable<TTouchEvent> = merge(
         of(start),
         start$(t),
@@ -196,6 +196,8 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
     const subs: Subscription[] = []
 
     if (typeof window !== "undefined" && typeof window.ontouchstart === 'undefined') {
+
+      // ---- Subscribe to mouse events
       const mouseGesture$ = mouseGesturesFromEvents(
         fromEvent<MouseEvent>(e, 'mousedown'),
         fromEvent<MouseEvent>(e, 'mousemove'),
@@ -205,13 +207,16 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
       subs.push(mouseGesture$.subscribe(output$))
     }
     else {
-      // Subscribe to touch and then preventDefault on the mouse events
-      subs.push(
-        touchGesturesFromDOM(e).subscribe(output$)
+      // ---- Subscribe to touch events
+      const touchGesture$ = touchGesturesFromEvents(
+        fromEvent<TouchEvent>(e, 'touchstart'),
+        domBoundingClientRect(e)
       )
-      subs.push(
-        fromEvent<MouseEvent>(e, 'mousedown').subscribe(e => e.preventDefault())
-      )
+      subs.push(touchGesture$.subscribe(output$))
+
+      // ---- Do preventDefault on the mouse events
+      const mouseGesture$ = fromEvent<MouseEvent>(e, 'mousedown')
+      subs.push(mouseGesture$.subscribe(e => e.preventDefault()))
     }
 
     return () => {
@@ -221,18 +226,22 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
 }
 
 export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
-                                 output$: (gesture: TTouchGesture) => void)
+                                  output$: (gesture: TTouchGesture) => void)
 {
   // LEARN: React and native browsers have entirely different event
   // sequences. So should NOT mix addEventListener/fromEvents and React event
   // handlers, if you want to use stopPropagation(), etc.
   //
   // This version of `useGestures` returns React-ready event handlers.
+  // See https://fortes.com/2018/react-and-dom-events/
   //
 
-  const mousedown$ = new Subject<MouseEvent>()
-  const mousemove$ = new Subject<MouseEvent>()
-  const mouseup$   = new Subject<MouseEvent>()
+  const [state] = useState({
+    mousedown$:   new Subject<MouseEvent>(),
+    mousemove$:   new Subject<MouseEvent>(),
+    mouseup$:     new Subject<MouseEvent>(),
+    touchstart$:  new Subject<TouchEvent>(),
+  })
 
   useEffect(() => {
     console.log("++++ useGesturesReact")
@@ -242,16 +251,26 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
     const subs: Subscription[] = []
 
     if (typeof window !== "undefined" && typeof window.ontouchstart === 'undefined') {
+
+      // ---- Subscribe to mouse events
       const mouseGesture$ = mouseGesturesFromEvents(
-        mousedown$,
-        mousemove$,
-        mouseup$,
+        state.mousedown$,
+        state.mousemove$,
+        state.mouseup$,
         domBoundingClientRect(e)
       )
       subs.push(mouseGesture$.subscribe(output$))
     }
     else {
-      // TODO: deal with touch gestures
+      // ---- Subscribe to touch events
+      const touchGesture$ = touchGesturesFromEvents(
+        state.touchstart$,
+        domBoundingClientRect(e)
+      )
+      subs.push(touchGesture$.subscribe(output$))
+
+      // ---- Do preventDefault on the mouse events
+      subs.push(state.mousedown$.subscribe(e => e.preventDefault()))
     }
     return () => {
       subs.forEach(s => s.unsubscribe())
@@ -259,9 +278,10 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
   }, [elementRef, output$])
 
   return {
-    onMouseDown: (e: MouseEvent) => mousedown$.next(e),
-    onMouseMove: (e: MouseEvent) => mousemove$.next(e),
-    onMouseUp:   (e: MouseEvent) => mouseup$.next(e)
+    onMouseDown:  (e: MouseEvent) => state.mousedown$.next(e),
+    onMouseMove:  (e: MouseEvent) => state.mousemove$.next(e),
+    onMouseUp:    (e: MouseEvent) => state.mouseup$.next(e),
+    onTouchStart: (e: TouchEvent) => state.touchstart$.next(e),
   }
 }
 
