@@ -73,7 +73,14 @@ export class Point implements Elementable<number> {
       this.x * Math.cos(angle) - this.y * Math.sin(angle),
       this.x * Math.sin(angle) + this.y * Math.cos(angle)
     )
-
+  }
+  rotateP(angle: number, c: Point) {
+    const p = this.subtract(c)
+    const r = new Point(
+      this.x * Math.cos(angle) - this.y * Math.sin(angle),
+      this.x * Math.sin(angle) + this.y * Math.cos(angle)
+    )
+    return r.add(p)
   }
 
   normalized() {
