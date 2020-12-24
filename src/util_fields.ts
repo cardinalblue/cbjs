@@ -57,6 +57,3 @@ export function fieldToColor<D>(field: any, _default: D)
   }
   return _default
 }
-
-
-
