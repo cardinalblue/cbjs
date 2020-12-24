@@ -1,5 +1,5 @@
 import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subject, Subscription} from 'rxjs'
-import {exhaustMap, filter, map, publishReplay, refCount, share, takeUntil, tap} from 'rxjs/operators'
+import {filter, map, publishReplay, refCount, share, switchMap, takeUntil, tap} from 'rxjs/operators'
 import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect, useState} from 'react'
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
 import {Point, Rect, Size} from "./kor"
@@ -64,7 +64,7 @@ export function stopPropagation<T extends BaseSyntheticEvent>() {
 
 // LEARN: Can examine stack: `console.log(">>>>", new Error().stack)`.
 
-// -------------------------------------------------------------------------
+// -----------------------------------xx--------------------------------------
 // Put all together into an Observable of Observables (gestures).
 //
 export function mouseGesturesFromEvents(mousedown$: Observable<MouseEvent>,
@@ -150,6 +150,9 @@ export function touchGesturesFromEvents(touchstart$: Observable<TouchEvent>,
     share(),
   )
 
+  // ---- An observable that sends out the given events, and then
+  //      continues (as opposed to `of` which completes).
+  //
   function seed<T>(...ts: T[]): Observable<T> {
     return new Observable(subs => ts.forEach(t => subs.next(t)))
   }
@@ -158,7 +161,7 @@ export function touchGesturesFromEvents(touchstart$: Observable<TouchEvent>,
 
   return touchstart$.pipe(
     taplogT("++++ touch start"),
-    exhaustMap(start => {
+    switchMap(start => {
       start.persist()     // Needed since we resend it below to keep React from reusing it
       const t = start.target as Element
       const gesture: Observable<TTouchEvent> = merge(
