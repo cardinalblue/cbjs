@@ -1,4 +1,4 @@
-import {DependencyList, MutableRefObject, RefObject, useEffect, useState} from "react";
+import * as React from "react";
 import {Queue} from "./util";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Rect, Size} from "./kor"
@@ -11,11 +11,11 @@ import {domBoundingClientRect} from "./touch_dom"
 
 export function useObservable<T>(observable: Observable<T>,
                                  defaultValue: T,
-                                 inputs: DependencyList = [observable])
+                                 inputs: React.DependencyList = [observable])
   : T {
-  const [t, setT] = useState(defaultValue)
+  const [t, setT] = React.useState(defaultValue)
 
-  useEffect(() => {
+  React.useEffect(() => {
     const subs = observable.subscribe((t: T) => {
       if (useObservable.debug)
         console.log("---- useObservable", t)
@@ -34,7 +34,7 @@ export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (
   : T
 {
   // React hook always have to call `useState`, even if not passed a BehaviorSubject
-  const [t, setT] = useState(subject instanceof BehaviorSubject ?
+  const [t, setT] = React.useState(subject instanceof BehaviorSubject ?
     subject.value : subject
   )
 
@@ -42,9 +42,9 @@ export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (
   if (!(subject instanceof BehaviorSubject))
     return t
 
-  useEffect(() => {
+  React.useEffect(() => {
     const subs = subject.subscribe((tNew: T) => {
-        if (debugF) debugF(tNew)
+      if (debugF) debugF(tNew)
       setT(tNew)
     })
     return () => subs.unsubscribe()
@@ -55,9 +55,9 @@ export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (
 
 export function useObserving<T>(observable: Observable<T>,
                                 callback: (value: T) => void,
-                                inputs: DependencyList = [observable])
+                                inputs: React.DependencyList = [observable])
   : void {
-  useEffect(() => {
+  React.useEffect(() => {
     const subs = observable.subscribe(t => {
       if (useObserving.debug)
         console.log("---- useObserving", t)
@@ -72,8 +72,8 @@ useObserving.debug = false
 // Focuses the given element whenever a `true` gets sent on the given Queue.
 // Blurs if `false` is sent.
 
-export function useFocusing(ref: MutableRefObject<HTMLElement | null>, doFocus: Queue<boolean>) {
-  useEffect(() => {
+export function useFocusing(ref: React.MutableRefObject<HTMLElement | null>, doFocus: Queue<boolean>) {
+  React.useEffect(() => {
     return doFocus.subscribe(focus =>
       ref.current &&
       (focus ?
@@ -86,10 +86,10 @@ export function useFocusing(ref: MutableRefObject<HTMLElement | null>, doFocus: 
 
 // -----------------------------------------------------------------------
 
-export function useResize(element: RefObject<Element>|Element|Window|null,
+export function useResize(element: React.RefObject<Element>|Element|Window|null,
                           callback: (size: Size) => void)
 {
-  useEffect(() => {
+  React.useEffect(() => {
 
     let e = element as any
     if (e && e.current !== undefined)
@@ -120,10 +120,10 @@ export function useResize(element: RefObject<Element>|Element|Window|null,
   })
 }
 
-export function useBoundingClientRect(element: RefObject<Element>|Element|Window|null,
+export function useBoundingClientRect(element: React.RefObject<Element>|Element|Window|null,
                                       callback: (rect: Rect) => void)
 {
-  useEffect(() => {
+  React.useEffect(() => {
 
     let e = element as any
     if (e && e.current !== undefined)
@@ -151,3 +151,26 @@ export function useBoundingClientRect(element: RefObject<Element>|Element|Window
   })
 }
 
+export function useUpload(f: (files: File[]) => any): [React.ReactElement, () => any] {
+
+  const ref = React.useRef<HTMLInputElement|null>(null)
+
+  function filesSelected(fileList: FileList) {
+    console.log("++++ UploadView onFiles", fileList)
+    const fileArray = []
+    for (let i=0; i < fileList.length; i++)
+      fileArray[i] = fileList[i]
+    f(fileArray)
+  }
+
+  return ([
+    <input
+      type={"file"}
+      style={{display: "none"}}
+      ref={ref}
+      onChange={e => e.target && e.target.files && filesSelected(e.target.files)}
+    />,
+    () => ref.current?.click()
+  ])
+
+}
