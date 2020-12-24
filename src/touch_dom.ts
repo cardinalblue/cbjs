@@ -175,8 +175,10 @@ export function touchGesturesFromEvents(touchstart$: Observable<TouchEvent>,
         log$(() => `++++ touch gesture ${now()}`),
         publishReplay(), refCount(),
       )
-      // ---- This works together with the exhaustMap to prevent more than
+      // ---- This works together with the `exhaustMap` to prevent more than
       //      one gesture to be active at a time.
+      //      Jaime 2020-12-24: Changed to using `switchMap` because it was getting
+      //      stuck.
       //
       return seed(gesture).pipe(
         takeUntil(end0$(t))
