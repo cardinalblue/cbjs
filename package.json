@@ -1,11 +1,11 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.146",
+  "version": "1.1.147",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "exports": {
-    "./login": "dist/src/login"
+    "./login": "dist/src/login.js"
   },
   "files": [
     "dist/**/*"
