@@ -3,10 +3,10 @@ export * from "./bulletin_context"
 export * from "./chooser"
 export * from "./color"
 export * from "./command";
+export * from "./command_fieldify_util";
 export * from "./contexted_domainer";
 export * from "./contexter";
 export * from "./domainer";
-export * from "./command_fieldify_util";
 export * from "./firebaseInit";
 export * from "./firebaseUpload";
 export * from "./firestore_sync";
@@ -20,7 +20,6 @@ export * from "./portal";
 export * from "./progress_plugin";
 export * from "./progress_widget";
 export * from "./ref_store";
-export * from "./view_registry";
 export * from "./touch";
 export * from "./touch_dom";
 export * from "./touch_gesture";
