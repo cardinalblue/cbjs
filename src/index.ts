@@ -41,5 +41,3 @@ export * from "./util_react_views"
 export * from "./util_rx";
 export * from "./view_registry";
 export * from "./widget";
-
-// TODO: moved to @piccollage/cbjs due to firebaseui bug when running tests
