@@ -7,7 +7,6 @@ export * from "./contexted_domainer";
 export * from "./contexter";
 export * from "./domainer";
 export * from "./command_fieldify_util";
-export * from './firebaseAuth'
 export * from "./firebaseInit";
 export * from "./firebaseUpload";
 export * from "./firestore_sync";
@@ -15,8 +14,6 @@ export * from "./firestore_clone";
 export * from "./font"
 export * from "./input_streamer";
 export * from "./kor";
-export * from './login/login_view'
-export * from './login/login_widget'
 export * from "./manipulators"
 export * from "./platform";
 export * from "./portal";
@@ -42,4 +39,7 @@ export * from "./util_rx";
 export * from "./view_registry";
 export * from "./widget";
 
-// TODO: moved to @piccollage/cbjs due to firebaseui bug when running tests
+// Export these separately via "@picccollage/cbjs/login"
+// export * from './firebaseAuth'
+// export * from './login/login_view'
+// export * from './login/login_widget'

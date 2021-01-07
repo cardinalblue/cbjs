@@ -1,6 +1,6 @@
-import '../setup_test'
+import './setup_test'
 import {Animatorer, BaseAnimation, MultiAnimation} from "./animatorer"
-import {testScheduler} from "../setup_test"
+import {testScheduler} from "./setup_test"
 
 it('animatorer works singles', () => {
   const scheduler = testScheduler()

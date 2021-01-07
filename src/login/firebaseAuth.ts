@@ -1,11 +1,11 @@
 import firebase from "firebase/app";
 import * as firebaseui from "firebaseui";
 import {Observable} from "rxjs";
-import {promise$} from "./util_rx"
+import {promise$} from "../util_rx"
 
 let firebaseAuthUI: firebaseui.auth.AuthUI|null = null
 
-export function firebaseAuthConfigure()
+export function firebaseAuthConfigure$()
 {
   return promise$(() =>
     firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)

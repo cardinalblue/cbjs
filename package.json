@@ -1,16 +1,9 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.162",
+  "version": "1.1.163",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
-  "types": "index.d.ts",
-  "exports": {
-    ".": {
-      "require": "dist/index.js"
-    },
-    "./login": {
-      "require": "dist/login/index.js"
-    }
-  },
+  "main": "dist/src/index.js",
+  "typings": "dist/src/index.d.ts",
   "files": [
     "dist/**/*"
   ],

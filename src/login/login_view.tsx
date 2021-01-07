@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react'
 import {LoginWidget} from "./login_widget"
-import {firebaseLoginStart$} from "../firebaseAuth"
+import {firebaseLoginStart$} from "./firebaseAuth"
 import 'firebaseui/dist/firebaseui.css'
 
 export const LoginView = React.memo((props: { widget: LoginWidget }) => {
