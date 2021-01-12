@@ -49,6 +49,13 @@ export type Millisec = number
 // --------------------------------------------------------------------
 // Operators
 
+export function taplog<X>(label: string, ...vars: any[])
+  : (s: Observable<X>) => Observable<X> {
+  return (s: Observable<X>) => s.pipe(
+    tap(x => console.log(label, x, ...vars))
+  )
+}
+
 export function tapWithIndex<T>(action: (t: T, index: number) => any)
   : MonoTypeOperatorFunction<T>
 {
@@ -280,17 +287,17 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
     )
   }
 }
-
-export function doOnSubscribe<T>(f: () => void)
-  : MonoTypeOperatorFunction<T>
-{
-  return (source: Observable<T>) => {
-    return defer(() => {
-      f();
-      return source;
-    });
-  };
-}
+//
+// export function doOnSubscribe<T>(f: () => void)
+//   : MonoTypeOperatorFunction<T>
+// {
+//   return (source: Observable<T>) => {
+//     return defer(() => {
+//       f();
+//       return source;
+//     });
+//   };
+// }
 
 
 // ---------------------------------------------------------------------------
@@ -492,6 +499,32 @@ export function progressFork<T>(f: (p: Progress) => void,
     finalize(() => p.complete()),
   )
 }
+
+export function log$<T>(s: string|((t: T|undefined) => string), ...vars: any[]) {
+  function S(t?: T) {
+    return (typeof s === 'function') ? s(t) : s
+  }
+  return (source: Observable<T>) => source.pipe(
+    doOnSubscribe(() => console.log(S(), "subscribe", ...vars)),
+    finalize(     () => console.log(S(), "finalize", ...vars)),
+    tap(
+      t => console.log(S(t), t, ...vars),
+      error => console.error(S(), error, ...vars)
+    ),
+  )
+}
+
+export function doOnSubscribe<T>(f: () => void)
+  : MonoTypeOperatorFunction<T>
+{
+  return (source: Observable<T>) => {
+    return defer(() => {
+      f();
+      return source;
+    });
+  };
+}
+
 
 export function progressCount(): OperatorFunction<Progress, number>
 {

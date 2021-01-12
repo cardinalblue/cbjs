@@ -1,33 +1,11 @@
 import {finalize, tap} from "rxjs/operators"
 import {Observable} from "rxjs"
 import * as _ from "lodash"
-import {doOnSubscribe} from "./util_rx"
 
 export const BLANK = ""
 
 // ----------------------------------------------------------------------------
 // Debugging
-
-export function taplog<X>(label: string, ...vars: any[])
-  : (s: Observable<X>) => Observable<X> {
-  return (s: Observable<X>) => s.pipe(
-    tap(x => console.log(label, x, ...vars))
-  )
-}
-
-export function log$<T>(s: string|((t: T|undefined) => string), ...vars: any[]) {
-  function S(t?: T) {
-    return (typeof s === 'function') ? s(t) : s
-  }
-  return (source: Observable<T>) => source.pipe(
-      doOnSubscribe(() => console.log(S(), "subscribe", ...vars)),
-      finalize(     () => console.log(S(), "finalize", ...vars)),
-      tap(
-        t => console.log(S(t), t, ...vars),
-        error => console.error(S(), error, ...vars)
-      ),
-  )
-}
 
 export function LOG<X>(s: string, x: X, ...args: any[]) {
   console.log(s, x, ...args)
@@ -209,9 +187,10 @@ export function mapmap<T, R>(map: {[k: string]: T}, f: ((t: T) => R))
   return ret
 }
 
-export function MAP(object: Object) {
-  return new Map(Object.entries(object))
-}
+// export function MAP(object: Object) {
+//
+//   return new Map(Object.entries(object))
+// }
 
 // ----------------------------------------------------------------------------
 // Functional
