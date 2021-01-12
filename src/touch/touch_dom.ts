@@ -2,9 +2,9 @@ import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subject
 import {filter, map, publishReplay, refCount, share, switchMap, takeUntil, tap} from 'rxjs/operators'
 import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect, useState} from 'react'
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
-import {Point, Rect, Size} from "./kor"
-import {now} from "./util"
-import {log$} from "./util_rx";
+import {Point, Rect, Size} from "../kor"
+import {now} from "../util"
+import {log$} from "../util_rx";
 
 // ---- Button event codes (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
 export const BUTTON_MAIN      = 0

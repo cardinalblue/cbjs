@@ -1,6 +1,6 @@
 import {CollectionRef, DocRef, DocSnap, QuerySnap} from "./firestore_sync"
 import {EMPTY, Observable, of, throwError, zip} from "rxjs"
-import {promise$} from "./util_rx"
+import {promise$} from "../util_rx"
 import {mergeMap} from "rxjs/operators"
 
 export function firestoreCloneReference(from: DocRef,

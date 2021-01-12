@@ -1,12 +1,12 @@
-import {Point, Vector} from "./kor"
+import {Point, Vector} from "../kor"
 import * as _ from "lodash"
 import {groupBy, intersection, keys} from "lodash"
 import {TTouch, TTouchEvent} from "./touch"
 import {OperatorFunction} from "rxjs"
 import {map, pairwise, scan} from "rxjs/operators"
-import {calculateTransformFromVectors2} from "./util_math"
-import {Elementable, ifNumber} from "./util"
-import {filterDefined, pairFirst} from "./util_rx"
+import {calculateTransformFromVectors2} from "../util_math"
+import {Elementable, ifNumber} from "../util"
+import {filterDefined, pairFirst} from "../util_rx"
 
 export class Transform implements Elementable<number> {
   move:   Point

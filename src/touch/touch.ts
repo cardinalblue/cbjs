@@ -1,9 +1,9 @@
 import {Observable} from 'rxjs'
-import {Point, Rect} from './kor'
-import {Millisec} from "./util_rx"
-import {now} from "./util"
+import {Point, Rect} from '../kor'
+import {Millisec} from "../util_rx"
+import {now} from "../util"
 import * as _ from "lodash"
-import {safeKey} from "./util_math";
+import {safeKey} from "../util_math";
 
 export type TTouchTargeting<TT=any> = {
   target: TT,

@@ -1,8 +1,8 @@
 /// <reference path="./custom_matchers.d.ts"/>
 import './setup_test'
-import {TTouch, TTouchEvent} from "./touch"
+import {TTouch, TTouchEvent} from "./touch/touch"
 import {$P, Rect} from "./kor"
-import {calculateTransformFromEvents, Transform, transformsFromRadialGesture} from "./touch_transform"
+import {calculateTransformFromEvents, Transform, transformsFromRadialGesture} from "./touch/touch_transform"
 import {expectElem, testScheduler} from "./setup_test"
 import {Observable} from "rxjs"
 
