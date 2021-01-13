@@ -221,6 +221,29 @@
         "origin": "AUTHORED",
         "exported": true
     },
+    "piccollage.cbjs/progress@0.0.1": {
+        "files": [
+            {
+                "relativePath": "src/progress/index.ts",
+                "test": false,
+                "name": "index.ts"
+            },
+            {
+                "relativePath": "src/progress/progress_plugin.ts",
+                "test": false,
+                "name": "progress_plugin.ts"
+            },
+            {
+                "relativePath": "src/progress/progress_widget.ts",
+                "test": false,
+                "name": "progress_widget.ts"
+            }
+        ],
+        "mainFile": "src/progress/index.ts",
+        "trackDir": "src/progress",
+        "origin": "AUTHORED",
+        "exported": true
+    },
     "piccollage.cbjs/ref_store@0.0.1": {
         "files": [
             {
@@ -337,7 +360,19 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/util_firestore@0.0.1": {
+    "piccollage.cbjs/util_fields@0.0.1": {
+        "files": [
+            {
+                "relativePath": "src/util_fields.ts",
+                "test": false,
+                "name": "util_fields.ts"
+            }
+        ],
+        "mainFile": "src/util_fields.ts",
+        "origin": "AUTHORED",
+        "exported": true
+    },
+    "piccollage.cbjs/util_firestore@0.0.2": {
         "files": [
             {
                 "relativePath": "src/util_firestore/firestoreUpload.ts",
