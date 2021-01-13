@@ -1,11 +1,11 @@
 import {BehaviorSubject, Observable} from "rxjs";
 import {ProgressWidget} from "./progress_widget";
 import {finalize, map} from "rxjs/operators";
-import {arraySubjectAdd, arraySubjectRemove} from "./util_array_rx"
-import {TrackWhen} from "./manipulators"
-import {doOnSubscribe} from "./util_rx"
-import {ContextedDomainer} from "./contexted_domainer"
-import {Point} from "./kor"
+import {arraySubjectAdd, arraySubjectRemove} from "../util_array_rx"
+import {TrackWhen} from "../manipulators"
+import {doOnSubscribe} from "../util_rx"
+import {ContextedDomainer} from "../contexted_domainer"
+import {Point} from "../kor"
 
 export class ProgressPlugin extends ContextedDomainer {
 

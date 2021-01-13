@@ -18,7 +18,6 @@ export class Point implements Elementable<number> {
   // ---- Construction
   // eslint-disable-next-line no-useless-constructor
   constructor(readonly x: number, readonly y: number) {
-
   }
 
   toString(): string {

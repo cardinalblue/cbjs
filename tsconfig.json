@@ -9,7 +9,7 @@
     "jsx": "react"
   },
   "include": [
-    "src",
+    "src"
   ],
   "exclude": ["node_modules", "**/__tests__/*", "**/*test.*"]
 }

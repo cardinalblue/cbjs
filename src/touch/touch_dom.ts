@@ -2,8 +2,9 @@ import {concat, ConnectableObservable, fromEvent, merge, Observable, of, Subject
 import {filter, map, publishReplay, refCount, share, switchMap, takeUntil, tap} from 'rxjs/operators'
 import {BaseSyntheticEvent, MouseEvent, RefObject, TouchEvent, useEffect, useState} from 'react'
 import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
-import {Point, Rect, Size} from "./kor"
-import {log$, now} from "./util"
+import {Point, Rect, Size} from "../kor"
+import {now} from "../util"
+import {log$} from "../util_rx";
 
 // ---- Button event codes (https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button)
 export const BUTTON_MAIN      = 0
@@ -196,7 +197,7 @@ export function useGestures(elementRef: RefObject<HTMLElement|undefined>,
   useEffect(() => {
     console.log("++++ useGestures")
 
-    const e = (console.assert(elementRef.current), elementRef.current!!)
+    const e = elementRef.current!!
 
     const subs: Subscription[] = []
 
@@ -251,7 +252,7 @@ export function useGesturesReact(elementRef: RefObject<HTMLElement|undefined>,
   useEffect(() => {
     console.log("++++ useGesturesReact")
 
-    const e = (console.assert(elementRef.current), elementRef.current!!)
+    const e = elementRef.current!!
 
     const subs: Subscription[] = []
 
