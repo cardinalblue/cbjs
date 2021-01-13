@@ -84,6 +84,6 @@ export function firebaseLoginStart$(element: string|Element)
       firebaseAuthUI && firebaseAuthUI.reset()
     }
   })
-};
+}
 
 

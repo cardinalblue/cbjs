@@ -3,7 +3,7 @@ import {Queue} from "../util";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Rect, Size} from "../kor"
 import {ResizeObserver} from "resize-observer"
-import {domBoundingClientRect} from "../touch/touch_dom"
+import {domBoundingClientRect} from "../touch"
 
 
 // ----------------------------------------------------------------

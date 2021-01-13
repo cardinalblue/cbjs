@@ -2,7 +2,7 @@ import * as React from "react";
 import {CSSProperties, ReactNode, ReactNodeArray, ReactPortal, useContext, useEffect, useRef} from "react";
 import {BehaviorSubject} from "rxjs";
 import ReactDOM from "react-dom"
-import {useBehaviorSubject} from "./util_react/util_react"
+import {useBehaviorSubject} from "./util_react"
 
 
 export class MapDefault<K,V> extends Map<K,V> {

@@ -85,9 +85,9 @@ function getConfig(mainFile, distRootPath, testFiles) {
   conf.library;
   
   return conf;
-};
+}
 
 
 module.exports = {
   compile
-};
+}

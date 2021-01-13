@@ -44,7 +44,7 @@ export class Domainer {
       takeUntil(this.shutdown$),
       tap((t: T) => {
         if (!isEqual(destination.value, t)) {
-          tap(t => Domainer.debug && console.debug("---- updating", t)),
+          Domainer.debug && console.debug("---- updating", t)
           destination.next(t)
         }
       })
