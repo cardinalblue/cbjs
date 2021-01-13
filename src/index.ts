@@ -9,8 +9,8 @@ export * from "./contexter";
 export * from "./domainer";
 export * from "./firebaseInit";
 export * from "./util_firestore/firestoreUpload";
-export * from "./firestore/firestore_sync";
-export * from "./firestore/firestore_clone";
+export * from "./util_firestore/firestore_sync";
+export * from "./util_firestore/firestore_clone";
 export * from "./font"
 export * from "./input_streamer";
 export * from "./kor";
