@@ -1,6 +1,6 @@
 import {Widget} from "../widget"
 import {generateId} from "../util"
-import {Point} from "../kor"
+import {Point} from "../kor/kor"
 
 export class ProgressWidget extends Widget
 {

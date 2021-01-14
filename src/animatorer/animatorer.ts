@@ -1,6 +1,6 @@
 import {asyncScheduler, BehaviorSubject, Observable, of, SchedulerLike, Subject, zip} from "rxjs"
 import {map, scan, startWith, switchMap} from "rxjs/operators"
-import {enqueue, extend, Millisec} from "./util_rx"
+import {enqueue, extend, Millisec} from "../util_rx"
 
 // =================================================================
 // Animatorer:
@@ -118,7 +118,4 @@ export class Animatorer<X> {
       map(([x, animation]) => animation.valueTo(x))
     ).subscribe(this.value$)
   }
-
-
-
 }

@@ -4,12 +4,23 @@
     "piccollage.cbjs/animatorer@0.0.1": {
         "files": [
             {
-                "relativePath": "src/animatorer.ts",
+                "relativePath": "src/animatorer/animatorer.ts",
                 "test": false,
                 "name": "animatorer.ts"
+            },
+            {
+                "relativePath": "src/animatorer/animatorer_motionable.tsx",
+                "test": false,
+                "name": "animatorer_motionable.tsx"
+            },
+            {
+                "relativePath": "src/animatorer/index.ts",
+                "test": false,
+                "name": "index.ts"
             }
         ],
-        "mainFile": "src/animatorer.ts",
+        "mainFile": "src/animatorer/index.ts",
+        "trackDir": "src/animatorer",
         "origin": "AUTHORED",
         "exported": true
     },
@@ -161,6 +172,24 @@
         "origin": "AUTHORED",
         "exported": true
     },
+    "piccollage.cbjs/i_svg_path@0.0.2": {
+        "files": [
+            {
+                "relativePath": "src/i_svg_path/iSvgPath.ts",
+                "test": false,
+                "name": "iSvgPath.ts"
+            },
+            {
+                "relativePath": "src/i_svg_path/index.ts",
+                "test": false,
+                "name": "index.ts"
+            }
+        ],
+        "mainFile": "src/i_svg_path/index.ts",
+        "trackDir": "src/i_svg_path",
+        "origin": "AUTHORED",
+        "exported": true
+    },
     "piccollage.cbjs/input_streamer@0.0.1": {
         "files": [
             {
@@ -176,12 +205,23 @@
     "piccollage.cbjs/kor@0.0.1": {
         "files": [
             {
-                "relativePath": "src/kor.ts",
+                "relativePath": "src/kor/index.ts",
+                "test": false,
+                "name": "index.ts"
+            },
+            {
+                "relativePath": "src/kor/kor.ts",
                 "test": false,
                 "name": "kor.ts"
+            },
+            {
+                "relativePath": "src/kor/kor_util.ts",
+                "test": false,
+                "name": "kor_util.ts"
             }
         ],
-        "mainFile": "src/kor.ts",
+        "mainFile": "src/kor/index.ts",
+        "trackDir": "src/kor",
         "origin": "AUTHORED",
         "exported": true
     },
@@ -221,6 +261,19 @@
         "origin": "AUTHORED",
         "exported": true
     },
+    "piccollage.cbjs/positioning@0.0.1": {
+        "files": [
+            {
+                "relativePath": "src/positioning/index.ts",
+                "test": false,
+                "name": "index.ts"
+            }
+        ],
+        "mainFile": "src/positioning/index.ts",
+        "trackDir": "src/positioning",
+        "origin": "AUTHORED",
+        "exported": true
+    },
     "piccollage.cbjs/progress@0.0.1": {
         "files": [
             {
@@ -232,6 +285,11 @@
                 "relativePath": "src/progress/progress_plugin.ts",
                 "test": false,
                 "name": "progress_plugin.ts"
+            },
+            {
+                "relativePath": "src/progress/progress_view.tsx",
+                "test": false,
+                "name": "progress_view.tsx"
             },
             {
                 "relativePath": "src/progress/progress_widget.ts",
@@ -253,6 +311,18 @@
             }
         ],
         "mainFile": "src/ref_store.ts",
+        "origin": "AUTHORED",
+        "exported": true
+    },
+    "piccollage.cbjs/share@0.0.1": {
+        "files": [
+            {
+                "relativePath": "src/share.ts",
+                "test": false,
+                "name": "share.ts"
+            }
+        ],
+        "mainFile": "src/share.ts",
         "origin": "AUTHORED",
         "exported": true
     },
@@ -372,7 +442,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/util_firestore@0.0.2": {
+    "piccollage.cbjs/util_firestore@0.0.1": {
         "files": [
             {
                 "relativePath": "src/util_firestore/firestoreUpload.ts",
@@ -418,6 +488,16 @@
                 "relativePath": "src/util_react/index.ts",
                 "test": false,
                 "name": "index.ts"
+            },
+            {
+                "relativePath": "src/util_react/responsive_view.tsx",
+                "test": false,
+                "name": "responsive_view.tsx"
+            },
+            {
+                "relativePath": "src/util_react/useIsMobile.ts",
+                "test": false,
+                "name": "useIsMobile.ts"
             },
             {
                 "relativePath": "src/util_react/util_react.tsx",

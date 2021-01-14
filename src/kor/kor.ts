@@ -1,4 +1,4 @@
-import {Elementable} from "./util"
+import {Elementable} from "../util"
 import * as _ from "lodash"
 
 export function $P(x: number, y: number) {
@@ -226,3 +226,5 @@ export function normalizeRotation(rotation: number): number {
   const PI2 = Math.PI * 2
   return (rotation % PI2 + PI2) % PI2
 }
+
+

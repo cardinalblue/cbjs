@@ -1,9 +1,11 @@
 import {Millisec, pairFirst} from "../util_rx"
-import {now} from "../util"
+import {clone, now} from "../util"
 import {interval, Observable, OperatorFunction, zip} from "rxjs"
 import {delay, every, filter, first, map, pairwise, take, takeUntil} from "rxjs/operators"
-import {TTouch, TTouchEvent, TTouchGesture} from "./touch"
+import {TTouch, TTouchEvent, TTouchGesture, TTouchTargeting} from "./touch"
 import {taplogT} from "./touch_dom";
+import {RefStore} from "../ref_store";
+import {korRectFromClientRect} from "../kor";
 
 export class TTap<PlatformEvent=any> {
   constructor(readonly touch: TTouch,                             // The first touch of the tap
@@ -165,3 +167,38 @@ export function pressesFromGesture(gesture: TTouchGesture,
 
 }
 
+export function addTargetsToGesture<T>(refStore: RefStore<T, Element>)
+  : (gesture: TTouchGesture) => TTouchGesture {
+
+  function targetingsAt(touch: TTouch): TTouchTargeting<T>[] {
+    const point = touch.point
+    return refStore.stored
+
+      // ---- Filter no reference
+      .filter(({ ref }) => ref.current)
+
+      // ---- Add in client rect
+      .map(stored => ({
+        ...stored,
+        rect: korRectFromClientRect(stored.ref.current!.getBoundingClientRect())
+      }))
+
+      // ---- Filter if out of rect
+      .filter(({ rect }) => rect.contains(point))
+
+      // ---- Convert to TTouchTargeting
+      .map(({ key: target, rect }) => ({ target, rect }))
+  }
+
+  return gesture => gesture.pipe(
+    map(event =>
+      clone(event, {
+        touches: event.touches.map(touch =>
+          clone(touch, {
+            targetings: [...touch.targetings, ...targetingsAt(touch)]
+          })
+        )
+      })
+    )
+  )
+}

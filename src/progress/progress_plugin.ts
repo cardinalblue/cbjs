@@ -5,7 +5,7 @@ import {arraySubjectAdd, arraySubjectRemove} from "../util_array_rx"
 import {TrackWhen} from "../manipulators"
 import {doOnSubscribe} from "../util_rx"
 import {ContextedDomainer} from "../contexted_domainer"
-import {Point} from "../kor"
+import {Point} from "../kor/kor"
 
 export class ProgressPlugin extends ContextedDomainer {
 

@@ -1,5 +1,5 @@
 import './setup_test'
-import {$P, normalizeRotation, Point, Size} from './kor'
+import {$P, normalizeRotation, Point, Size} from './kor/kor'
 
 const PI = Math.PI
 it('creates Points', () => {

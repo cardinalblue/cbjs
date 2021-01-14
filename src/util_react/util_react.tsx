@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Queue} from "../util";
 import {BehaviorSubject, Observable} from "rxjs";
-import {Rect, Size} from "../kor"
+import {Rect, Size} from "../kor/kor"
 import {ResizeObserver} from "resize-observer"
 import {domBoundingClientRect} from "../touch"
 
@@ -173,4 +173,62 @@ export function useUpload(f: (files: File[]) => any): [React.ReactElement, () =>
     () => ref.current?.click()
   ])
 
+}
+
+export function useResizeObserver(ref: React.RefObject<any>, f: (size: Size) => any)
+{
+  React.useEffect(() => {
+    const e = ref.current
+    if (e) {
+      const ro = new ResizeObserver(
+        entries =>
+          entries.forEach(entry => {
+            f(new Size(
+              entry.contentRect.width,
+              entry.contentRect.height
+            ))
+          })
+      )
+      ro.observe(e)
+      return () => ro.unobserve(e)
+    }
+  }, [ref, f])
+}
+
+export function StopPropagation(props: {
+  events?: ("MouseDown"|"MouseMove"|"MouseUp"|"TouchCancel"|"TouchEnd"|"TouchMove"|"TouchStart")[],
+  children: React.ReactNode|React.ReactNodeArray })
+{
+  const allEvents = [
+    "MouseDown",
+    "MouseMove",
+    "MouseUp",
+    "TouchCancel",
+    "TouchEnd",
+    "TouchMove",
+    "TouchStart"
+  ]
+  const handlersArr = (props.events || allEvents).map( // TODO: ES2019 syntax won't work with bit
+    e => [ "on" + e, (e: Event) => e.stopPropagation() ])
+  const handlers: any = {}
+  handlersArr.forEach(handler => {
+    handlers[handler[0] as string] = handler[1]
+  })
+  return <div {...handlers} >
+    {props.children}
+  </div>
+}
+
+export function OptionallyParent(props: {
+  children: React.ReactNode|React.ReactNodeArray,
+  parent: ((children: React.ReactNode|React.ReactNodeArray) => React.ReactNode)|null|undefined|false,
+})
+  : React.ReactNode|React.ReactNodeArray
+{
+  const { children, parent } = props
+  const parentActual = parent && parent(children)
+  if (!parentActual)
+    return children
+  // else
+  return parentActual
 }
