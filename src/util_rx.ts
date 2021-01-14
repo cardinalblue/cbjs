@@ -288,18 +288,6 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
     )
   }
 }
-//
-// export function doOnSubscribe<T>(f: () => void)
-//   : MonoTypeOperatorFunction<T>
-// {
-//   return (source: Observable<T>) => {
-//     return defer(() => {
-//       f();
-//       return source;
-//     });
-//   };
-// }
-
 
 // ---------------------------------------------------------------------------
 

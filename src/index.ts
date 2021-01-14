@@ -8,7 +8,7 @@ export * from "./contexted_domainer";
 export * from "./contexter";
 export * from "./domainer";
 export * from "./firebaseInit";
-export * from "./util_firestore/firestoreUpload";
+export * from "./util_firestore";
 export * from "./font"
 export * from "./input_streamer";
 export * from "./kor/kor";
@@ -34,8 +34,3 @@ export * from "./util_react/util_react_views"
 export * from "./util_rx";
 export * from "./view_registry";
 export * from "./widget";
-
-// Export these separately via "@picccollage/cbjs/login"
-// export * from './firebaseAuth'
-// export * from './login/login_view'
-// export * from './login/login_widget'
