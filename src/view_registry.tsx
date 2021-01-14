@@ -1,6 +1,4 @@
 import * as React from "react";
-import {ID} from "./util";
-import {BehaviorSubject} from "rxjs";
 
 // ------------------------------------------------------------
 // TypeRegistry
