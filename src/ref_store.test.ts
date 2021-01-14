@@ -1,4 +1,4 @@
-import './setup_test'
+import './tests/setup_test'
 import {RefStore} from "./ref_store"
 
 it('RefStore works', () => {

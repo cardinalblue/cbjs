@@ -1,5 +1,5 @@
 import {BehaviorSubject, Observable, of} from "rxjs"
-import {testScheduler} from "./setup_test"
+import {testScheduler} from "./tests/setup_test"
 import {
   added,
   arrayFilterMap,

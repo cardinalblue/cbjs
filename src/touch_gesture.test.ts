@@ -1,7 +1,7 @@
-import './setup_test'
+import './tests/setup_test'
 import {TTouch, TTouchEvent} from "./touch";
 import {Point, Rect} from "./kor";
-import {testScheduler} from "./setup_test";
+import {testScheduler} from "./tests/setup_test";
 import {isDragOrPinch, isPinch$} from "./touch";
 import {delay, takeUntil} from "rxjs/operators";
 
