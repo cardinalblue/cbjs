@@ -20,7 +20,7 @@ import {
   tapWithIndex
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
-import {testScheduler} from "./tests/setup_test"
+import {testScheduler} from "./setup_test"
 import {catchError, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
 
 it('lastOrEmpty works', () => {

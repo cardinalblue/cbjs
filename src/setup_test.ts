@@ -1,5 +1,5 @@
 import * as _ from "lodash"
-import {Elementable} from "../util"
+import {Elementable} from "./index"
 import {TestScheduler} from 'rxjs/testing'
 
 beforeEach(function() {

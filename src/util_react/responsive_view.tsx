@@ -1,6 +1,10 @@
 import * as React from "react"
 import {ReactElement} from "react"
 
+export const MAX_DEVICE_WIDTHS = {
+  mobile: 720,
+}
+
 export function ResponsiveView(props: {
   mobile: ReactElement,
   desktop: ReactElement
@@ -12,10 +16,6 @@ export function ResponsiveView(props: {
   return isMobile ?
     props.mobile :
     props.desktop
-}
-
-export const MAX_DEVICE_WIDTHS = {
-  mobile: 720,
 }
 
 export const useWindowSize = () => {

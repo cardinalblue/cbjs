@@ -11,7 +11,7 @@ export * from "./firebaseInit";
 export * from "./util_firestore/firestoreUpload";
 export * from "./font"
 export * from "./input_streamer";
-export * from "./kor/kor";
+export * from "./kor";
 export * from "./manipulators"
 export * from "./platform";
 export * from "./portal";

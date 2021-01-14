@@ -1,4 +1,4 @@
-import {Point, Rect} from "./kor/kor";
+import {Point, Rect} from "./kor";
 import {ContextedDomainer} from "./contexted_domainer";
 import {Observable, Subject} from "rxjs";
 import {takeUntil} from "rxjs/operators";

@@ -1,7 +1,7 @@
 import * as React from "react";
 import {Queue} from "../util";
 import {BehaviorSubject, Observable} from "rxjs";
-import {Rect, Size} from "../kor/kor"
+import {Rect, Size} from "../kor"
 import {ResizeObserver} from "resize-observer"
 import {domBoundingClientRect} from "../touch"
 

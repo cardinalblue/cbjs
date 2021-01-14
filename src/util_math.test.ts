@@ -1,9 +1,9 @@
 /// <reference path="./custom_matchers.d.ts"/>
 
-import './tests/setup_test'
-import {$P, $R, $S} from './kor/kor'
+import './setup_test'
+import {$P, $R, $S} from './kor'
 import {calculateTransformFromVectors2, convertPointFromBoundingBox} from './util_math'
-import {expectElem} from "./tests/setup_test"
+import {expectElem} from "./setup_test"
 
 const PI = Math.PI
 it('calculateTransformFromVectors2 simple', () => {

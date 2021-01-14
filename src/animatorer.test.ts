@@ -1,5 +1,5 @@
 import './setup_test'
-import {Animatorer, BaseAnimation, MultiAnimation} from "../animatorer"
+import {Animatorer, BaseAnimation, MultiAnimation} from "./animatorer/animatorer"
 import {testScheduler} from "./setup_test"
 
 it('animatorer works singles', () => {
