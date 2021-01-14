@@ -5,8 +5,13 @@
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
+    "skipLibCheck": true,
     "esModuleInterop": true,
-    "jsx": "react"
+    "jsx": "react",
+    "typeRoots": [
+      "./@types",
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "src"

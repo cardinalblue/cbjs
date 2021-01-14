@@ -1,4 +1,4 @@
-export * from "./animatorer";
+export * from "./animatorer/animatorer";
 export * from "./bulletin_context"
 export * from "./chooser"
 export * from "./color"
@@ -9,11 +9,9 @@ export * from "./contexter";
 export * from "./domainer";
 export * from "./firebaseInit";
 export * from "./util_firestore/firestoreUpload";
-export * from "./firestore/firestore_sync";
-export * from "./firestore/firestore_clone";
 export * from "./font"
 export * from "./input_streamer";
-export * from "./kor";
+export * from "./kor/kor";
 export * from "./manipulators"
 export * from "./platform";
 export * from "./portal";
@@ -26,7 +24,6 @@ export * from "./touch/touch_gesture";
 export * from "./touch/touch_transform";
 export * from "./type_map_registry"
 export * from "./undo";
-export * from "./upload_view"
 export * from "./upload_widget"
 export * from "./util";
 export * from "./util_array_rx";

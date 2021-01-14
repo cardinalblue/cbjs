@@ -1,5 +1,5 @@
 import * as _ from "lodash"
-import {Point, Size} from "./kor"
+import {Point, Size} from "./kor/kor"
 import {Color} from "./color"
 
 export function fieldToString<D>(field: any, _default: D): string | D {
