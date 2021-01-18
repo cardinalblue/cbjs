@@ -36,34 +36,6 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/bundlers@0.0.1": {
-        "files": [
-            {
-                "relativePath": "src/bundlers/webpack/index.js",
-                "test": false,
-                "name": "index.js"
-            },
-            {
-                "relativePath": "src/bundlers/webpack/package.json",
-                "test": false,
-                "name": "package.json"
-            },
-            {
-                "relativePath": "src/bundlers/webpack/readme.md",
-                "test": false,
-                "name": "readme.md"
-            },
-            {
-                "relativePath": "src/bundlers/webpack/webpack.config.js",
-                "test": false,
-                "name": "webpack.config.js"
-            }
-        ],
-        "mainFile": "src/bundlers/webpack/index.js",
-        "trackDir": "src/bundlers",
-        "origin": "AUTHORED",
-        "exported": true
-    },
     "piccollage.cbjs/chooser@0.0.2": {
         "files": [
             {
