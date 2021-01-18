@@ -36,7 +36,35 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/chooser@0.0.1": {
+    "piccollage.cbjs/bundlers@0.0.1": {
+        "files": [
+            {
+                "relativePath": "src/bundlers/webpack/index.js",
+                "test": false,
+                "name": "index.js"
+            },
+            {
+                "relativePath": "src/bundlers/webpack/package.json",
+                "test": false,
+                "name": "package.json"
+            },
+            {
+                "relativePath": "src/bundlers/webpack/readme.md",
+                "test": false,
+                "name": "readme.md"
+            },
+            {
+                "relativePath": "src/bundlers/webpack/webpack.config.js",
+                "test": false,
+                "name": "webpack.config.js"
+            }
+        ],
+        "mainFile": "src/bundlers/webpack/index.js",
+        "trackDir": "src/bundlers",
+        "origin": "AUTHORED",
+        "exported": true
+    },
+    "piccollage.cbjs/chooser@0.0.2": {
         "files": [
             {
                 "relativePath": "src/chooser.ts",
@@ -132,7 +160,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/firebase_login@0.0.1": {
+    "piccollage.cbjs/firebase_login@0.0.2": {
         "files": [
             {
                 "relativePath": "src/firebase_login/firebaseAuth.ts",
@@ -172,7 +200,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/i_svg_path@0.0.2": {
+    "piccollage.cbjs/i_svg_path@0.0.1": {
         "files": [
             {
                 "relativePath": "src/i_svg_path/iSvgPath.ts",
@@ -202,7 +230,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/kor@0.0.1": {
+    "piccollage.cbjs/kor@0.0.2": {
         "files": [
             {
                 "relativePath": "src/kor/index.ts",
@@ -249,7 +277,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/portal@0.0.1": {
+    "piccollage.cbjs/portal@0.0.2": {
         "files": [
             {
                 "relativePath": "src/portal.tsx",
@@ -274,7 +302,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/progress@0.0.1": {
+    "piccollage.cbjs/progress@0.0.2": {
         "files": [
             {
                 "relativePath": "src/progress/index.ts",
@@ -326,7 +354,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/touch@0.0.1": {
+    "piccollage.cbjs/touch@0.0.2": {
         "files": [
             {
                 "relativePath": "src/touch/index.ts",
@@ -383,7 +411,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/upload@0.0.1": {
+    "piccollage.cbjs/upload@0.0.2": {
         "files": [
             {
                 "relativePath": "src/upload/index.ts",
@@ -430,7 +458,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/util_fields@0.0.1": {
+    "piccollage.cbjs/util_fields@0.0.2": {
         "files": [
             {
                 "relativePath": "src/util_fields.ts",
@@ -470,7 +498,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/util_math@0.0.1": {
+    "piccollage.cbjs/util_math@0.0.2": {
         "files": [
             {
                 "relativePath": "src/util_math.ts",
@@ -482,7 +510,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/util_react@0.0.1": {
+    "piccollage.cbjs/util_react@0.0.2": {
         "files": [
             {
                 "relativePath": "src/util_react/index.ts",
@@ -539,7 +567,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/widget@0.0.1": {
+    "piccollage.cbjs/widget@0.0.2": {
         "files": [
             {
                 "relativePath": "src/widget.ts",

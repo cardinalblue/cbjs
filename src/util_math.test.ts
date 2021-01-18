@@ -1,7 +1,7 @@
 /// <reference path="./custom_matchers.d.ts"/>
 
 import './setup_test'
-import {$P, $R, $S} from './kor/kor'
+import {$P, $R, $S} from './kor'
 import {calculateTransformFromVectors2, convertPointFromBoundingBox} from './util_math'
 import {expectElem} from "./setup_test"
 
