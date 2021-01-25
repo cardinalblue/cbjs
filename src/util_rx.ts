@@ -120,8 +120,7 @@ export function filterIs<TIN, TOUT extends TIN>(f: ((t: TIN) => t is TOUT)):
   return filter(f) as OperatorFunction<TIN, TOUT>
 }
 
-export function filterDefined<T>()
-{
+export function filterDefined<T>() {
   return (s: Observable<T|null|undefined>) =>
     s.pipe(filter((x: T|null|undefined) => x !== null && x !== undefined)) as Observable<T>
 }

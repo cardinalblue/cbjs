@@ -7,13 +7,22 @@ export function korRectFromClientRect(rect: ClientRect): Rect {
   )
 }
 
-export function aspectFit (size: Size, dim: number, fitHeight: boolean = true): Size {
-  const ratio = size.x / size.y
-
-  if (fitHeight)
-    return ratio < 1 ?
-      new Size(dim * ratio, dim) : new Size(dim, dim / ratio)
-  return ratio > 1 ?
-    new Size(dim, dim / ratio) : new Size(dim, dim / ratio)
+export function scaleHeight(size: Size, height: number) {
+  return scaleDimension(size, height, true)
 }
 
+export function scaleWidth(size: Size, width: number) {
+  return scaleDimension(size, width, false)
+}
+
+export function scaleMin(size: Size, dimension: number) {
+  return scaleDimension(size, dimension, Math.min(size.width, size.height) === size.height)
+}
+
+function scaleDimension (size: Size, dimension: number, fitHeight: boolean = true): Size {
+  return size.scale(
+    fitHeight ?
+      dimension / size.y :
+      dimension / size.x
+  )
+}
