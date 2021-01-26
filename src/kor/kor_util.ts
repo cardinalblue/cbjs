@@ -8,21 +8,14 @@ export function korRectFromClientRect(rect: ClientRect): Rect {
 }
 
 export function scaleHeight(size: Size, height: number) {
-  return scaleDimension(size, height, true)
+  return size.scale(height/size.height)
 }
 
 export function scaleWidth(size: Size, width: number) {
-  return scaleDimension(size, width, false)
+  return size.scale(width/size.width)
 }
 
 export function scaleMin(size: Size, dimension: number) {
-  return scaleDimension(size, dimension, Math.min(size.width, size.height) === size.height)
-}
-
-function scaleDimension (size: Size, dimension: number, fitHeight: boolean = true): Size {
-  return size.scale(
-    fitHeight ?
-      dimension / size.y :
-      dimension / size.x
-  )
+  return size.width < size.height ?
+    scaleWidth(size, dimension) : scaleHeight(size, dimension)
 }
