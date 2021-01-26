@@ -154,7 +154,9 @@ export class Size extends Point {
   }
 
   // Operations
-  scale(scale: number, scale2?: number): Size {
+  scale(scale: number|Point, scale2?: number): Size {
+    if (scale instanceof Point)
+      return new Size(this.width * scale.x, this.height * scale.y)
     return new Size(
       this.width * scale,
       this.height * (
