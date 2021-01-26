@@ -202,7 +202,7 @@
         "origin": "AUTHORED",
         "exported": true
     },
-    "piccollage.cbjs/kor@0.0.3": {
+    "piccollage.cbjs/kor@0.0.4": {
         "files": [
             {
                 "relativePath": "src/kor/index.ts",

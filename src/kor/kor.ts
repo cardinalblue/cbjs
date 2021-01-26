@@ -56,13 +56,11 @@ export class Point implements Elementable<number> {
     return new Size(this.x, this.y)
   }
 
-  scale(scale: number | Point, scale2?: number) {
-    if (scale instanceof Point)
-      return new Point(this.x * scale.x, this.y * scale.y)
+  scale(s: number, scale2?: number) {
     return new Point(
-      this.x * scale,
+      this.x * (s as any),
       this.y * (
-        typeof scale2 === 'undefined' ? scale : scale2
+        typeof scale2 === 'undefined' ? (s as any) : scale2
       )
     )
   }
@@ -154,9 +152,7 @@ export class Size extends Point {
   }
 
   // Operations
-  scale(scale: number|Point, scale2?: number): Size {
-    if (scale instanceof Point)
-      return new Size(this.width * scale.x, this.height * scale.y)
+  scale(scale: number, scale2?: number): Size {
     return new Size(
       this.width * scale,
       this.height * (
