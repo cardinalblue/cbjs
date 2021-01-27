@@ -1,8 +1,8 @@
-/// <reference path="./custom_matchers.d.ts"/>
-import './setup_test'
-import {calculateTransformFromEvents, Transform, transformsFromRadialGesture, TTouch, TTouchEvent} from "./touch"
-import {$P, Rect} from "./kor"
-import {expectElem, testScheduler} from "./setup_test"
+/// <reference path="../custom_matchers.d.ts"/>
+import '../setup_test'
+import {calculateTransformFromEvents, Transform, transformsFromRadialGesture, TTouch, TTouchEvent} from "./index"
+import {$P, Rect} from "../kor"
+import {expectElem, testScheduler} from "../setup_test"
 import {Observable} from "rxjs"
 
 const $E  = function(touches: TTouch[]) { return new TTouchEvent(touches, Rect.ZERO, 1); }

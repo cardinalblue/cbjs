@@ -56,13 +56,11 @@ export class Point implements Elementable<number> {
     return new Size(this.x, this.y)
   }
 
-  scale(s: number, scale2?: number) {
-    return new Point(
-      this.x * (s as any),
-      this.y * (
-        typeof scale2 === 'undefined' ? (s as any) : scale2
-      )
-    )
+  scale(scale: number|Point, scale2?: number): Point {
+    const [sx, sy] = typeof scale === "number" ?
+      [scale, typeof scale2 === 'undefined' ? scale : scale2]
+      : [scale.x, scale.y]
+    return new Point(this.x * sx, this.y * sy)
   }
 
   rotate(angle: number) {
@@ -152,13 +150,11 @@ export class Size extends Point {
   }
 
   // Operations
-  scale(scale: number, scale2?: number): Size {
-    return new Size(
-      this.width * scale,
-      this.height * (
-        typeof scale2 === 'undefined' ? scale : scale2
-      )
-    )
+  scale(scale: number|Point, scale2?: number): Size {
+    const [sx, sy] = typeof scale === "number" ?
+      [scale, typeof scale2 === 'undefined' ? scale : scale2]
+      : [scale.x, scale.y]
+    return new Size(this.width * sx, this.height * sy)
   }
   add(ps: Point|Size) {
     return new Size(this.x + ps.x, this.y + ps.y)
