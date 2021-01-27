@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.184",
+  "version": "1.1.185",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -64,16 +64,5 @@
     "react": ">=16.9",
     "react-dom": "^17.0.1",
     "rxjs": ">=6.5"
-  },
-  "resolutions": {
-    "@types/react": ">=16.9"
-  },
-  "bit": {
-    "env": {
-      "compiler": "bit.envs/compilers/react-typescript@3.1.64",
-      "tester": "bit.envs/testers/jest@22.4.3"
-    },
-    "componentsDefaultDirectory": "src/{name}",
-    "packageManager": "yarn"
   }
 }
