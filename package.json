@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.187",
+  "version": "1.1.188",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -51,7 +51,8 @@
     "jest": "^26.6.0",
     "rimraf": "^3.0.2",
     "ts-jest": "^24.0.2",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.2",
+    "yalc": "^1.0.0-pre.50"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.11.2",
