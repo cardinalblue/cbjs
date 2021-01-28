@@ -18,6 +18,7 @@ export interface SvgPath {
   toString(): string;
   round(precision: number): SvgPath;
   iterate(iterator: (segment: any[], index: number, x: number, y: number) => void, keepLazyStack?: boolean): SvgPath;
+  err: string|'',
 }
 
 function svgpath_from(source: SvgPath|string) {
@@ -41,6 +42,11 @@ export class iSvgPath {
     const i = this.inner()
     return new iSvgPath(f(i))
   }
+
+  err(): string {
+    return this._svgPath.err
+  }
+
   private inner() {
     return svgpath_from(this._svgPath)
   }
