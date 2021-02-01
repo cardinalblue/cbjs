@@ -17,11 +17,13 @@ import {
   swapMap,
   takeDuring,
   tapScan,
-  tapWithIndex
+  tapWithIndex,
+  paginate$, taplog
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "./setup_test"
 import {catchError, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
+import {skip} from "rxjs/internal/operators/skip";
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -572,5 +574,49 @@ it('ProgressCounter works', () => {
       [0,1,2,3,4,5]
     )
 
+  })
+})
+
+it('test', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+
+    ex(cold('----a', {
+      a: of([1, 2, 3]).pipe(
+        map(_ => [4, 5, 6])
+      )
+    }))
+      .toBe('----m', {m: [4, 5, 6]})
+
+  })
+})
+
+it('paginate$ works', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {cold, expectObservable: ex} = helpers
+    const nums: number[] = []
+    for (let i = 0; i < 20; i++) nums.push(i)
+    const f$ = (cursor: number|null, n: number) => of([
+      (cursor||0) + Math.min(n, 4),
+      nums.slice(cursor||0, (cursor||0) + Math.min(n, 4)
+    )] as [number, number[]])
+
+    ex(cold(
+      'a', {
+        a: paginate$(f$, 25).pipe()
+      })
+    ).toBe(
+    'lmnopqr',
+    {
+      l: [],
+      m: [0,1,2,3],
+      n: [0,1,2,3,4,5,6,7],
+      o: [0,1,2,3,4,5,6,7,8,9,10,11],
+      p: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
+      q: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
+      r: []
+    })
   })
 })

@@ -39,6 +39,7 @@ import {
   tap
 } from "rxjs/operators"
 import {objectFromArray, objectToArray, withoutFirst} from "./util";
+import {expand} from "rxjs/internal/operators/expand";
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)
@@ -531,6 +532,28 @@ export type BS$<T> = BehaviorSubject<T>
 
 export function Unit<T>() {
   return (input: T) => input
+}
+
+export function paginate$<T, CURSOR>(
+  f$: (cursor: CURSOR|null, n: number) => Observable<[CURSOR, Array<T>]>,
+  limit: number
+)
+  : Observable<Array<T>>
+{
+  return of<[CURSOR|null, Array<T>]>([null, []]).pipe(
+    expand(([cursor, acc]: [CURSOR|null, Array<T>]) =>
+      acc.length < limit ?
+        f$(cursor, limit - acc.length).pipe(
+          filter(([_, newData]) => newData.length > 0),
+          map(([nextCursor, newData]) =>
+            [nextCursor, acc.concat(newData)] as [CURSOR|null, Array<T>]
+          ),
+          catchError(() => EMPTY)
+        )
+        : EMPTY
+    ),
+    map(([_, acc]: [CURSOR|null, Array<T>]) => acc),
+  )
 }
 
 
