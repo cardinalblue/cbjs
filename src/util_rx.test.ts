@@ -17,11 +17,13 @@ import {
   swapMap,
   takeDuring,
   tapScan,
-  tapWithIndex
+  tapWithIndex,
+  paginate$, taplog
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "./setup_test"
 import {catchError, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
+import {skip} from "rxjs/internal/operators/skip";
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -572,5 +574,61 @@ it('ProgressCounter works', () => {
       [0,1,2,3,4,5]
     )
 
+  })
+})
+
+it('paginate$ works 1', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {expectObservable: ex} = helpers
+
+    const f$ = (cursor: number|null, n: number) => {
+      const ret: [number, Array<number>] = cursor === null ?
+        [1, [1]]
+        : [
+          cursor + 1,
+          cursor < 3 ? [cursor + 1] : []
+          ]
+      return of(ret)
+    }
+    ex(paginate$(f$, 3))
+      .toBe('(0123|)', [
+        [],
+        [1],
+        [1,2],
+        [1,2,3],
+      ])
+
+    ex(paginate$(f$, -1))
+      .toBe('(0|)', [
+        []
+      ])
+    ex(paginate$(f$, 100))
+      .toBe('(0123|)', [
+        [],
+        [1],
+        [1,2],
+        [1,2,3],
+      ])
+  })
+})
+
+it('paginate$ works 2 (no infinite recursion on error handling)', () => {
+  const scheduler = testScheduler()
+  scheduler.run(helpers => {
+    const {expectObservable: ex} = helpers
+
+    const f$ = (cursor: number|null, n: number) =>
+        cursor === null ?
+          of([1, [1]] as [number, number[]]) :
+          cursor < 2 ?
+            of([cursor + 1, [cursor + 1]] as [number, number[]]) :
+            throwError("no more data")
+    ex(paginate$(f$, 100)).toBe('(0123|)', [
+      [],
+      [1],
+      [1,2],
+      [1,2,3],
+    ])
   })
 })
