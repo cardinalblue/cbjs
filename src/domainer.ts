@@ -1,10 +1,20 @@
 import {BehaviorSubject, Observable, Subject} from "rxjs"
-import {switchMap, takeUntil, tap} from "rxjs/operators"
+import {first, switchMap, takeUntil, tap} from "rxjs/operators"
+import {taplog} from "./util_rx"
 
 export class Domainer {
   shutdown$ = new Subject<any>()
 
   static debug: boolean = false
+
+  constructor() {
+
+    // ---- Debug statement for shutdown$ (can't use connecting/observing)
+    this.shutdown$.pipe(
+      first(),
+      taplog("**** shutdown$", this)
+      ).subscribe()
+  }
 
   observing<T>(source: Observable<T>) {
     source.pipe(
