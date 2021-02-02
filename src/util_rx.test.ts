@@ -577,46 +577,58 @@ it('ProgressCounter works', () => {
   })
 })
 
-it('test', () => {
+it('paginate$ works 1', () => {
   const scheduler = testScheduler()
   scheduler.run(helpers => {
-    const {cold, expectObservable: ex} = helpers
+    const {expectObservable: ex} = helpers
 
-    ex(cold('----a', {
-      a: of([1, 2, 3]).pipe(
-        map(_ => [4, 5, 6])
-      )
-    }))
-      .toBe('----m', {m: [4, 5, 6]})
+    const f$ = (cursor: number|null, n: number) => {
+      const ret: [number, Array<number>] = cursor === null ?
+        [1, [1]]
+        : [
+          cursor + 1,
+          cursor < 3 ? [cursor + 1] : []
+          ]
+      return of(ret)
+    }
+    ex(paginate$(f$, 3))
+      .toBe('(0123|)', [
+        [],
+        [1],
+        [1,2],
+        [1,2,3],
+      ])
 
+    ex(paginate$(f$, -1))
+      .toBe('(0|)', [
+        []
+      ])
+    ex(paginate$(f$, 100))
+      .toBe('(0123|)', [
+        [],
+        [1],
+        [1,2],
+        [1,2,3],
+      ])
   })
 })
 
-it('paginate$ works', () => {
+it('paginate$ works 2 (no infinite recursion on error handling)', () => {
   const scheduler = testScheduler()
   scheduler.run(helpers => {
-    const {cold, expectObservable: ex} = helpers
-    const nums: number[] = []
-    for (let i = 0; i < 20; i++) nums.push(i)
-    const f$ = (cursor: number|null, n: number) => of([
-      (cursor||0) + Math.min(n, 4),
-      nums.slice(cursor||0, (cursor||0) + Math.min(n, 4)
-    )] as [number, number[]])
+    const {expectObservable: ex} = helpers
 
-    ex(cold(
-      'a', {
-        a: paginate$(f$, 25).pipe()
-      })
-    ).toBe(
-    'lmnopqr',
-    {
-      l: [],
-      m: [0,1,2,3],
-      n: [0,1,2,3,4,5,6,7],
-      o: [0,1,2,3,4,5,6,7,8,9,10,11],
-      p: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
-      q: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19],
-      r: []
-    })
+    const f$ = (cursor: number|null, n: number) =>
+        cursor === null ?
+          of([1, [1]] as [number, number[]]) :
+          cursor < 2 ?
+            of([cursor + 1, [cursor + 1]] as [number, number[]]) :
+            throwError("no more data")
+    ex(paginate$(f$, 100)).toBe('(0123|)', [
+      [],
+      [1],
+      [1,2],
+      [1,2,3],
+    ])
   })
 })
