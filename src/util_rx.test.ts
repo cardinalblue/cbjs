@@ -9,6 +9,7 @@ import {
   flattenArray,
   flattenObject,
   lastOrEmpty,
+  paginate$,
   pairFirst,
   progressCount,
   prolong,
@@ -17,13 +18,11 @@ import {
   swapMap,
   takeDuring,
   tapScan,
-  tapWithIndex,
-  paginate$, taplog
+  tapWithIndex
 } from "./util_rx"
 import {concat, Observable, of, throwError} from "rxjs"
 import {testScheduler} from "./setup_test"
 import {catchError, map, mergeMap, share, switchMap, take, tap} from "rxjs/operators"
-import {skip} from "rxjs/internal/operators/skip";
 
 it('lastOrEmpty works', () => {
   const scheduler = testScheduler()
@@ -624,11 +623,10 @@ it('paginate$ works 2 (no infinite recursion on error handling)', () => {
           cursor < 2 ?
             of([cursor + 1, [cursor + 1]] as [number, number[]]) :
             throwError("no more data")
-    ex(paginate$(f$, 100)).toBe('(0123|)', [
+    ex(paginate$(f$, 100)).toBe('(012|)', [
       [],
       [1],
       [1,2],
-      [1,2,3],
     ])
   })
 })
