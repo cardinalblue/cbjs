@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.226",
+  "version": "1.1.227",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -59,8 +59,8 @@
     "@types/lodash": ">=4.14",
     "@types/react": ">=16.9",
     "@types/react-dom": "^17.0.0",
-    "firebase": "^7.18.0",
-    "firebaseui": "^4.6.1",
+    "firebase": "^8.2.9",
+    "firebaseui": "^4.7.3",
     "lodash": ">=4.14",
     "react": ">=16.9",
     "react-dom": "^17.0.1",
