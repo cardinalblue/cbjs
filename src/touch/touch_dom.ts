@@ -91,6 +91,8 @@ export function mouseGesturesFromEvents(mousedown$: Observable<MouseEvent>,
           takeUntil(mouseup$),
           map(e => convertMouseToTouchEvent(e, elementRect)),
         )
+
+      // Make the output gesture shareable and replayable
       const subject$ = source$.pipe(
         publishReplay(),
       ) as ConnectableObservable<TTouchEvent>

@@ -50,10 +50,14 @@ export type Millisec = number
 // --------------------------------------------------------------------
 // Operators
 
-export function taplog<X>(label: string, ...vars: any[])
-  : (s: Observable<X>) => Observable<X> {
-  return (s: Observable<X>) => s.pipe(
-    tap(x => console.log(label, x, ...vars))
+export function taplog<T>(s: string|((t: T|undefined) => string), ...vars: any[])
+  : (s: Observable<T>) => Observable<T>
+{
+  function S(t?: T) {
+    return (typeof s === 'function') ? [s(t)] : [s, t]
+  }
+  return pipe(
+    tap(t => console.log(...S(t), ...vars))
   )
 }
 
@@ -332,7 +336,9 @@ export function pairFirst<T>() {
 
 
 export function combineLatestWithEmpty<T>(arr: Array<Observable<T>>) {
-  return arr.length ? combineLatest(arr) : of([]); // used instead of EMPTY so the Observable does not complete()
+  return arr.length ?
+    combineLatest(arr) :
+    of([])
 }
 
 export function combineLatestWithChanges<T1, T2>(arr: [Observable<T1>, Observable<T2>])
@@ -382,6 +388,8 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
     const input$ = source.pipe(map(f))
     return new Observable<TOUT>(subsOut => {
       const subsOuter = input$.subscribe(
+
+        // ---- Incoming
         in$ => {
           // ---- Subscribe to the NEW observable,
           //      and THEN unsubscribe to the previous one
@@ -393,8 +401,12 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
           if (subsCur) subsCur.unsubscribe()
           subsCur = subsNew
         },
+
+        // ---- Error
         error => subsOut.error(error),
-        () => { if (!subsCur) subsOut.complete() }
+
+        // ---- Complete
+        () => { if (!subsCur || subsCur.closed) subsOut.complete() }
       )
       return () => {
         if (subsCur) {

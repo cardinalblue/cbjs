@@ -12,7 +12,7 @@ export class Domainer {
     // ---- Debug statement for shutdown$ (can't use connecting/observing)
     this.shutdown$.pipe(
       first(),
-      taplog("**** shutdown$", this)
+      taplog("**** shutdown$", this.constructor)
       ).subscribe()
   }
 

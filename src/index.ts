@@ -1,6 +1,5 @@
 // ---- Subfolders
 export * from "./animatorer";
-export * from "./firebase_login";
 export * from "./i_svg_path";
 export * from "./kor";
 export * from "./progress";
