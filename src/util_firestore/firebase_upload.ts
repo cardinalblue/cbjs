@@ -9,7 +9,7 @@ export function filenameFromFile(file: File) {
   return Math.random().toString(36).substr(2, 5) + name_esc
 }
 
-export function firestoreUploadImage(file: File,
+export function firebaseUploadImage(file: File,
                                      folder='',
                                      filename: string = filenameFromFile(file))
   : Observable<string>
