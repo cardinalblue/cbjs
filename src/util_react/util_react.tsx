@@ -1,4 +1,5 @@
 import * as React from "react";
+import {ReactNode} from "react";
 import {Queue} from "../util";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Rect, Size} from "../kor"
@@ -231,4 +232,37 @@ export function OptionallyParent(props: {
     return children
   // else
   return parentActual
+}
+
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+}
+
+export class DebuggerErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = {
+    hasError: false
+  };
+
+  public static getDerivedStateFromError(_: Error): ErrorBoundaryState {
+    // Update state so the next render will show the fallback UI.
+    debugger
+    return { hasError: true };
+  }
+
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("Uncaught error:", error, errorInfo);
+    debugger
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return <h1>Sorry.. there was an error</h1>;
+    }
+
+    return this.props.children;
+  }
 }

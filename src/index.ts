@@ -7,6 +7,7 @@ export * from "./touch"
 export * from "./upload"
 export * from "./util_firestore"
 export * from "./util_react"
+export * from "./firebase_login"
 
 // ---- Individual files
 export * from "./bulletin_context"
@@ -14,6 +15,7 @@ export * from "./chooser"
 export * from "./color"
 export * from "./command";
 export * from "./command_fieldify_util";
+export * from "./command_fieldify_firestore_util"
 export * from "./contexted_domainer";
 export * from "./contexter";
 export * from "./domainer";

@@ -1,3 +1,3 @@
 export * from "./firestore_clone"
 export * from "./firestore_sync"
-export * from "./firestoreUpload"
+export * from "./firebase_upload"

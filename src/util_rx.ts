@@ -23,6 +23,7 @@ import {
   concatMap,
   delay,
   endWith,
+  expand,
   filter,
   finalize,
   first,
@@ -39,7 +40,6 @@ import {
   tap
 } from "rxjs/operators"
 import {objectFromArray, objectToArray, withoutFirst} from "./util";
-import {expand} from "rxjs/internal/operators/expand";
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)

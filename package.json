@@ -34,7 +34,6 @@
     "@types/react-motion": "^0.0.29",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
-    "react-motion": "^0.5.2",
     "resize-observer": "^1.0.0",
     "svgpath": "^2.3.0"
   },
