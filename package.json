@@ -1,6 +1,6 @@
 {
   "name": "@piccollage/cbjs",
-  "version": "1.1.291",
+  "version": "1.1.292",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -31,7 +31,11 @@
   },
   "homepage": "https://github.com/cardinalblue/cbjs#readme",
   "dependencies": {
+    "@types/color": "^3.0.2",
+    "@types/color-string": "^1.5.0",
     "@types/react-motion": "^0.0.29",
+    "color": "^4.0.1",
+    "color-string": "^1.6.0",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
     "resize-observer": "^1.0.0",
