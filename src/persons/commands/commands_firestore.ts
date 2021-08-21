@@ -2,7 +2,8 @@ import firebase from "firebase/app";
 import {mergeMap} from "rxjs/operators";
 import {Person} from "../models/person";
 import {firestorePersons, PersonMapper} from "..";
-import {Command, promise$} from "@piccollage/cbjs";
+import {Command} from "../../command"
+import {promise$} from "../../util_rx"
 
 export function commandCreatePerson(personId: string,
                                     name: string|null,

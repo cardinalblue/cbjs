@@ -1,4 +1,4 @@
-import {Color} from "./color"
+import Color from "color"
 
 export type Functionable<T> = T | (() => T)
 
@@ -24,6 +24,6 @@ export function fieldifyColor<N extends string>(name: N,
                                                 color: Color | null | undefined) {
   if (!color) return {}
   return {
-    [name as string]: color.code
+    [name as string]: color.hex()
   }
 }

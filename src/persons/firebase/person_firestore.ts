@@ -1,9 +1,12 @@
 import {combineLatest, Observable, of} from "rxjs";
 import {catchError, first, map, shareReplay} from "rxjs/operators";
-import {ID, Person} from "../models/person";
+import {Person} from "../models/person";
 import firebase from "firebase/app";
 import {commandCreatePerson} from "..";
-import {cachedMapper, DocRef, DocSnap, fieldToString, firestoreSyncDocument} from "@piccollage/cbjs";
+import {fieldToString} from "../../util_fields"
+import {cachedMapper} from "../../util_rx"
+import {DocRef, DocSnap, firestoreSyncDocument} from "../../util_firestore"
+import {ID} from "../../util"
 
 export type User = firebase.User;
 

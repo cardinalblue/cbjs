@@ -1,6 +1,7 @@
 import * as _ from "lodash"
 import {Point, Size} from "./kor"
-import {Color} from "./color"
+import Color from "color"
+import ColorString from "color-string"
 
 export function fieldToString<D>(field: any, _default: D): string | D {
   if (typeof field == "string")
@@ -10,6 +11,11 @@ export function fieldToString<D>(field: any, _default: D): string | D {
 
 export function fieldToArray<D>(field: any[], _default: D): any[] | D {
   return Array.isArray(field) ? field : _default
+}
+
+export function fieldToStrings<D>(field: any[], _default: D): string[] | D {
+  return Array.isArray(field) ?
+    field.filter(i => typeof i === "string") : _default
 }
 
 export function fieldToPoint<D>(field: any, _default: D)
@@ -53,7 +59,8 @@ export function fieldToBoolean<D>(field: any, _default: D)
 export function fieldToColor<D>(field: any, _default: D)
   : Color | D {
   if (typeof field == "string") {
-    return new Color(field)
+    const v = ColorString.get(field)?.value
+    return new Color(v)
   }
   return _default
 }

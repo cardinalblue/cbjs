@@ -9,6 +9,13 @@ export function arrayEquals<T>(a1: T[], a2: T[]): boolean {
   return a1.every((t, i) => t === a2[i])
 }
 
+export function arrayEqualsUnordered<T>(a1: T[], a2: T[]): boolean {
+  if (a1.length !== a2.length)
+    return false
+  const s = new Set(a2)
+  return a1.every(t => s.has(t))
+}
+
 export function cachedArrayMapper<TFrom, TTo>(
   keyF: keyof TFrom | ((t: TFrom) => any),
   createF: (t: TFrom) => TTo,

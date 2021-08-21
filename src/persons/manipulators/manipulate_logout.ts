@@ -1,5 +1,5 @@
 import {defer, Observable} from "rxjs";
-import {firebaseLogout$} from "@piccollage/cbjs";
+import {firebaseLogout$} from "../../firebase_login"
 
 
 export function manipulateLogout(): Observable<unknown> {

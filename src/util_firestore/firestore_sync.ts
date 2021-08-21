@@ -31,7 +31,7 @@ export function firestoreSyncCollectionArray(ref: CollectionRef|Query)
   return new Observable((subs: Subscriber<Array<DocSnap>>) =>
     // `onSnapshot` already returns a function that ends the subscription
     ref.onSnapshot(
-      { includeMetadataChanges: false },
+      { includeMetadataChanges: true },
       (querySnap: QuerySnap) => {
         subs.next(querySnap.docs)
       },

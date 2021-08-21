@@ -1,4 +1,17 @@
-import {allMaxBy, arrayRemove, clone, filterTruthy, filterType, insertAt, mapmap, maxBy, toMap, typeCheck} from "./util"
+import {
+  allMaxBy,
+  arrayRemove,
+  clone,
+  filterTruthy,
+  filterType,
+  insertAt,
+  mapFilter,
+  mapmap,
+  mapMerge,
+  maxBy,
+  toMap,
+  typeCheck
+} from "./util"
 
 it('mapmap works', () => {
   expect(mapmap({ a: 2, b: 3 }, v => v + 1)).toEqual({ a: 3, b: 4})
@@ -123,4 +136,18 @@ it ('clone works', () => {
   expect(n2.toString()).toStrictEqual('5')
   expect(n2.to100()).toStrictEqual(500)
   expect(n1.to100()).toStrictEqual(10000)
+})
+
+it('mapMerge works', () => {
+  const m0 = new Map([[1, 'a'], [2, 'b']])
+  const m1 = new Map([[2, 'b!'], [3, 'c']])
+  expect(mapMerge(m0, m1)).toEqual(new Map([[1, 'a'], [2, 'b!'], [3, 'c']]))
+})
+
+it('mapFilter works', () => {
+  const m0 = new Map([[1, 'a'], [2, 'b'], [3, 'c']])
+  expect(mapFilter(m0, (k, v) => k >= 2))
+    .toEqual(new Map([[2, 'b'], [3, 'c']]))
+  expect(mapFilter(m0, (k, v) => v === 'b'))
+    .toEqual(new Map([[2, 'b']]))
 })

@@ -1,8 +1,6 @@
 import {BehaviorSubject} from "rxjs";
-import {ContextedDomainer} from "@piccollage/cbjs";
-
-
-export type ID = string
+import {ContextedDomainer} from "../../contexted_domainer"
+import {ID} from "../../util"
 
 export class Person extends ContextedDomainer {
 

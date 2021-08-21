@@ -27,9 +27,9 @@ export class Contexter {
   has<C extends Context>(contextType: _Constructor<C>): boolean {
     return _.findIndex(this.contexts, c => c instanceof contextType) >= 0
   }
-  get<C extends Context>(contextType: _Constructor<C>): C|null {
+  get<C extends Context>(contextType: _Constructor<C>): C|undefined {
     const found = _.findLast(this.contexts, c => c instanceof contextType)
-    return (found as C) || null
+    return (found as C) || undefined
   }
   use<C extends Context>(contextType: _Constructor<C>): C {
     const c = this.get(contextType)

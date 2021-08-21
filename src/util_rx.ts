@@ -387,7 +387,10 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
   return source => {
     const input$ = source.pipe(map(f))
     return new Observable<TOUT>(subsOut => {
-      const subsOuter = input$.subscribe(
+
+      let subsSource: Subscription|undefined
+        // Might complete DURING subscribe so initialize to undefined
+      subsSource  = input$.subscribe(
 
         // ---- Incoming
         in$ => {
@@ -396,7 +399,7 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
           const subsNew = in$.subscribe(
             t =>      subsOut.next(t),
             error =>  subsOut.error(error),
-            () =>     { if (subsOuter.closed) subsOut.complete() },
+            () =>     { if (subsSource && subsSource.closed) subsOut.complete() },
           )
           if (subsCur) subsCur.unsubscribe()
           subsCur = subsNew
@@ -413,7 +416,7 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
           subsCur.unsubscribe()
           subsCur = undefined
         }
-        subsOuter.unsubscribe()
+        subsSource?.unsubscribe()
       }
     })
   }
@@ -566,4 +569,8 @@ export function paginate$<T, CURSOR>(
     ),
     map(([_, acc]: [CURSOR|null, Array<T>]) => acc),
   )
+}
+
+export function toggleBehaviorSubject($: BehaviorSubject<boolean>) {
+  $.next(!$.value)
 }

@@ -1,8 +1,11 @@
 import {BehaviorSubject, of} from "rxjs";
 import {Person} from "../models/person";
-import {Context, Domainer, firebaseCurrentUser$, log$, LoginWidget, taplog} from "@piccollage/cbjs";
 import {firebaseUserToPersonMapper} from "..";
 import {mergeMap} from "rxjs/operators";
+import {log$, taplog} from "../../util_rx"
+import {firebaseCurrentUser$, LoginWidget} from "../../firebase_login"
+import {Domainer} from "../../domainer"
+import {Context} from "../../contexter"
 
 export class PersonPlugin extends Domainer implements Context {
 

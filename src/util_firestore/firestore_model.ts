@@ -1,13 +1,14 @@
 import {concat, Observable, of, throwError} from "rxjs";
-import {CollectionRef, DocRef, firestoreDeleteCollection, promise$} from "@piccollage/cbjs";
 import {map, mergeMap} from "rxjs/operators";
-import {PartialExceptFor, SubsetBehaviorSubject$} from "./util_types";
+import {CollectionRef, DocRef, firestoreDeleteCollection} from "./firestore_sync"
+import {PartialExceptFor, SubsetBehaviorSubject$} from "../util_types"
+import {promise$} from "../util_rx"
 
 
 export type Creation<M> =
   Partial<SubsetBehaviorSubject$<M>>
 export type CreationRequiring<M, MRequired extends keyof SubsetBehaviorSubject$<M>> =
-  PartialExceptFor<SubsetBehaviorSubject$<M>, keyof SubsetBehaviorSubject$<M>>
+  PartialExceptFor<SubsetBehaviorSubject$<M>, MRequired>
 
 export function firestoreModelCreate<STRUCT>(collectionRef: CollectionRef,
                                              struct: Partial<STRUCT>)

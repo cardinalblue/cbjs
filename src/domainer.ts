@@ -1,6 +1,6 @@
 import {BehaviorSubject, Observable, Subject} from "rxjs"
 import {first, switchMap, takeUntil, tap} from "rxjs/operators"
-import {taplog} from "./util_rx"
+import {log$, taplog} from "./util_rx"
 
 export class Domainer {
   shutdown$ = new Subject<any>()
@@ -58,6 +58,13 @@ export class Domainer {
           destination.next(t)
         }
       })
+    ).subscribe()
+  }
+
+  logging<T>(source: Observable<T>, s: string) {
+    source.pipe(
+      takeUntil(this.shutdown$),
+      log$(s),
     ).subscribe()
   }
 

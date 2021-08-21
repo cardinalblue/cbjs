@@ -87,7 +87,12 @@ export function mouseGesturesFromEvents(mousedown$: Observable<MouseEvent>,
         mousemove$
       )
         .pipe(
-          preventDefault(),
+          tap(e => {
+            // ---- Need to exclude <INPUT> and <TEXTAREA> otherwise cursor selection doesn't work
+            const nodeName = (e.target as any)["nodeName"]
+            if (nodeName !== "INPUT" && nodeName !== "TEXTAREA")
+              e.preventDefault()
+          }),
           takeUntil(mouseup$),
           map(e => convertMouseToTouchEvent(e, elementRect)),
         )

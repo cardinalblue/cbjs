@@ -26,6 +26,31 @@ export interface Elementable<T> {
   elements: Array<T>
 }
 
+export function isDefined<T>(t: T|undefined): t is T {
+  return t !== undefined
+}
+
+// ---- Copied from https://fettblog.eu/typescript-hasownproperty/
+//
+export function hasProperty<Y extends PropertyKey>(obj: unknown, prop: Y)
+  : obj is Object & Record<Y, unknown>
+{
+  return (obj instanceof Object) && obj.hasOwnProperty(prop)
+}
+
+export function safeProperty<Y extends PropertyKey>(obj: unknown, prop: Y)
+  : unknown
+{
+  return hasProperty(obj, prop) && obj[prop]
+}
+
+export function safeGet<Y extends PropertyKey>(obj: unknown, prop: Y, f: (obj: unknown) => unknown)
+  : unknown
+{
+  return f(safeProperty(obj, prop))
+}
+
+
 // ----------------------------------------------------------------------------
 // Object/Map
 
@@ -183,6 +208,30 @@ export function mapmap<T, R>(map: {[k: string]: T}, f: ((t: T) => R))
     ret[k] = f(map[k])
   }
   return ret
+}
+
+export function mapMap<K,V,R>(map: Map<K,V>, f: (k: K, v: V) => R)
+  : Map<K,R>
+{
+  return new Map(
+    [...map].map(([k, v]) => [k, f(k, v)])
+  )
+}
+
+export function mapFilter<K,V>(map: Map<K,V>, f: (k: K, v: V) => boolean)
+  : Map<K,V>
+{
+  return new Map(
+    [...map].filter(([k, v]) => f(k, v))
+  )
+}
+
+export function mapMerge<K,V>(...maps: Array<Map<K,V>>)
+  : Map<K,V>
+{
+  return new Map(
+    _.flatMap(maps, m => [...m])
+  )
 }
 
 // export function MAP(object: Object) {

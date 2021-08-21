@@ -2,6 +2,7 @@ import {BehaviorSubject, Observable, of} from "rxjs"
 import {testScheduler} from "./setup_test"
 import {
   added,
+  arrayEqualsUnordered,
   arrayFilterMap,
   arrayMap,
   cachedArrayMapper,
@@ -448,4 +449,13 @@ it('arrayFilterMap works changing values', () => {
     ex(cold('--a-------b------|', { a: [x4,x2,x1,x3], b: [x3,x1] }).pipe(fm))
       .toBe('--a----b--c------|', { a: [x2,x1,x3], b: [x4,x2,x1,x3], c: [x3,x1] })
   })
+})
+
+it('arrayEqualsUnordered works', () => {
+  const a = ['a', 'b', 'c']
+  expect(arrayEqualsUnordered(a, ['a', 'b'])).toBeFalsy()
+  expect(arrayEqualsUnordered(a, ['a', 'b', 'c'])).toBeTruthy()
+  expect(arrayEqualsUnordered(a, ['c', 'b', 'a'])).toBeTruthy()
+  expect(arrayEqualsUnordered(a, ['c', 'b'])).toBeFalsy()
+  expect(arrayEqualsUnordered(a, ['c', 'b', 'a', 'd'])).toBeFalsy()
 })

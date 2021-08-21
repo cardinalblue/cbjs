@@ -23,6 +23,7 @@ export * from "./firebaseInit";
 export * from "./font"
 export * from "./input_streamer";
 export * from "./manipulators"
+export * from "./persons";
 export * from "./platform";
 export * from "./portal";
 export * from "./ref_store";
@@ -34,6 +35,7 @@ export * from "./util";
 export * from "./util_array_rx";
 export * from "./util_fields";
 export * from "./util_math";
+export * from "./util_fields"
 export * from "./util_rx";
 export * from "./view_registry";
 export * from "./widget";

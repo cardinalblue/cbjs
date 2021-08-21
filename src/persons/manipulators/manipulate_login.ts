@@ -1,7 +1,9 @@
 import firebase from "firebase/app";
 import {defer, Observable} from 'rxjs'
 import {finalize, takeUntil} from 'rxjs/operators'
-import {PersonPlugin, filterDefined, firebaseCurrentUser$, LoginWidget, taplog} from "@piccollage/cbjs"
+import {PersonPlugin} from "../ui/person_plugin"
+import {firebaseCurrentUser$, LoginWidget} from "../../firebase_login"
+import {filterDefined, taplog} from "../../util_rx"
 
 export function manipulateLogin(personPlugin: PersonPlugin)
   : Observable<firebase.User>
