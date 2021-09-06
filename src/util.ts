@@ -153,6 +153,10 @@ export function objectFromArray<V>(array: Array<[string, V]>): { [s: string]: V 
   }, {});
 }
 
+export function keys<T>(t: T): (keyof T)[] {
+  return Object.keys(t) as (keyof T)[]
+}
+
 /**
  * Finds all max values in `arr` using `compareF`.
  */
@@ -260,6 +264,9 @@ export function alos<T>(input: T, f: (t: T) => any): T {
 }
 export function clone<T extends object>(t: T, mod: Partial<T> = {}): T {
   return Object.assign(Object.create(t), mod)
+}
+export function copyF<F extends Function>(f: F): F {
+  return f.bind({})
 }
 
 // ----------------------------------------------------------------------------
