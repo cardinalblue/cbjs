@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import {doc, serverTimestamp, setDoc} from "firebase/firestore";
 import {mergeMap} from "rxjs/operators";
 import {Person} from "../models/person";
 import {firestorePersons, PersonMapper} from "..";
@@ -11,15 +11,16 @@ export function commandCreatePerson(personId: string,
   : Command<Person>
 {
   return new Command('commandCreatePerson', () => {
+    const d = doc(firestorePersons(), personId)
     const data = {
-      created_on: firebase.firestore.FieldValue.serverTimestamp(),
+      created_on: serverTimestamp(),
       name,
       imageUrl,
     }
     return promise$(() =>
-      firestorePersons()
-        .doc(personId)
-        .set(data)
-    ).pipe(mergeMap(_ => PersonMapper(personId)))
+      setDoc(d, data)
+    ).pipe(
+      mergeMap(_ => PersonMapper(personId))
+    )
   })
 }

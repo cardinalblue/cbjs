@@ -37,7 +37,7 @@ const isTouchyF = function() {
     ('ontouchstart' in window) ||
          ((window as any).DocumentTouch && document instanceof (window as any).DocumentTouch) ||
          (navigator.maxTouchPoints > 0) ||
-         (window.navigator.msMaxTouchPoints > 0)
+         ((window.navigator as any).msMaxTouchPoints > 0)
   )
 }
 export const isTouchy = isTouchyF()

@@ -1,8 +1,11 @@
 import {concat, Observable, of, throwError} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
 import {CollectionRef, DocRef, firestoreDeleteCollection} from "./firestore_sync"
+import {addDoc, deleteDoc, doc, updateDoc} from "firebase/firestore"
 import {PartialExceptFor, SubsetBehaviorSubject$} from "../util_types"
 import {promise$} from "../util_rx"
+import firebase from "firebase/compat"
+import DocumentData = firebase.firestore.DocumentData
 
 
 export type Creation<M> =
@@ -16,7 +19,7 @@ export function firestoreModelCreate<STRUCT>(collectionRef: CollectionRef,
 {
 
   return promise$(
-    () => collectionRef.add(struct))
+    () => addDoc(collectionRef, struct as DocumentData))
     .pipe(
       mergeMap(docRef => {
         if (!docRef) {
@@ -35,7 +38,7 @@ export function firestoreModelPut<STRUCT>(collectionRef: CollectionRef,
 {
 
   return promise$(
-    () => collectionRef.add(struct))
+    () => addDoc(collectionRef, struct as DocumentData))
     .pipe(
       mergeMap(docRef => {
         if (!docRef) {
@@ -54,7 +57,7 @@ export function firestoreModelUpdate<STRUCT>(docRef: DocRef,
   : Observable<DocRef>
 {
   return promise$(() =>
-    docRef.update(struct)
+    updateDoc(docRef, struct as DocumentData)
   ).pipe(
     map(_ => docRef)
   )
@@ -72,9 +75,9 @@ export function firestoreModelDelete(docRef: DocRef,
         firestoreDeleteCollection(c))
     ],
     // ---- Delete document
-    promise$(() => collectionRef.doc(docRef.id).delete())
+    promise$(() => deleteDoc(doc(collectionRef, docRef.id)))
   ).pipe(
     map(_ => docRef)
-  );
+  )
 }
 

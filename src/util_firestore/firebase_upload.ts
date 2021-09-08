@@ -1,7 +1,6 @@
-import firebase from "firebase/app";
+import {getDownloadURL, getStorage, ref, uploadBytes, UploadResult} from "firebase/storage";
 import {mergeMap} from "rxjs/operators";
 import {from, Observable} from "rxjs"
-import {UploadTaskSnapshot} from "./index"
 
 
 export function filenameFromFile(file: File) {
@@ -14,20 +13,20 @@ export function firebaseUploadImage(file: File,
                                      filename: string = filenameFromFile(file))
   : Observable<string>
 {
-  const snapshot$: Observable<UploadTaskSnapshot> = new Observable(subscriber => {
-    var ref = firebase.storage().ref()
+  const snapshot$: Observable<UploadResult> = new Observable(subscriber => {
+    let loc = ref(getStorage())
     if (folder)
-      ref = ref.child(folder)
-    ref.child(filename).put(file).then(
-      (uploadSnapshot: UploadTaskSnapshot) => {
-        subscriber.next(uploadSnapshot)
+      loc = ref(loc, folder)
+    uploadBytes(ref(loc, filename), file).then(
+      (result: UploadResult) => {
+        subscriber.next(result)
         subscriber.complete()
       },
       error => subscriber.error(error)
     )
   })
   return snapshot$.pipe(
-    mergeMap(s => from(s.ref.getDownloadURL()))
+    mergeMap(result => from(getDownloadURL(result.ref)))
   )
 }
 

@@ -1,20 +1,20 @@
 import {combineLatest, Observable, of} from "rxjs";
 import {catchError, first, map, shareReplay} from "rxjs/operators";
+import {User} from "firebase/auth";
+import {collection, doc, getFirestore} from "firebase/firestore"
 import {Person} from "../models/person";
-import firebase from "firebase/app";
 import {commandCreatePerson} from "..";
 import {fieldToString} from "../../util_fields"
 import {cachedMapper} from "../../util_rx"
 import {DocRef, DocSnap, firestoreSyncDocument} from "../../util_firestore"
 import {ID} from "../../util"
 
-export type User = firebase.User;
 
 // -----------------------------------------------------------------------------
 // Reference shortcuts
 
 export function firestorePersons() {
-  return firebase.firestore().collection('persons')
+  return collection(getFirestore(), 'persons')
 }
 
 
@@ -24,7 +24,7 @@ export function firestorePersons() {
 export const PersonMapper: (personId: ID) => Observable<Person> =
   cachedMapper((personId: ID) => personId,
     (personId: ID) =>
-      syncedPerson$(firestorePersons().doc(personId))
+      syncedPerson$(doc(firestorePersons(), personId))
   )
 
 

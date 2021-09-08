@@ -1,4 +1,5 @@
-import firebase from "firebase/app";
+import {browserLocalPersistence, getAuth, setPersistence, signOut, User,} from "firebase/auth";
+import firebase from "firebase/compat"
 import * as firebaseui from "firebaseui";
 import {Observable} from "rxjs";
 import {promise$} from "../util_rx"
@@ -8,13 +9,13 @@ let firebaseAuthUI: firebaseui.auth.AuthUI|null = null
 export function firebaseAuthConfigure$()
 {
   return promise$(() =>
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    setPersistence(getAuth(), browserLocalPersistence)
   )
 }
 
-export function firebaseCurrentUser$(): Observable<firebase.User|null>
+export function firebaseCurrentUser$(): Observable<User|null>
 {
-  const auth = firebase.auth()
+  const auth = getAuth()
 
   return new Observable(subscriber => {
     subscriber.next(auth.currentUser)
@@ -29,12 +30,12 @@ export function firebaseCurrentUser$(): Observable<firebase.User|null>
 }
 
 export function firebaseLogout$() {
-  return promise$(() => firebase.auth().signOut())
+  return promise$(() => signOut(getAuth()))
 }
 
 export function firebaseLoginStart$(element: string|Element)
 {
-  return new Observable<firebase.User>(subscriber => {
+  return new Observable<User>(subscriber => {
 
     console.log("++++ firebaseLoginStart$")
 
@@ -77,7 +78,7 @@ export function firebaseLoginStart$(element: string|Element)
     };
 
     // The start method will wait until the DOM is loaded.
-    firebaseAuthUI = firebaseAuthUI || new firebaseui.auth.AuthUI(firebase.auth())
+    firebaseAuthUI = firebaseAuthUI || new firebaseui.auth.AuthUI(getAuth())
     firebaseAuthUI.start(element, config);
 
     return () => {

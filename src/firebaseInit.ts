@@ -1,5 +1,4 @@
-import firebase from "firebase/app";
-import 'firebase/analytics'
+import {FirebaseApp, initializeApp} from "firebase/app";
 
 const config = {
   apiKey:           process.env.REACT_APP_FIREBASE_API_KEY,
@@ -12,11 +11,12 @@ const config = {
 };
 
 export function firebaseInit() {
-  if (!firebase.apps.length) {
+  if (!firebaseApp) {
     console.log("++++ Firebase firebaseInit", config)
-    firebase.initializeApp(config)
-    // firebase.analytics()
+    firebaseApp = initializeApp(config)
   }
 }
+
+export var firebaseApp: FirebaseApp|null
 
 

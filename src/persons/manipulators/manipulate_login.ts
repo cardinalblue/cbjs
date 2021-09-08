@@ -1,4 +1,4 @@
-import firebase from "firebase/app";
+import {User} from "firebase/auth";
 import {defer, Observable} from 'rxjs'
 import {finalize, takeUntil} from 'rxjs/operators'
 import {PersonPlugin} from "../ui/person_plugin"
@@ -6,7 +6,7 @@ import {firebaseCurrentUser$, LoginWidget} from "../../firebase_login"
 import {filterDefined, taplog} from "../../util_rx"
 
 export function manipulateLogin(personPlugin: PersonPlugin)
-  : Observable<firebase.User>
+  : Observable<User>
 {
 
   return defer(() => {

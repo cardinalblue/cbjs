@@ -1,22 +1,29 @@
-import firebase from "firebase/app";
 import {forkJoin, from, Observable, Subscriber} from "rxjs"
 import {mergeMap} from "rxjs/operators";
 import {promise$} from "../util_rx";
+import {
+  CollectionReference,
+  deleteDoc,
+  DocumentReference,
+  DocumentSnapshot,
+  getDocs,
+  onSnapshot,
+  Query,
+  QuerySnapshot,
+} from "firebase/firestore"
 
-export type QuerySnap           = firebase.firestore.QuerySnapshot
-export type DocSnap             = firebase.firestore.DocumentSnapshot
-export type DocRef              = firebase.firestore.DocumentReference
-export type CollectionRef       = firebase.firestore.CollectionReference
-export type Query               = firebase.firestore.Query
-export type UploadTaskSnapshot  = firebase.storage.UploadTaskSnapshot
+export type QuerySnap           = QuerySnapshot
+export type DocSnap             = DocumentSnapshot
+export type DocRef              = DocumentReference
+export type CollectionRef       = CollectionReference
 
 export function firestoreSyncDocument(docRef: DocRef)
   : Observable<DocSnap>
 {
   return new Observable((subs: Subscriber<DocSnap>) =>
     // `onSnapshot` already returns a function that ends the subscription
-    docRef.onSnapshot(
-      snap => snap.exists ?
+    onSnapshot(docRef,
+      snap => snap.exists() ?
         subs.next(snap) :
         subs.error(`firestoreSyncDocument error, doesn't exist ${ docRef.path}`),
       (error: Error) => subs.error(error),
@@ -30,7 +37,7 @@ export function firestoreSyncCollectionArray(ref: CollectionRef|Query)
 {
   return new Observable((subs: Subscriber<Array<DocSnap>>) =>
     // `onSnapshot` already returns a function that ends the subscription
-    ref.onSnapshot(
+    onSnapshot(ref,
       { includeMetadataChanges: true },
       (querySnap: QuerySnap) => {
         subs.next(querySnap.docs)
@@ -42,15 +49,17 @@ export function firestoreSyncCollectionArray(ref: CollectionRef|Query)
 }
 
 export function firestoreDeleteCollection(collectionRef: CollectionRef)
-  : Observable<void[]>
+//  : Observable<void[]>
 {
-  return promise$(() => collectionRef.get())
-    .pipe(
-      mergeMap((querySnap: QuerySnap) =>
-        from(forkJoin(
-          querySnap.docs.map(doc => from(doc.ref.delete()))
-        ))
-      )
-    );
+  const snap$ = promise$(() => getDocs(collectionRef))
+  return snap$.pipe(
+    mergeMap((querySnap: QuerySnap) =>
+      from(forkJoin([...
+        querySnap.docs.map(doc =>
+          from(deleteDoc(doc.ref))
+        )
+      ]))
+    )
+  );
 }
 
