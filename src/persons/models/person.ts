@@ -10,13 +10,13 @@ export class Person extends ContextedDomainer {
 
 
   // ---- Lifecycle
-  constructor(readonly id: ID, displayName: string | null,  imageUrl: string | null) {
+  constructor(readonly id: ID, displayName: string | null,  imageUrl: string | null, readonly isAdmin=false) {
     super();
     console.log("++++ Person constructor")
 
     // ---- Initialize
     this.displayName$ = new BehaviorSubject<string | null>(displayName);
-    this.imageUrl$ = new BehaviorSubject<string | null>(imageUrl);
+    this.imageUrl$    = new BehaviorSubject<string | null>(imageUrl);
   }
 }
 

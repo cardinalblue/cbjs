@@ -116,7 +116,8 @@ export function next<T>(array: T[], target: T): T|null {
   return array[i+1]
 }
 
-type Constructor = new (args: any) => any
+type Constructor = new (...args: any[]) => any
+
 export function findInstanceOf<A, T extends Constructor>(a: Array<A>, type: T): InstanceType<T>|undefined {
   for (let i of a) {
     if (i instanceof type)
@@ -130,7 +131,7 @@ export function includedOrDefault<T, D>(t: T, ts: Array<T>, _default: D): T | D 
   return _default
 }
 
-export function filterInstances<TIN, TOUT extends Constructor>(
+export function filterInstances<TOUT extends Constructor, TIN=any>(
   array: TIN[],
   klass: TOUT
 )

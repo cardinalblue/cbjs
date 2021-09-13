@@ -1,5 +1,5 @@
-import {BehaviorSubject, Observable, Subject} from "rxjs"
-import {first, switchMap, takeUntil, tap} from "rxjs/operators"
+import {BehaviorSubject, EMPTY, Observable, Subject} from "rxjs"
+import {catchError, first, switchMap, takeUntil, tap} from "rxjs/operators"
 import {log$, taplog} from "./util_rx"
 
 export class Domainer {
@@ -35,7 +35,12 @@ export class Domainer {
     return trigger$.pipe(
       takeUntil(this.shutdown$),
       tap(t => Domainer.debug && console.debug("---- triggering", t)),
-      monad(manipulator)
+      monad(t => manipulator(t).pipe(
+        catchError(e => {
+          console.error("++++ triggering error", e)
+          return EMPTY
+        })
+      ))
     ).subscribe()
   }
 

@@ -15,7 +15,7 @@ export function commandCreatePerson(personId: string,
     const data = {
       created_on: serverTimestamp(),
       name,
-      imageUrl,
+      image_url: imageUrl,
     }
     return promise$(() =>
       setDoc(d, data)

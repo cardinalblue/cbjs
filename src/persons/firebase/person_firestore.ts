@@ -1,10 +1,10 @@
 import {combineLatest, Observable, of} from "rxjs";
 import {catchError, first, map, shareReplay} from "rxjs/operators";
 import {User} from "firebase/auth";
-import {collection, doc, getFirestore} from "firebase/firestore"
+import {collection, doc, FieldValue, getFirestore, Timestamp} from "firebase/firestore"
 import {Person} from "../models/person";
 import {commandCreatePerson} from "..";
-import {fieldToString} from "../../util_fields"
+import {fieldToBoolean, fieldToString} from "../../util_fields"
 import {cachedMapper} from "../../util_rx"
 import {DocRef, DocSnap, firestoreSyncDocument} from "../../util_firestore"
 import {ID} from "../../util"
@@ -17,6 +17,12 @@ export function firestorePersons() {
   return collection(getFirestore(), 'persons')
 }
 
+export type Struct_Person = {
+  name:       string,
+  image_url:  string,
+  created_on: Timestamp|FieldValue,
+  is_admin:   true,
+}
 
 // -----------------------------------------------------------------------------
 // Mappers
@@ -55,10 +61,11 @@ export function syncedPerson$(ref: DocRef) {
       const data = snap.data() || {}
       console.log("++++ syncedPerson$ data", data)
 
-      const name = fieldToString(data.name, undefined) || null
-      const imageUrl = fieldToString(data.imageUrl, undefined) || null
+      const name     = fieldToString(data.name, undefined) || null
+      const imageUrl = fieldToString(data.image_url || data.imageUrl, undefined) || null
+      const isAdmin  = fieldToBoolean(data.is_admin, false)
 
-      return {snap, name, imageUrl}
+      return {snap, name, imageUrl, isAdmin }
     }),
 
     // ---- Create a model from the first set of data and recombine
@@ -66,8 +73,8 @@ export function syncedPerson$(ref: DocRef) {
       source = source.pipe(shareReplay({ bufferSize: 1, refCount: true}))
       return source.pipe(
         first(),
-        map(({snap, name, imageUrl}) => {
-          const model = new Person(snap.id, name, imageUrl)
+        map(({snap, name, imageUrl, isAdmin}) => {
+          const model = new Person(snap.id, name, imageUrl, isAdmin)
 
           model.updating(
             source.pipe(map(_ => _.name)),
