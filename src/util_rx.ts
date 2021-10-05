@@ -264,6 +264,7 @@ export function enqueue<T>(
 // ----------------------------------------------------------------
 // Accumulates the incoming values to be "active" for a fixed time.
 // Outputs the current values as they become active or inactive.
+// The input:
 //
 //   ------1-------------2-----3------|
 //
@@ -282,7 +283,8 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
       delay(t, scheduler),
       map(t => [false, t]),
     )
-    return merge<[boolean, T]>(add$, del$).pipe(
+    const merged$: Observable<[boolean, T]> = merge(add$, del$)
+    return merged$.pipe(
       scan(
         (acc: Array<T>, [op, t]: [boolean, T]) =>
             op ? [...acc, t] : withoutFirst(acc, t),
@@ -455,10 +457,11 @@ export function flattenArray<TIN, TOUT>(
 export function repeating<T>(
   f: T | ((n: number) => T),
   dueTime: number | Date = 0,
-  periodOrScheduler?: number | SchedulerLike,
-  scheduler?: SchedulerLike
+  scheduler: SchedulerLike=asyncScheduler,
+  period?: number,
 ): Observable<T> {
-  return timer(dueTime, periodOrScheduler, scheduler).pipe(
+  const t$ = period ? timer(dueTime, period, scheduler) : timer(dueTime, scheduler)
+  return t$.pipe(
     map(n =>
       (f instanceof Function ? f(n) : f) as T
     )

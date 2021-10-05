@@ -30,6 +30,8 @@ type IAnimationValueF<X> = (x: X) => X
 export interface IAnimation<X> {
   valueTo:                IAnimationValueF<X>
   t:                      Millisec
+
+  // ---- Should be a monad 😅
   map(f: (x: X) => X): IAnimation<X>
 }
 export class BaseAnimation<X> implements IAnimation<X> {
@@ -101,7 +103,7 @@ export class Animatorer<X> {
       : Observable<[X, IAnimation<X>]> {
       const x$ = animations.pipe(
         scan((xPrev, animation) => animation.valueTo(xPrev), x0),
-        startWith<X,X>(x0),
+        startWith<X>(x0),
       )
       return zip(x$, animations)    }
 

@@ -1,9 +1,9 @@
-import {FirebaseApp, FirebaseOptions, initializeApp} from "firebase/app";
+import {FirebaseApp, initializeApp} from "firebase/app";
 import {connectFirestoreEmulator, getFirestore,} from "firebase/firestore"
 import {connectStorageEmulator, getStorage,} from "firebase/storage"
 import {connectAuthEmulator, getAuth,} from "firebase/auth"
 
-const config = (process.env.FIREBASE_CONFIG as FirebaseOptions) || {
+const config = {
   apiKey:           process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain:       process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   databaseURL:      process.env.REACT_APP_FIREBASE_DATABASE_URL,
@@ -15,7 +15,7 @@ const config = (process.env.FIREBASE_CONFIG as FirebaseOptions) || {
 
 export function firebaseInit() {
   if (!firebaseApp) {
-    console.log("++++ Firebase firebaseInit config", config)
+    console.log("++++ Firebase firebaseInit config", config, process.env)
     firebaseApp = initializeApp(config)
 
     const port_firestore = parseInt(process.env.REACT_APP_FIREBASE_EMULATOR_FIRESTORE || "")

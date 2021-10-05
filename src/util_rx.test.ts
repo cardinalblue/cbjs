@@ -287,13 +287,15 @@ it('prolong works', () => {
     const {cold, expectObservable: ex} = helpers
     ex(cold('-----a--------b---c--|')
       .pipe(prolong(5, scheduler)))
-      .toBe('-----0----1---2---34---5--|', [
+      .toBe('-----0----1---2---34---(5|)', [
         ['a'],
         [],
         ['b'],
         ['b', 'c'],
         ['c'],
         []
+        // Note it used to prolong the completion, but the behavior changed
+        // to complete as soon as the delayed sources do.
       ])
 
   })

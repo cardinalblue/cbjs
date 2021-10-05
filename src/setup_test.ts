@@ -2,26 +2,20 @@ import * as _ from "lodash"
 import {Elementable} from "./index"
 import {TestScheduler} from 'rxjs/testing'
 
-beforeEach(function() {
-  jest.addMatchers({
-    toBeEnumerableCloseTo: function() {
-      return {
-        compare: function(actual: any, expected: any, precision: number = 0.0001)
-          : jest.CustomMatcherResult {
-          for (const [index, e] of expected.entries()) {
-            const a = actual[index]
-            if ((typeof a == 'undefined') || Math.abs(a - e) > precision) {
-              return {
-                pass: false,
-                message: () => `Expected [${index}] to be close to ${e} but got ${a}. Actual=${actual}`
-              }
-            }
+expect.extend({
+    toBeEnumerableCloseTo: function(received: any, expected: any, precision: number = 0.0001)
+      : jest.CustomMatcherResult {
+      for (const [index, e] of expected.entries()) {
+        const a = received[index]
+        if ((typeof a == 'undefined') || Math.abs(a - e) > precision) {
+          return {
+            pass: false,
+            message: () => `Expected [${index}] to be close to ${e} but got ${a}. Actual=${received}`
           }
-          return { pass: true, message: () => "Ok!" }
         }
       }
+      return { pass: true, message: () => "Ok!" }
     }
-  })
 })
 
 // =======================================================================
