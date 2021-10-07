@@ -1,0 +1,6 @@
+@cardinalblue:registry=https://npm.pkg.github.com/
+
+// generate your token on: https://github.com/settings/tokens
+//npm.pkg.github.com/:_authToken=ghp_j7YfMHJkbwS6
+
+registry=https://registry.npmjs.org
