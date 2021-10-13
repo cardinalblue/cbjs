@@ -31,3 +31,4 @@
     "not op_mini all"
   ]
 ```
+  Also have to delete `/node_modules/.cache`

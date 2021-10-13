@@ -1,6 +1,8 @@
-export type Constructor<T> = new (...args: any[]) => T
 
-export class TypeMapRegistry<K, V> {
+export type Constructable = abstract new(...args: any) => any
+export type Constructor<T extends Constructable> = new (...args: ConstructorParameters<T>) => T
+
+export class TypeMapRegistry<K extends Constructable, V> {
   private _map: Map<Constructor<K>, (k: K) => V> = new Map()
 
   register<KSUB extends K>(k: Constructor<KSUB>, vf: (k: KSUB) => V) {
