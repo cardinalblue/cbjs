@@ -35,10 +35,14 @@ export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (
 export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (t: T) => any) : T
 {
   // React hook always have to call `useState`, even if not passed a BehaviorSubject
-  const [t, setT] = React.useState(
+  let [t, setT] = React.useState(
     subject instanceof BehaviorSubject ?
       subject.value : subject
   )
+
+  // Non Behavior Subject case
+  if (!(subject instanceof BehaviorSubject))
+    [t, setT] = [ subject, (_) => {} ]
 
   // React hook always have to call `useEffect`, even if not passed a BehaviorSubject
   React.useEffect(() => {
