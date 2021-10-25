@@ -1,7 +1,5 @@
-import {last} from "./util"
+import {Constructable, last} from "./util"
 import _ from "lodash"
-
-type _Constructor<T> = new (...args:any[]) => T
 
 export interface Context {}
 
@@ -24,14 +22,14 @@ export class Contexter {
     _child.contexter.prepend(this.contexts)
     return _child
   }
-  has<C extends Context>(contextType: _Constructor<C>): boolean {
+  has<C extends Context>(contextType: Constructable<C>): boolean {
     return _.findIndex(this.contexts, c => c instanceof contextType) >= 0
   }
-  get<C extends Context>(contextType: _Constructor<C>): C|undefined {
+  get<C extends Context>(contextType: Constructable<C>): C|undefined {
     const found = _.findLast(this.contexts, c => c instanceof contextType)
     return (found as C) || undefined
   }
-  use<C extends Context>(contextType: _Constructor<C>): C {
+  use<C extends Context>(contextType: Constructable<C>): C {
     const c = this.get(contextType)
     if (!c) throw Error(`Context ${contextType} not set`)
     return c

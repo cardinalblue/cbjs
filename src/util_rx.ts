@@ -39,7 +39,7 @@ import {
   takeUntil,
   tap
 } from "rxjs/operators"
-import {objectFromArray, objectToArray, withoutFirst} from "./util";
+import {Constructable, objectFromArray, objectToArray, withoutFirst} from "./util";
 
 export const IDENTITY = (t: any) => t
 export const PASSTHRU = (t: any) => of(t)
@@ -113,8 +113,7 @@ export function postponeUntil<T,S>(signal: Observable<S>)
       )
 }
 
-type Constructor = new (args: any) => any
-export function filterInstanceOf<TIN, T extends Constructor>(klass: T)
+export function filterInstanceOf<TIN, T extends Constructable>(klass: T)
 {
   return (s: Observable<TIN>) =>
     s.pipe(filter(x => x instanceof klass)) as Observable<InstanceType<T>>
