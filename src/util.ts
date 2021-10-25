@@ -116,7 +116,7 @@ export function next<T>(array: T[], target: T): T|null {
   return array[i+1]
 }
 
-export type Constructable<T=any> = new (...args: any[]) => T
+export type Constructable<T extends Object=Object, ARGS extends Array<any>=any[]> = new (...args: ARGS) => T
 
 export function findInstanceOf<A, T extends Constructable>(a: Array<A>, type: T)
   : InstanceType<T>|undefined
