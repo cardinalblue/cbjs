@@ -1,4 +1,4 @@
-import {getDownloadURL, getStorage, ref, uploadBytes, UploadResult} from "firebase/storage";
+import {getDownloadURL, getStorage, ref, uploadBytes, UploadMetadata, UploadResult} from "firebase/storage";
 import {mergeMap} from "rxjs/operators";
 import {from, Observable} from "rxjs"
 
@@ -9,15 +9,16 @@ export function filenameFromFile(file: File) {
 }
 
 export function firebaseUploadImage(file: File,
-                                     folder='',
-                                     filename: string = filenameFromFile(file))
+                                    folder='',
+                                    filename: string = filenameFromFile(file),
+                                    metadata?: UploadMetadata)
   : Observable<string>
 {
   const snapshot$: Observable<UploadResult> = new Observable(subscriber => {
     let loc = ref(getStorage())
     if (folder)
       loc = ref(loc, folder)
-    uploadBytes(ref(loc, filename), file).then(
+    uploadBytes(ref(loc, filename), file, metadata).then(
       (result: UploadResult) => {
         subscriber.next(result)
         subscriber.complete()
