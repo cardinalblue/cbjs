@@ -1,6 +1,6 @@
 {
   "name": "@cardinalblue/cbjs",
-  "version": "1.3.11",
+  "version": "1.3.12",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
