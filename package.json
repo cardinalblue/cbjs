@@ -1,6 +1,6 @@
 {
   "name": "@cardinalblue/cbjs",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -34,7 +34,7 @@
     "@types/color": "^3.0.2",
     "@types/color-string": "^1.5.0",
     "@types/react-motion": "^0.0.31",
-    "color": "^4.0.1",
+    "color": "github:cardinalblue/color",
     "color-string": "^1.6.0",
     "immutable": "^4.0.0-rc.15",
     "resize-observer": "^1.0.0",
