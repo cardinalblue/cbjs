@@ -1,3 +1,4 @@
+on: [pull_request]
 name: publish package CI
 
 jobs:
@@ -17,7 +18,4 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 14.x
-
-      - run: npm ci
-      - run: npm run lint
-      - run: npm test
+      - run: npm build
