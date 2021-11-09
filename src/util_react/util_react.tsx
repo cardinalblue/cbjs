@@ -1,5 +1,5 @@
 import * as React from "react";
-import {ReactNode} from "react";
+import {ReactNode, useEffect, useState} from "react";
 import {Queue} from "../util";
 import {BehaviorSubject, Observable} from "rxjs";
 import {Rect, Size} from "../kor"
@@ -198,6 +198,14 @@ export function useResizeObserver(ref: React.RefObject<any>, f: (size: Size) => 
       return () => ro.unobserve(e)
     }
   }, [ref, f])
+}
+
+// ---- Use state to remember whether we were mounted before or
+//      is a rerender
+export function useIsMounting() {
+  const [isMounting, setIsMounting] = useState(true)
+  useEffect(() => setIsMounting(false), [])
+  return isMounting
 }
 
 export function StopPropagation(props: {
