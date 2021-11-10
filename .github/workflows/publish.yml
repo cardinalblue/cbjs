@@ -3,22 +3,21 @@ name: publish package CI
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest 
     steps:
-      - name: Git branch name
-        id: git-branch-name
-        uses: EthanSK/git-branch-name-action@v1
-
-      - name: Echo the branch name
-        run: echo "Branch name ${GIT_BRANCH_NAME}"
-
       - uses: actions/checkout@v2
 
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+        # Setup .npmrc file to publish to GitHub Packages
+        uses: actions/setup-node@v2
         with:
           node-version: 14.x
-      - run: yarn
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@cardinalblue'
+
+      - name: Install Package
+        run: yarn
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
