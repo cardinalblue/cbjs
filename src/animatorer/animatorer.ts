@@ -1,4 +1,4 @@
-import {asyncScheduler, BehaviorSubject, Observable, of, SchedulerLike, Subject, zip} from "rxjs"
+import {asyncScheduler, BehaviorSubject, Observable, of, SchedulerLike, share, Subject, zip} from "rxjs"
 import {map, scan, startWith, switchMap} from "rxjs/operators"
 import {enqueue, extend, Millisec} from "../util_rx"
 
@@ -111,12 +111,7 @@ export class Animatorer<X> {
   get output$() {
     if (!this._output$) {
       this._output$ = new BehaviorSubject([this.xInitial, BaseAnimation.NULL as IAnimation<X>])
-      rollAnimations(this.xInitial, this.animation$).pipe(
-        // Sub-animations if MultiAnimation
-        switchMap(
-          ([xBase, animation]) => rollAnimations(xBase, enqueueMulti(animation, this.scheduler))
-        )
-      ).subscribe(this._output$)
+      this.rolled$.subscribe(this._output$)
     }
     return this._output$
   }
@@ -125,17 +120,34 @@ export class Animatorer<X> {
    *
    */
   private _value$: BehaviorSubject<X>|null = null
-
   get value$() {
     if (!this._value$) {
       this._value$ = new BehaviorSubject(this.xInitial)
-      this.output$.pipe(
+      this.rolled$.pipe(
         map(([x, animation]) => animation.valueTo(x))
       ).subscribe(this._value$)
     }
     return this._value$
 
   }
+
+  // ---- Internal
+  _rolled$: Observable<[X, IAnimation<X>]>|null = null
+  get rolled$() {
+    if (!this._rolled$) {
+      this._rolled$ = rollAnimations(this.xInitial, this.animation$).pipe(
+        // Sub-animations if MultiAnimation
+        switchMap(
+          ([xBase, animation]) => rollAnimations(xBase, enqueueMulti(animation, this.scheduler))
+        ),
+        share()
+      )
+    }
+    return this._rolled$
+  }
+
+
+
 }
 
 // export function useAnimatorer<T>(animatorer: Animatorer<T>):

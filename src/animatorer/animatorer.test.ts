@@ -48,6 +48,15 @@ it('animatorer works multi', () => {
       k: [22, k],
       c: [33, c],
     })
+    ex(animatorer.value$)
+      .toBe("x--a---ij--k------c----", {
+        x: 5,
+        a: 15,
+        i: 17,
+        j: 22,
+        k: 33,
+        c: 103,
+      })
 
     // Cut the Multi short
     animatorer = new Animatorer(5, scheduler)
@@ -61,5 +70,13 @@ it('animatorer works multi', () => {
       // k: [22, k], // Gets cut off
       c: [33, c],
     })
+    ex(animatorer.value$)
+      .toBe("x--a---ij-c----", {
+        x: 5,
+        a: 15,
+        i: 17,
+        j: 22,
+        c: 103,
+      })
   })
 })
