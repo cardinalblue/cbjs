@@ -70,54 +70,76 @@ export class MultiAnimation<X> implements IAnimation<X> {
 }
 
 
+// ---- This enqueues-out MultiAnimations based on their duration
+function enqueueMulti<X>(animation: IAnimation<X>, scheduler: SchedulerLike): Observable<IAnimation<X>> {
+  return (animation instanceof MultiAnimation) ?
+    // If multi, break it out enqueued (i.e. spaced out by duration)
+    of(...animation.animations).pipe(
+      enqueue(a => a.t, scheduler))
+    // Otherwise just send out individually
+    : of(animation).pipe(
+      extend(animation.t, scheduler))
+}
+
+// ----- Calculates the sequence of initial values for the animations,
+//       and emits pairs [ initial value, animation ].
+//
+function rollAnimations<X>(x0: X, animation$: Observable<IAnimation<X>>)
+  : Observable<[X, IAnimation<X>]> {
+  const x$ = animation$.pipe(
+    scan((xPrev, animation) => animation.valueTo(xPrev), x0),
+    startWith<X>(x0),
+  )
+  return zip(x$, animation$)
+}
+
 export class Animatorer<X> {
 
   // ---- Input Animations
   animation$  = new Subject<IAnimation<X>>()
 
-  // ---- Output Animation
-  output$:    BehaviorSubject<[X, IAnimation<X>]>
-  value$:     BehaviorSubject<X>
-
   // ---- Lifecycle
-  constructor(xInitial: X, readonly scheduler: SchedulerLike = asyncScheduler) {
+  constructor(readonly xInitial: X, readonly scheduler: SchedulerLike = asyncScheduler) {
+  }
 
-    this.output$   = new BehaviorSubject([xInitial, BaseAnimation.NULL as IAnimation<X>])
-    this.value$    = new BehaviorSubject(xInitial)
+  // ---- Output Animation
+  private _output$: BehaviorSubject<[X, IAnimation<X>]>|null = null
 
-    // ---- This enqueues-out MultiAnimations based on their duration
-    function enqueueMulti(animation: IAnimation<X>): Observable<IAnimation<X>> {
-      return (animation instanceof MultiAnimation) ?
-        // If multi, break it out enqueued (i.e. spaced out by duration)
-        of(...animation.animations).pipe(
-          enqueue(a => a.t, scheduler))
-        // Otherwise just send out individually
-        : of(animation).pipe(
-          extend(animation.t, scheduler))
+  /**
+   * @deprecated
+   */
+  get output$() {
+    if (!this._output$) {
+      this._output$ = new BehaviorSubject([this.xInitial, BaseAnimation.NULL as IAnimation<X>])
+      rollAnimations(this.xInitial, this.animation$).pipe(
+        // Sub-animations if MultiAnimation
+        switchMap(
+          ([xBase, animation]) => rollAnimations(xBase, enqueueMulti(animation, this.scheduler))
+        )
+      ).subscribe(this._output$)
     }
+    return this._output$
+  }
 
-    // ----- Calculates the sequence of initial values for the animations,
-    //       and emits pairs [ initial value, animation ].
-    //
-    function rollAnimations<X>(x0: X, animations: Observable<IAnimation<X>>)
-      : Observable<[X, IAnimation<X>]> {
-      const x$ = animations.pipe(
-        scan((xPrev, animation) => animation.valueTo(xPrev), x0),
-        startWith<X>(x0),
-      )
-      return zip(x$, animations)    }
+  /**
+   *
+   */
+  private _value$: BehaviorSubject<X>|null = null
 
-    // ----- Produce output$
-    rollAnimations(xInitial, this.animation$).pipe(
-      // Sub-animations if MultiAnimation
-      switchMap(
-        ([xBase, animation]) => rollAnimations(xBase, enqueueMulti(animation))
-      )
-    ).subscribe(this.output$)
+  get value$() {
+    if (!this._value$) {
+      this._value$ = new BehaviorSubject(this.xInitial)
+      this.output$.pipe(
+        map(([x, animation]) => animation.valueTo(x))
+      ).subscribe(this._value$)
+    }
+    return this._value$
 
-    // ---- Produce value$
-    this.output$.pipe(
-      map(([x, animation]) => animation.valueTo(x))
-    ).subscribe(this.value$)
   }
 }
+
+// export function useAnimatorer<T>(animatorer: Animatorer<T>):
+//   ([ T, IAnimation<T>])
+// {
+//
+// }
