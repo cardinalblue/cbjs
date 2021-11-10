@@ -20,6 +20,17 @@ jobs:
           node-version: 14.x
       - run: yarn
         env:
-          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-      - run: yarn build
-      
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # we need to setup user email & name to be able to build the package: https://github.com/fregante/setup-git-user
+      - name: Setup User
+        uses: fregante/setup-git-user@v1
+
+      - name: Build Package
+        run: yarn build
+
+      - name: Publish Package
+        run: yarn publish
+        # https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages#authenticating-to-the-destination-repository
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
