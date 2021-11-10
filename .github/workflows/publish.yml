@@ -1,8 +1,13 @@
-on: [pull_request]
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
 name: publish package CI
 
 jobs:
   build:
+    # this job will only run if the PR has been merged
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest 
     steps:
       - uses: actions/checkout@v2
