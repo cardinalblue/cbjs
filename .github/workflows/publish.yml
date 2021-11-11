@@ -1,0 +1,40 @@
+# only trigger on pull request closed events
+on:
+  pull_request:
+    types: [ closed ]
+name: publish package CI
+
+jobs:
+  build:
+    # this job will only run if the PR has been merged
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest 
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js 14.x
+        # Setup .npmrc file to publish to GitHub Packages
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+          registry-url: 'https://npm.pkg.github.com'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@cardinalblue'
+
+      - name: Install Package
+        run: yarn
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # we need to setup user email & name to be able to build the package: https://github.com/fregante/setup-git-user
+      - name: Setup User
+        uses: fregante/setup-git-user@v1
+
+      - name: Build Package
+        run: yarn build
+
+      - name: Publish Package
+        run: yarn publish
+        # https://docs.github.com/en/actions/publishing-packages/publishing-nodejs-packages#authenticating-to-the-destination-repository
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
