@@ -10,6 +10,8 @@ import {
   merge,
   MonoTypeOperatorFunction,
   Observable,
+  ObservableInput,
+  ObservedValueOf,
   of,
   OperatorFunction,
   pipe,
@@ -37,7 +39,7 @@ import {
   switchMap,
   take,
   takeUntil,
-  tap
+  tap,
 } from "rxjs/operators"
 import {Constructable, objectFromArray, objectToArray, withoutFirst} from "./util";
 
@@ -381,13 +383,13 @@ export function finding$<T>(a$: Observable<T[]>, f: (t: T) => boolean)
 
 // =======================================================================
 
-export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
-  : OperatorFunction<TIN, TOUT>
+export function swapMap<T, O extends ObservableInput<any>>(f: (tIn: T, index: number) => O)
+  : OperatorFunction<T, ObservedValueOf<O>>
 {
   let subsCur: Subscription|undefined
   return source => {
     const input$ = source.pipe(map(f))
-    return new Observable<TOUT>(subsOut => {
+    return new Observable<ObservedValueOf<O>>(subsOut => {
 
       let subsSource: Subscription|undefined
         // Might complete DURING subscribe so initialize to undefined
@@ -397,9 +399,9 @@ export function swapMap<TIN, TOUT>(f: (tIn: TIN) => Observable<TOUT>)
         in$ => {
           // ---- Subscribe to the NEW observable,
           //      and THEN unsubscribe to the previous one
-          const subsNew = in$.subscribe(
-            t =>      subsOut.next(t),
-            error =>  subsOut.error(error),
+          const subsNew = from(in$).subscribe(
+            (t: ObservedValueOf<O>) => subsOut.next(t),
+            (error: any) =>  subsOut.error(error),
             () =>     { if (subsSource && subsSource.closed) subsOut.complete() },
           )
           if (subsCur) subsCur.unsubscribe()
