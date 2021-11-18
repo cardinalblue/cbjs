@@ -28,6 +28,7 @@ export * from "./platform";
 export * from "./portal";
 export * from "./ref_store";
 export * from "./share";
+export * from "./snackbar";
 export * from "./type_map_registry"
 export * from "./undo";
 export * from "./upload/upload_widget"
