@@ -1,8 +1,10 @@
 import {Observable, Subject} from "rxjs";
 import * as React from "react";
-import {Context, generateId, useObserving} from "@piccollage/cbjs";
 import {SnackbarOrigin} from "@material-ui/core";
 import {useSnackbar} from "notistack";
+import {useObserving} from "./util_react"
+import {generateId} from "./util"
+import {Context} from "./contexter"
 
 export type SnackbarRequest = {
   message: string,
