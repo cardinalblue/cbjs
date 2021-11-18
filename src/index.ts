@@ -1,5 +1,6 @@
 // ---- Subfolders
 export * from "./animatorer";
+export * from "./app";
 export * from "./i_svg_path";
 export * from "./kor";
 export * from "./progress";
