@@ -47,6 +47,7 @@ export class AppWidget extends Widget {
     console.log("++++ AppWidget registerPaths")
   }
 
+  // ---- Connections
   connectPath() {
 
     // ---- Set path from TopWidget
