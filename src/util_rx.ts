@@ -295,6 +295,15 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
   }
 }
 
+export function isProlonged(t: Millisec)
+  : OperatorFunction<any, boolean>
+{
+  return source => source.pipe(
+    prolong(t),
+    map(vs => vs.length > 0),
+  )
+}
+
 // ---------------------------------------------------------------------------
 
 export function cachedMapper<TFrom, TTo>(
