@@ -1,7 +1,7 @@
 import {Size} from "./kor"
 import {Observable} from "rxjs"
 
-function imageSize$(file: File): Observable<Size> {
+function extractSizeFromImage$(file: File): Observable<Size> {
   return new Observable<Size>(subscriber => {
     const url = URL.createObjectURL(file)
     const image = new Image()
