@@ -1,6 +1,6 @@
 {
   "name": "@cardinalblue/cbjs",
-  "version": "1.4.11-feat-added-snackbar-and-manipulators-2",
+  "version": "1.4.11-bug-math-transform-changes",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -38,7 +38,7 @@
     "color": "github:cardinalblue/color",
     "color-string": "^1.6.0",
     "immutable": "^4.0.0-rc.15",
-    "notistack": "^2.0.3",
+    "notistack": "^1.0.10",
     "resize-observer": "^1.0.0",
     "svgpath": "^2.3.0"
   },
