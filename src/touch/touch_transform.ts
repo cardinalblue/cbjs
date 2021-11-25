@@ -137,7 +137,7 @@ export function transformsFromDirectedGesture(pivot: Point, direction: Point)
       const v  = new Vector(pivot, t.point)
       const d0 = v0.toPoint().dot(direction)
       const d  = v.toPoint().dot(direction)
-      const scale  = d0 < ZERO_THRESHOLD ? 1 : d / d0
+      const scale  = d0 < ZERO_THRESHOLD ? 1 : d / d0   // Check to avoid infinity
       return new Transform({ scale })
     })
   )
