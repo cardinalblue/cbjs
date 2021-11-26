@@ -295,6 +295,17 @@ export function prolong<T>(t: Millisec, scheduler: SchedulerLike = asyncSchedule
   }
 }
 
+// ----------------------------------------------------------------
+// Extends a trigger signal for t.
+// The input:
+//
+//   ------1-------------2-----3------|
+//
+// will output
+//
+//   ------T=======F-----T=============F-------|
+//
+//
 export function isProlonged(t: Millisec)
   : OperatorFunction<any, boolean>
 {
