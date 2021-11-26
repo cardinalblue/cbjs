@@ -4,7 +4,7 @@ import {groupBy, intersection, keys} from "lodash"
 import {TTouch, TTouchEvent} from "./touch"
 import {OperatorFunction} from "rxjs"
 import {map, pairwise, scan} from "rxjs/operators"
-import {calculateTransformFromVectors2} from "../util_math"
+import {calculateTransformFromVectors2, ZERO_THRESHOLD} from "../util_math"
 import {Elementable, ifNumber} from "../util"
 import {filterDefined, pairFirst} from "../util_rx"
 
@@ -137,7 +137,7 @@ export function transformsFromDirectedGesture(pivot: Point, direction: Point)
       const v  = new Vector(pivot, t.point)
       const d0 = v0.toPoint().dot(direction)
       const d  = v.toPoint().dot(direction)
-      const scale  = d / d0
+      const scale  = d0 < ZERO_THRESHOLD ? 1 : d / d0   // Check to avoid infinity
       return new Transform({ scale })
     })
   )

@@ -1,5 +1,7 @@
 import {normalizeRotation, Point, Rect, Size} from './kor'
 
+export const ZERO_THRESHOLD = 0.001
+
 export function generateTimestamp(): number {
   return (new Date()).valueOf() * 1000000 + Math.random() * 1000000
 }
