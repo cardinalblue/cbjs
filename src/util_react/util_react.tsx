@@ -10,16 +10,17 @@ import {domBoundingClientRect} from "../touch"
 // ----------------------------------------------------------------
 // Custom React Hooks to help with RxJS
 
-export function useObservable<T>(observable: Observable<T>,
-                                 defaultValue: T,
-                                 inputs: React.DependencyList = [observable])
-  : T {
-  const [t, setT] = React.useState(defaultValue)
+export function useObservable<T>(initial: T,
+                                 source: Observable<T>,
+                                 inputs: React.DependencyList = [source])
+  : T
+{
+  const [t, setT] = React.useState(initial)
 
   React.useEffect(() => {
-    const subs = observable.subscribe((t: T) => {
+    const subs = source.subscribe((t: T) => {
       if (useObservable.debug)
-        console.log("---- useObservable", t)
+        console.debug("---- useObservable", t)
       setT(t)
     })
     return () => subs.unsubscribe()
@@ -29,22 +30,52 @@ export function useObservable<T>(observable: Observable<T>,
 }
 useObservable.debug = false
 
+// ---- Same as useObservable except that it allows an operator for the source
+//      to be piped thru.
+//      Note that this assumes that the operator function will be *constant*
+//      and there is no dependencies on it.
+//      If the operator function needs to be varied, then pipe the source
+//      and memoize it with the correct dependencies.
+//
+export function usePiped<T1, T2=T1>(initial: T2,
+                                    source: Observable<T1>,
+                                    operator: (source: Observable<T1>) => Observable<T2>)
+  : T2
+{
+  const [t, setT] = useState(initial)
+  useEffect(() => {
+    const sub = source
+      .pipe(operator)
+      .subscribe(t2 => {
+        if (usePiped.debug)
+          console.debug("---- usePiped", t)
+        setT(t2) }
+      )
+    return () => sub.unsubscribe()
+  }, [source])    // We purposefully don't make the operator a dependency, see above
+  return t
+
+}
+usePiped.debug = false
+
 export function useBehaviorSubject<T>(subject: BehaviorSubject<T>,    debugF?: (t: T) => any) : T;
 export function useBehaviorSubject<T>(subject: T,                     debugF?: (t: T) => any) : T;
 export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (t: T) => any) : T;
 export function useBehaviorSubject<T>(subject: BehaviorSubject<T>|T,  debugF?: (t: T) => any) : T
 {
-  // React hook always have to call `useState`, even if not passed a BehaviorSubject
+  // React hook always has to call `useState`, even if not passed a BehaviorSubject
   let [t, setT] = React.useState(
     subject instanceof BehaviorSubject ?
       subject.value : subject
   )
 
   // Non Behavior Subject case
-  if (!(subject instanceof BehaviorSubject))
-    [t, setT] = [ subject, (_) => {} ]
+  if (!(subject instanceof BehaviorSubject)) {
+    [t, setT] = [subject, (_) => {
+    }]
+  }
 
-  // React hook always have to call `useEffect`, even if not passed a BehaviorSubject
+  // React hook always has to call `useEffect`, even if not passed a BehaviorSubject
   React.useEffect(() => {
     if (subject instanceof BehaviorSubject) {
       const subs = subject.subscribe((tNew: T) => {
@@ -65,7 +96,7 @@ export function useObserving<T>(observable: Observable<T>,
   React.useEffect(() => {
     const subs = observable.subscribe(t => {
       if (useObserving.debug)
-        console.log("---- useObserving", t)
+        console.debug("---- useObserving", t)
       callback(t)
     })
     return () => subs.unsubscribe()
