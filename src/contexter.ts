@@ -1,4 +1,4 @@
-import {Constructable, last} from "./util"
+import {clone, Constructable, last} from "./util"
 import _ from "lodash"
 
 export interface Context {}
@@ -12,16 +12,8 @@ export class Contexter {
   constructor(...contexts: Context[]) {
     this.contexts = [ ...(last(Contexter.curContexts) || []), ...contexts ]
   }
-  legate<R>(block: () => R): R {
-    Contexter.curContexts.push(this.contexts)
-    const r = block()
-    Contexter.curContexts.pop()
-    return r
-  }
-  adopt<R extends { contexter: Contexter }>(_child: R): R {
-    _child.contexter.prepend(this.contexts)
-    return _child
-  }
+
+  // ---- Context access
   has<C extends Context>(contextType: Constructable<C>): boolean {
     return _.findIndex(this.contexts, c => c instanceof contextType) >= 0
   }
@@ -34,12 +26,41 @@ export class Contexter {
     if (!c) throw Error(`Context ${contextType} not set`)
     return c
   }
+
+  // ---- Context setting
   prepend(contexts: Contexter|Context[]|Context) {
     const c = (contexts instanceof Contexter)? contexts.contexts :
               (contexts instanceof Array)? contexts :
               [contexts]
     this.contexts = [...c, ...this.contexts]
   }
+  append(contexts: Contexter|Context[]|Context) {
+    const c = (contexts instanceof Contexter)? contexts.contexts :
+      (contexts instanceof Array)? contexts :
+        [contexts]
+    this.contexts = [...this.contexts, ...c]
+  }
+  merge(context: Context) {
+    const found = _.findLast(this.contexts, c => c.constructor === context.constructor)
+    if (found)
+      this.append(clone(found, context))
+    else
+      this.append(context)
+  }
+
+  // ---- Child parent setting
+  legate<R>(block: () => R): R {
+    Contexter.curContexts.push(this.contexts)
+    const r = block()
+    Contexter.curContexts.pop()
+    return r
+  }
+  adopt<R extends { contexter: Contexter }>(_child: R): R {
+    _child.contexter.prepend(this.contexts)
+    return _child
+  }
+
+
 }
 // -----------------------------------------------------------------
 // Usage example:
