@@ -258,9 +258,12 @@ export function StopPropagation(props: {
   handlersArr.forEach(handler => {
     handlers[handler[0] as string] = handler[1]
   })
-  return <div {...handlers} >
-    {props.children}
-  </div>
+
+  return (
+    <div {...handlers} className="StopPropagation">
+      {props.children}
+    </div>
+  )
 }
 
 export function OptionallyParent(props: {
