@@ -255,12 +255,15 @@ export function StopPropagation(props: {
   const handlersArr = (props.events || allEvents).map( // TODO: ES2019 syntax won't work with bit
     e => [ "on" + e, (e: Event) => e.stopPropagation() ])
   const handlers: any = {}
-  handlersArr.forEach(handler => {
-    handlers[handler[0] as string] = handler[1]
+  handlersArr.forEach(([s, f]) => {
+    handlers[s as string] = f
   })
-  return <div {...handlers} >
-    {props.children}
-  </div>
+
+  return (
+    <div {...handlers} className="StopPropagation">
+      {props.children}
+    </div>
+  )
 }
 
 export function OptionallyParent(props: {
