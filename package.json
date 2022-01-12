@@ -1,6 +1,6 @@
 {
   "name": "@cardinalblue/cbjs",
-  "version": "1.4.14-feat-added-contexter-merge-append-A",
+  "version": "1.4.16",
   "description": "Utilities and common functions and classes for TypeScript, React, RxJS projects",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -65,7 +65,7 @@
     "rxjs": "^7.3.1",
     "rxjs-spy": "^8.0.0",
     "ts-jest": "^27.0.5",
-    "typescript": "^4.4.3",
+    "typescript": "^4.5.4",
     "yalc": "^1.0.0-pre.50"
   },
   "peerDependencies": {
