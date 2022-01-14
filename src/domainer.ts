@@ -5,14 +5,17 @@ import {log$, taplog} from "./util_rx"
 export class Domainer {
   shutdown$ = new Subject<any>()
 
-  static debug: boolean = false
+  constructor(public _debug=false) {
 
-  constructor() {
+    if (_debug)
+      this.shutdown$.subscribe(_ => {
+        console.debug("---- Domainer shutdown$")
+      })
 
     // ---- Debug statement for shutdown$ (can't use connecting/observing)
     this.shutdown$.pipe(
       first(),
-      taplog("**** shutdown$", this.constructor)
+      taplog("**** shutdown$", this),
       ).subscribe()
   }
 
@@ -34,7 +37,7 @@ export class Domainer {
                      monad = switchMap) {
     return trigger$.pipe(
       takeUntil(this.shutdown$),
-      tap(t => Domainer.debug && console.debug("---- triggering", t)),
+      tap(t => this._debug && console.debug("---- triggering", t)),
       monad(t => manipulator(t).pipe(
         catchError(e => {
           console.error("++++ triggering error", e)
@@ -47,7 +50,7 @@ export class Domainer {
   connecting<T>(source: Observable<T>, destination: Subject<T>) {
     return source.pipe(
       takeUntil(this.shutdown$),
-      tap(t => Domainer.debug && console.debug("---- connecting", t)),
+      tap(t => this._debug && console.debug("---- connecting", t)),
       tap((t: T) => destination.next(t))
     ).subscribe()
   }
@@ -59,7 +62,7 @@ export class Domainer {
       takeUntil(this.shutdown$),
       tap((t: T) => {
         if (!isEqual(destination.value, t)) {
-          Domainer.debug && console.debug("---- updating", t)
+          this._debug && console.debug("---- updating", t)
           destination.next(t)
         }
       })
