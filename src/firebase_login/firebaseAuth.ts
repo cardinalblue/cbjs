@@ -1,6 +1,6 @@
 import {browserLocalPersistence, getAuth, setPersistence, signOut, User,} from "firebase/auth";
-import firebase from "firebase/compat"
 import * as firebaseui from "firebaseui";
+import {GoogleAuthProvider, EmailAuthProvider} from "firebase/auth"
 
 import {Observable} from "rxjs";
 import {promise$} from "../util_rx"
@@ -46,8 +46,8 @@ export function firebaseLoginStart$(element: string|Element)
       signInSuccessUrl: "/",
       signInOptions: [
         // Leave the lines as is for the providers you want to offer your users.
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
+        GoogleAuthProvider.PROVIDER_ID,
+        EmailAuthProvider.PROVIDER_ID,
       ],
       signInFlow: "popup",
 

@@ -1,12 +1,11 @@
 import {concat, Observable, of, throwError} from "rxjs";
 import {map, mergeMap} from "rxjs/operators";
 import {CollectionRef, DocRef, firestoreDeleteCollection} from "./firestore_sync"
-import {addDoc, deleteDoc, doc, setDoc, updateDoc} from "firebase/firestore"
+import {addDoc, deleteDoc, doc, setDoc, updateDoc, DocumentData} from "firebase/firestore"
 import {PartialExceptFor, SubsetBehaviorSubject$} from "../util_types"
 import {promise$} from "../util_rx"
-import firebase from "firebase/compat"
 import {ID} from "../util"
-import DocumentData = firebase.firestore.DocumentData
+
 
 
 export type Creation<M> =
