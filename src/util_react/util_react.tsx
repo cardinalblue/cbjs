@@ -17,6 +17,13 @@ export function useObservable<T>(initial: T,
 {
   const [t, setT] = React.useState(initial)
 
+  // ---- Make sure value gets set if source is different
+  //      (see https://learnwithparam.com/blog/how-to-pass-props-to-state-properly-in-react-hooks/)
+  React.useEffect(
+    () => setT(initial),
+    [source])
+
+  // ---- Subscribe for next values in Observable
   React.useEffect(() => {
     const subs = source.subscribe((t: T) => {
       if (useObservable.debug)
